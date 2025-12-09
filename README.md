@@ -1,5 +1,8 @@
 # astroCAMP-bench
 
+<img width="682" height="425" alt="image" src="https://github.com/user-attachments/assets/20cc4fcc-3351-45a1-a5c9-6c1f0e505557" />
+
+
 astroCAMP-bench is a community benchmark suite for radio interferometric imaging,
 inspired by MLPerf. It provides standardised datasets, reference images, metric
 definitions, and a submission protocol for evaluating imaging pipelines across:
