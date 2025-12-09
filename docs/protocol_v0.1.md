@@ -24,7 +24,7 @@ astroCAMP aims to:
 
 Scope of protocol v0.1:
 
-- SKA-like continuum and spectral-line imaging tasks (C1, C2, L1).
+- [TODO] SKA-like continuum and spectral-line imaging tasks (C1, C2, L1).
 - Single-node and small multi-node CPU/GPU systems.
 - Calibrated visibilities only (no calibration pipelines yet).
 - Offline imaging (no real-time streaming constraints).
@@ -44,15 +44,15 @@ Each benchmark task is defined by:
 
 ### 2.1 Tasks in v0.1
 
-- **C1 – Continuum Widefield**  
+- [TODO] **C1 – Continuum Widefield**  
   SKA1-Mid-like deep field, moderate dynamic range. Used to assess general
   continuum imaging performance.
 
-- **C2 – High Dynamic Range (HDR)**  
+- [TODO] **C2 – High Dynamic Range (HDR)**  
   Bright-source field (e.g. calibrator or bright cluster) stressing PSF control,
   precision, and deconvolution depth.
 
-- **L1 – Spectral Line / HI Cube**  
+- [TODO] **L1 – Spectral Line / HI Cube**  
   SKA1-Low or SKA1-Mid-like spectral-line data (e.g. HI cube), used to assess
   spectral fidelity and line recovery.
 
