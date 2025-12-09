@@ -62,9 +62,9 @@ Domain-specific throughput, e.g.:
 
 A typical choice for radio imaging is:
 
-\[
+$$
 \Theta_V = \frac{N_{\text{vis}}}{T_c}
-\]
+$$
 
 - Unit: visibilities / second, or pixels / second  
 
@@ -120,9 +120,9 @@ Maximum resident memory (RAM) used by the imaging process during the run.
 
 Parallel efficiency compares ideal linear speedup to observed speedup:
 
-\[
+$$
 E_p = \frac{T_{\text{seq}}}{n \, T_n}
-\]
+$$
 
 - T_seq: best-known sequential runtime  
 - T_n: runtime with n parallel resources (cores, GPUs, or nodes)  
@@ -155,9 +155,9 @@ E_p = \frac{T_{\text{seq}}}{n \, T_n}
 
 Total energy consumed during the job:
 
-\[
+$$
 E_c = \int_{t_0}^{t_1} P(t) \, dt
-\]
+$$
 
 - P(t): instantaneous power (Watts)  
 - t0, t1: start and end times of the job  
@@ -172,9 +172,9 @@ E_c = \int_{t_0}^{t_1} P(t) \, dt
 2. Sample power at regular intervals (e.g. every 100 ms to 1 s).  
 3. Integrate using discrete samples:
 
-\[
+$$
 E_c \approx \sum_i P_i \, \Delta t_i
-\]
+$$
 
 4. Ensure you document:
    - sampling frequency,  
@@ -203,9 +203,9 @@ E_c \approx \sum_i P_i \, \Delta t_i
 
 Average power consumption during the job:
 
-\[
+$$
 \bar{P} = \frac{E_c}{T_c}
-\]
+$$
 
 - Unit: Watts (W)  
 
@@ -233,9 +233,9 @@ Average power consumption during the job:
 
 Carbon footprint associated with E_c, using a carbon intensity factor κ(t, r):
 
-\[
+$$
 C_c = E_c \, \kappa(t,r)
-\]
+$$
 
 - κ(t, r): grid carbon intensity [gCO2e per joule] as a function of time and region  
 - Unit: grams of CO2 equivalent (gCO2e)  
@@ -249,9 +249,9 @@ C_c = E_c \, \kappa(t,r)
    - facility-provided carbon-intensity data.  
 3. If κ is time-dependent, integrate:
 
-\[
+$$
 C_c \approx \sum_i P_i \, \Delta t_i \, \kappa(t_i, r)
-\]
+$$
 
 If only a time-averaged κ is available, use the simpler E_c * κ.
 
@@ -274,9 +274,9 @@ If only a time-averaged κ is available, use the simpler E_c * κ.
 
 Energy efficiency in domain-specific units, e.g.:
 
-\[
+$$
 \eta_E = \frac{N_{\text{vis}}}{E_c}
-\]
+$$
 
 - Unit: visibilities per joule (vis/J)  
 
@@ -308,13 +308,13 @@ Energy efficiency in domain-specific units, e.g.:
 The root mean square (RMS) of pixel intensities in a source-masked background
 region of the dirty or residual image:
 
-\[
+$$
 \sigma_{\text{dirty}} =
 \sqrt{
 \frac{1}{N}
 \sum_{i=1}^{N} (I_i - \bar{I})^2
 }
-\]
+$$
 
 - I_i: pixel values in the background region  
 - \bar{I}: mean of those pixel values (often ~0)  
@@ -351,15 +351,15 @@ region of the dirty or residual image:
 
 **Definition**
 
-For a reconstructed image \(\hat{I}\) and reference image \(I_{\text{ref}}\),
+For a reconstructed image $\hat{I}$ and reference image $I_{\text{ref}}$,
 
-\[
+$$
 \text{MSE} = \frac{1}{N} \sum_{i=1}^{N} \big( \hat{I}_i - I_{\text{ref},i} \big)^2
-\]
+$$
 
-\[
+$$
 \text{PSNR} = 10 \log_{10} \left( \frac{I_{\text{max}}^2}{\text{MSE}} \right)
-\]
+$$
 
 - I_max is typically the maximum absolute value in I_ref (or a known dynamic range reference).  
 - Unit: decibels (dB)  
@@ -415,9 +415,9 @@ Range: [0, 1], with 1 being identical.
 
 For a set of matched sources, with measured flux S and reference flux S_ref:
 
-\[
+$$
 \epsilon_{\text{flux}} = \text{median}\left( \frac{|S - S_{\text{ref}}|}{S_{\text{ref}}} \right)
-\]
+$$
 
 - Unit: dimensionless (often reported as a percentage).  
 
@@ -448,9 +448,9 @@ For a set of matched sources, with measured flux S and reference flux S_ref:
 
 Positional error for matched sources, typically:
 
-\[
+$$
 \epsilon_{\text{astro}} = \text{median}\left( \frac{\sqrt{(\Delta \alpha)^2 + (\Delta \delta)^2}}{\theta_{\text{beam}}} \right)
-\]
+$$
 
 - Δα, Δδ: RA and Dec differences (in radians or arcseconds)  
 - θ_beam: synthesized beam FWHM (converted to the same units)  
@@ -479,9 +479,9 @@ Positional error for matched sources, typically:
 
 Dynamic range of an image:
 
-\[
+$$
 \text{DR} = \frac{I_{\text{max}}}{\sigma_{\text{residual}}}
-\]
+$$
 
 - I_max: peak brightness in the image  
 - σ_residual: RMS of the residual image (or dirty background)  
@@ -510,13 +510,13 @@ Dynamic range of an image:
 Spectral fidelity measures how well the spectrum or cube matches a reference.
 Implementation may vary; a simple option is:
 
-\[
+$$
 \epsilon_{\text{spec}} =
 \sqrt{
 \frac{1}{N_{\text{vox}}}
 \sum_{k} \big( I_k - I_{\text{ref},k} \big)^2
 }
-\]
+$$
 
 where the sum can be over:
 
@@ -554,9 +554,9 @@ where the sum can be over:
 Fraction of walltime during which major compute devices are actively executing
 the workload:
 
-\[
+$$
 U = \frac{t_{\text{active}}}{t_{\text{total}}}
-\]
+$$
 
 - Unit: dimensionless (0 to 1)  
 
@@ -583,9 +583,9 @@ U = \frac{t_{\text{active}}}{t_{\text{total}}}
 
 Average sustained I/O rate:
 
-\[
+$$
 B_{\text{I/O}} = \frac{V_{\text{I/O}}}{T_c}
-\]
+$$
 
 - V_IO: total volume of data read/written  
 - Unit: MB/s or GB/s  
@@ -594,10 +594,10 @@ B_{\text{I/O}} = \frac{V_{\text{I/O}}}{T_c}
 
 Imbalance across nodes or ranks:
 
-\[
+$$
 \Delta_{\text{I/O}} =
 \frac{\max_i b_i - \min_i b_i}{\bar{b}}
-\]
+$$
 
 - b_i: per-node bandwidth  
 - \bar{b}: mean bandwidth  
@@ -626,9 +626,9 @@ Imbalance across nodes or ranks:
 
 Sum of capital and operational costs over the system lifetime:
 
-\[
+$$
 C_{\text{TCO}} = C_{\text{capex}} + C_{\text{opex}}
-\]
+$$
 
 - Unit: currency (e.g. EUR)  
 
@@ -654,9 +654,9 @@ C_{\text{TCO}} = C_{\text{capex}} + C_{\text{opex}}
 
 Energy cost of a job:
 
-\[
+$$
 C_E = E_c \, p_E
-\]
+$$
 
 - p_E: electricity price (e.g. EUR per kWh)  
 - Unit: currency (e.g. EUR)  
@@ -685,9 +685,9 @@ C_E = E_c \, p_E
 
 Fraction of runs that produce bit-identical outputs:
 
-\[
+$$
 D = \frac{N_{\text{ident}}}{N_{\text{runs}}}
-\]
+$$
 
 - Unit: dimensionless (0 to 1)  
 
@@ -715,9 +715,9 @@ D = \frac{N_{\text{ident}}}{N_{\text{runs}}}
 
 Relative variance of a metric M across repeated runs:
 
-\[
+$$
 V_m = \frac{\sigma_M}{\mu_M}
-\]
+$$
 
 - σ_M: standard deviation over runs  
 - μ_M: mean over runs  
