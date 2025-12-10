@@ -53,7 +53,7 @@ for _, benchmark in benchmarks_df.iterrows():
             'Time (h)': time,
             'Energy (kWh)': energy,
             'Operational Carbon (kg CO2)': operational_carbon,
-            'Capital Carbon (kg CO2)': capital_carbon,
+            'Embodied Carbon (kg CO2)': capital_carbon,
             'Total Carbon (kg CO2)': operational_carbon + capital_carbon,
             'Operational Cost ($)': operational_energy_cost,
             'Capital Cost ($)': capital_cost,
@@ -69,14 +69,14 @@ results_df = results_df.sort_values(by=['Location', 'Benchmark', 'Machine']).res
 # Create a display DataFrame with percentages for operational and capital, absolute for totals
 display_df = results_df.copy()
 display_df['Operational Carbon (%)'] = (display_df['Operational Carbon (kg CO2)'] / display_df['Total Carbon (kg CO2)'] * 100).round(1)
-display_df['Capital Carbon (%)'] = (display_df['Capital Carbon (kg CO2)'] / display_df['Total Carbon (kg CO2)'] * 100).round(1)
+display_df['Embodied Carbon (%)'] = (display_df['Embodied Carbon (kg CO2)'] / display_df['Total Carbon (kg CO2)'] * 100).round(1)
 display_df['Operational Cost (%)'] = (display_df['Operational Cost ($)'] / display_df['Total Cost ($)'] * 100).round(1)
 display_df['Capital Cost (%)'] = (display_df['Capital Cost ($)'] / display_df['Total Cost ($)'] * 100).round(1)
 
 # Create the final display table with the desired columns
 final_display_df = display_df[[
     'Benchmark', 'Machine', 'Location', 'Time (h)', 'Energy (kWh)',
-    'Operational Carbon (%)', 'Capital Carbon (%)', 'Total Carbon (kg CO2)',
+    'Operational Carbon (%)', 'Embodied Carbon (%)', 'Total Carbon (kg CO2)',
     'Operational Cost (%)', 'Capital Cost (%)', 'Total Cost ($)'
 ]].copy()
 print("=" * 150)
@@ -88,7 +88,7 @@ print()
 # Create a summary table grouped by benchmark
 summary_by_benchmark = results_df.groupby('Benchmark').agg({
     'Operational Carbon (kg CO2)': 'mean',
-    'Capital Carbon (kg CO2)': 'first',
+    'Embodied Carbon (kg CO2)': 'first',
     'Total Carbon (kg CO2)': 'mean',
     'Operational Cost ($)': 'mean',
     'Capital Cost ($)': 'first',
@@ -98,13 +98,13 @@ summary_by_benchmark = results_df.groupby('Benchmark').agg({
 # Create summary display with percentages
 summary_display = summary_by_benchmark.copy()
 summary_display['Operational Carbon (%)'] = (summary_display['Operational Carbon (kg CO2)'] / summary_display['Total Carbon (kg CO2)'] * 100).round(1)
-summary_display['Capital Carbon (%)'] = (summary_display['Capital Carbon (kg CO2)'] / summary_display['Total Carbon (kg CO2)'] * 100).round(1)
+summary_display['Embodied Carbon (%)'] = (summary_display['Embodied Carbon (kg CO2)'] / summary_display['Total Carbon (kg CO2)'] * 100).round(1)
 summary_display['Operational Cost (%)'] = (summary_display['Operational Cost ($)'] / summary_display['Total Cost ($)'] * 100).round(1)
 summary_display['Capital Cost (%)'] = (summary_display['Capital Cost ($)'] / summary_display['Total Cost ($)'] * 100).round(1)
 
 # Reorder summary display columns
 summary_display = summary_display[[
-    'Operational Carbon (%)', 'Capital Carbon (%)', 'Total Carbon (kg CO2)',
+    'Operational Carbon (%)', 'Embodied Carbon (%)', 'Total Carbon (kg CO2)',
     'Operational Cost (%)', 'Capital Cost (%)', 'Total Cost ($)'
 ]]
 
