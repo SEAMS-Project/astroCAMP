@@ -107,8 +107,8 @@ for patch in leg.legend_handles:
 plt.tight_layout()
 
 # Save both PNG and PDF to current working directory
-png_path = "/Users/nisa/code/astroCAMP/figures/ska_efficiency_final_singlecol_legend_textured.png"
-pdf_path = "/Users/nisa/code/astroCAMP/figures/ska_efficiency_final_singlecol_legend_textured.pdf"
+png_path = "../paper_figs/ska_efficiency_final_singlecol_legend_textured.png"
+pdf_path = "../paper_figs/ska_efficiency_final_singlecol_legend_textured.pdf"
 
 plt.savefig(png_path, dpi=300, bbox_inches="tight")
 plt.savefig(pdf_path, bbox_inches="tight", format="pdf")

@@ -1,4 +1,4 @@
-# datasets/L1 – Spectral Line / HI Cube
+# TODO future release: datasets/L1 – Spectral Line / HI Cube
 
 L1 is a spectral line benchmark task for HI and other line emission, suitable
 for testing spectral fidelity, cube imaging, and line recovery.

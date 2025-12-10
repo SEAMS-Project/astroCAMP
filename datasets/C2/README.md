@@ -1,4 +1,4 @@
-# datasets/C2 – High Dynamic Range
+# TODO future release: datasets/C2 – High Dynamic Range
 
 C2 is a high dynamic range (HDR) benchmark task with bright compact sources
 that stress PSF control, deconvolution, and dynamic range.

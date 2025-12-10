@@ -1,4 +1,4 @@
-# datasets/C1 – Continuum Widefield
+# TODO future release: datasets/C1 – Continuum Widefield
 
 C1 is a continuum widefield benchmark task designed to emulate SKA1-Mid deep
 extragalactic imaging.
