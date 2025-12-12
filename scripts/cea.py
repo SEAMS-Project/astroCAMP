@@ -11,8 +11,6 @@ print(f"Using lifetime of {args.lifetime} years for all machines.")
 
 # Parameters
 Lifetime = args.lifetime * 365 * 24  # Lifetime in hours
-idle_cpu_watt = 277.75 / 4 # Idle CPU power consumption in watts (example value)
-idle_gpu_watt = 65.44      # Idle GPU power consumption in watts (example value)
 location_ids = ['WA']
 
 # Plot benchmarks
@@ -23,11 +21,16 @@ benchmarks_df = pd.read_csv("benchmarks.csv",
                         "idg_h_sec", "idg_h_watt", "idg_h_jou",
                         "idg_d_sec", "idg_d_watt", "idg_d_jou",
                         "idg_grid_mvs",
-                        "cpu_j",
+                        "cpu_j", "cpu_bsl_j", "cpu_bsl_std_j",
                         "gpu0_j", "gpu1_j", "gpu2_j", "gpu3_j",
-                        "tot_gpu_j", "tot_sys_j", "tot_pdu_j"])
+                        "gpu_j", "gpu_bsl_j", "gpu_bsl_std_j",
+                        "tot_sys_j",
+                        "tot_pdu_j", "pdu_bsl_j", "pdu_bsl_std_j",
+                        "abs_cpu_j", "abs_gpu_j", "abs_pdu_j"])
 
 print(benchmarks_df.to_string())
+
+idle_pdu_watt = benchmarks_df['pdu_bsl_j'].mean() # W
 
 benchmarks_df['machine'] = 'R675 V3 + 4xH100 96GB'  # Assign machine name to all benchmarks
 benchmarks_df['benchmark'] = benchmarks_df['im_size'].astype(str) + '_' + benchmarks_df['n_times'].astype(str) + '_' + benchmarks_df['n_chans'].astype(str)
@@ -48,8 +51,8 @@ for _, benchmark in benchmarks_df.iterrows():
     benchmark_name = benchmark['benchmark']
     machine_name = benchmark['machine']  # Machine is now specified in the benchmark
     time = benchmark['time'] / 3600 # from seconds to hours
-    energy_static = (idle_cpu_watt + idle_gpu_watt) * time / 1000  # Dynamic energy in kWh
-    energy_dynamic = (benchmark['gpu0_j'] + benchmark['cpu_j']) / 3.6e6 # Static energy in kWh
+    energy_dynamic = benchmark['tot_sys_j'] / 3.6e6 # Static energy in kWh
+    energy_static = idle_pdu_watt / 4 * time / 1000  # Dynamic energy in kWh
     energy = energy_dynamic + energy_static # Total energy in kWh
     
     # Get the specific machine's cost and embodied carbon
@@ -80,8 +83,8 @@ for _, benchmark in benchmarks_df.iterrows():
             'Location': location_id,
             'Mvis': mvis,
             'Time (s)': time * 3600,
-            'Energy Dynamic (Wh)': energy_dynamic * 1e3,
-            'Energy Static (Wh)': energy_static * 1e3,
+            'Dynamic Energy (Wh)': energy_dynamic * 1e3,
+            'Static Energy (Wh)': energy_static * 1e3,
             'Energy (Wh)': energy * 1e3,
             'Power (W)': energy * 1e3 / time,
             'Operational Carbon (g CO2)': operational_carbon * 1e3,
@@ -90,7 +93,7 @@ for _, benchmark in benchmarks_df.iterrows():
             'Operational Cost ($)': operational_energy_cost,
             'Capital Cost ($)': capital_cost,
             'Total Cost ($)': operational_energy_cost + capital_cost,
-            'Mvis/s': mvis / (time * 3600),
+            'Mvis/h': mvis / time,
             'Mvis/kWh': mvis / energy,
             'Mvis/kgCO2': mvis / (operational_carbon + capital_carbon),
             'Mvis/$': mvis / (operational_energy_cost + capital_cost),
@@ -115,8 +118,8 @@ display_df['Operational Carbon (%)'] = (display_df['Operational Carbon (g CO2)']
 display_df['Embodied Carbon (%)'] = (display_df['Embodied Carbon (g CO2)'] / display_df['Total Carbon (g CO2)'] * 100).round(1)
 display_df['Operational Cost (%)'] = (display_df['Operational Cost ($)'] / display_df['Total Cost ($)'] * 100).round(1)
 display_df['Capital Cost (%)'] = (display_df['Capital Cost ($)'] / display_df['Total Cost ($)'] * 100).round(1)
-display_df['Dynamic Power (%)'] = (display_df['Energy Dynamic (Wh)'] / display_df['Energy (Wh)'] * 100).round(1)
-display_df['Static Power (%)'] = (display_df['Energy Static (Wh)'] / display_df['Energy (Wh)'] * 100).round(1)
+display_df['Dynamic Power (%)'] = (display_df['Dynamic Energy (Wh)'] / display_df['Energy (Wh)'] * 100).round(1)
+display_df['Static Power (%)'] = (display_df['Static Energy (Wh)'] / display_df['Energy (Wh)'] * 100).round(1)
 
 # Print ranges for each numerical field
 print("=" * 150)
@@ -136,7 +139,7 @@ for col in numerical_cols:
     print(f"{col:40s}: {min_val:12.2f} to {max_val:12.2f}")
 print()
 
-display_df['Mvis/s'] = display_df['Mvis/s'].round(2)
+display_df['Mvis/h'] = display_df['Mvis/h'].round(2)
 display_df['Mvis/kWh'] = display_df['Mvis/kWh'].round(2)
 display_df['Mvis/kgCO2'] = display_df['Mvis/kgCO2'].round(2)
 display_df['Mvis/$'] = display_df['Mvis/$'].round(2)
@@ -155,22 +158,22 @@ final_display_df = display_df[[
     # 'Machine',
     'Location',
     'Mvis',
-    'Mvis/s',
+    'Mvis/h',
     'Mvis/kWh',
     'Mvis/kgCO2',
     'Mvis/$',
     'Power (W)',
     'Time (s)',
     'Energy (Wh)',
-    'Energy Dynamic (Wh)',
-    'Energy Static (Wh)',
-    # 'Dynamic Power (%)',
-    # 'Static Power (%)',
-    # 'Operational Carbon (%)',
-    # 'Embodied Carbon (%)',
+    # 'Dynamic Energy (Wh)',
+    # 'Static Energy (Wh)',
+    'Dynamic Power (%)',
+    'Static Power (%)',
+    'Operational Carbon (%)',
+    'Embodied Carbon (%)',
     'Total Carbon (g CO2)',
-    # 'Operational Cost (%)',
-    # 'Capital Cost (%)',
+    'Operational Cost (%)',
+    'Capital Cost (%)',
     'Total Cost ($)',
 ]].copy()
 
