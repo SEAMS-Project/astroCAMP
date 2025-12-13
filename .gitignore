@@ -210,3 +210,5 @@ __marimo__/
 # Scripts
 scripts/__pycache__/
 scripts/*.tex
+
+scripts/results
