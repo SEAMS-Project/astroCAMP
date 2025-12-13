@@ -11,7 +11,7 @@ print(f"Using lifetime of {args.lifetime} years for all machines.")
 
 # Parameters
 Lifetime = args.lifetime * 365 * 24  # Lifetime in hours
-location_ids = ['WA']
+location_ids = ['SA', 'WA']
 
 # Plot benchmarks
 benchmarks_df = pd.read_csv("benchmarks.csv",
