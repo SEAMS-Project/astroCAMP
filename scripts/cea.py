@@ -133,10 +133,12 @@ numerical_cols = [
     'Dynamic Power (%)',
     'Static Power (%)',
 ]
-for col in numerical_cols:
-    min_val = display_df[col].min()
-    max_val = display_df[col].max()
-    print(f"{col:40s}: {min_val:12.2f} to {max_val:12.2f}")
+for loc in location_ids:
+    print(f"Location: {loc}")
+    for col in numerical_cols:
+        min_val = display_df.loc[display_df['Location'] == loc, col].min()
+        max_val = display_df.loc[display_df['Location'] == loc, col].max()
+        print(f"{col:40s}: {min_val:12.2f} to {max_val:12.2f}")
 print()
 
 display_df['Mvis/h'] = display_df['Mvis/h'].round(2)
