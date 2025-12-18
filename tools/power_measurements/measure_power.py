@@ -12,16 +12,15 @@ def measure():
     print(" ctrl-c to end measurement")
     nb = 0
     mesures = 0
-    with open("temp_measures.txt", "w") as f:
-        try:
-            while True:
-                resultat = subprocess.run(commande, capture_output=True, text=True)
-                mesures += int(resultat.stdout)
-                nb += 1
-                sleep(1)
-        except KeyboardInterrupt:
-            print("\n")
-            print("mesures finies")
+    try:
+        while True:
+            resultat = subprocess.run(commande, capture_output=True, text=True)
+            mesures += int(resultat.stdout)
+            nb += 1
+            sleep(1)
+    except KeyboardInterrupt:
+        print("\n")
+        print("Measurement done")
     return mesures / nb
 
 
@@ -33,13 +32,12 @@ def reference():
     print("Measuring base comsumption")
     nb = 0
     mesures = 0
-    with open("reference.txt", "w") as f:
-        for i in range(30):
-            resultat = subprocess.run(commande, capture_output=True, text=True)
-            mesures += int(resultat.stdout)
-            nb += 1
-            sleep(1)
-        print("mesures à vide finie")
+    for i in range(30):
+        resultat = subprocess.run(commande, capture_output=True, text=True)
+        mesures += int(resultat.stdout)
+        nb += 1
+        sleep(1)
+    print("Load-less measurement done")
     return mesures / nb
 
 
