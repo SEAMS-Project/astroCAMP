@@ -16,3 +16,7 @@ Instead, each subfolder contains:
 - a description of the science case and usage in the benchmark
 
 See the `README.md` in each subfolder for details.
+
+
+## PREESM dataset
+The simulator used to generate heterogeneous conmfigurations is available on [framagit](https://framagit.org/eclat/breizh-hackathon/simulateur.git).
