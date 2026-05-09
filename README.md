@@ -178,7 +178,7 @@ The simulator used to generate heterogeneous conmfigurations is available on [fr
 
 We follow the [NumFOCUS Code of Conduct](https://numfocus.org/code-of-conduct).
 
-## Authors astroCAMP Dataset Contributors
+## astroCAMP Dataset Contributors
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20093790.svg)](https://doi.org/10.5281/zenodo.20093790)
 
 | Name                           | Affiliation                                               | Role           |
