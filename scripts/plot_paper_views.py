@@ -26,15 +26,18 @@ plt.rcParams.update({
 })
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
 
 
 def load_data(lifetime_years: int, location_id: str) -> pd.DataFrame:
     """Load benchmarks, machines, and locations; compute derived metrics using helper function."""
     # Generate results DataFrame using helper function
     results_df = generate_results_dataframe(
-        benchmarks_csv_path=BASE_DIR / 'benchmarks.csv',
-        machines_csv_path=BASE_DIR / 'machines.csv',
-        locations_csv_path=BASE_DIR / 'locations.csv',
+        benchmarks_csv_path=DATA_DIR / 'benchmarks.csv',
+        machines_csv_path=DATA_DIR / 'machines.csv',
+        locations_csv_path=DATA_DIR / 'locations.csv',
         lifetime_years=lifetime_years,
         location_ids=[location_id]
     )
@@ -829,7 +832,7 @@ def main() -> None:
     parser.add_argument("--location", type=str, default="WA", help="Location ID (default: WA)")
     args = parser.parse_args()
 
-    results_dir = BASE_DIR / "results"
+    results_dir = RESULTS_DIR
     results_dir.mkdir(exist_ok=True)
 
     df = load_data(args.lifetime, args.location)

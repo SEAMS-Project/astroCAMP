@@ -56,8 +56,11 @@ PLOT_SCRIPTS = [
 ]
 
 BASE_DIR = Path(__file__).resolve().parent
-RESULTS_DIR = BASE_DIR / "results"
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
+DERIVED_DIR.mkdir(parents=True, exist_ok=True)
 
 # Create a log file for this run
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

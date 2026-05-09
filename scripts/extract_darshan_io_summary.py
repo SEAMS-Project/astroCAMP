@@ -11,8 +11,11 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
 DEFAULT_INPUT_ROOT = REPO_ROOT.parent / "astroCAMP-bench" / "profiling_gpu2"
-DEFAULT_OUTPUT_CSV = SCRIPT_DIR / "darshan_io_summary.csv"
+DEFAULT_OUTPUT_CSV = DATA_DIR / "darshan_io_summary.csv"
 
 
 def parse_args() -> argparse.Namespace:

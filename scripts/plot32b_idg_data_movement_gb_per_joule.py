@@ -32,9 +32,12 @@ import matplotlib.pyplot as plt
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
 DEFAULT_LOG_ROOT = REPO_ROOT.parent / "astroCAMP-bench" / "pasc25_16c"
-DEFAULT_OUTPUT_STEM = SCRIPT_DIR / "plot32b_idg_data_movement_gb_per_joule"
-DEFAULT_SUMMARY_CSV = SCRIPT_DIR / "plot32b_idg_data_movement_gb_per_joule_summary.csv"
+DEFAULT_OUTPUT_STEM = RESULTS_DIR / "plot32b_idg_data_movement_gb_per_joule"
+DEFAULT_SUMMARY_CSV = DERIVED_DIR / "plot32b_idg_data_movement_gb_per_joule_summary.csv"
 
 HOST_COLOR = plt.cm.cividis(0.26)
 DEVICE_COLOR = plt.cm.cividis(0.72)

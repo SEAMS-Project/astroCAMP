@@ -19,11 +19,14 @@ import pandas as pd
 
 
 BASE_DIR = Path(__file__).resolve().parent
-SIZE_CSV = BASE_DIR / "problem_size_memory_table.csv"
-GBJ_CSV = BASE_DIR / "plot32b_idg_data_movement_gb_per_joule_summary.csv"
-OUT_PNG = BASE_DIR / "plot34e_large_problem_size_with_gbj_by_c_single_column.png"
-OUT_PDF = BASE_DIR / "plot34e_large_problem_size_with_gbj_by_c_single_column.pdf"
-OUT_SUMMARY = BASE_DIR / "plot34e_large_problem_size_with_gbj_by_c_single_column_summary.csv"
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
+SIZE_CSV = DERIVED_DIR / "problem_size_memory_table.csv"
+GBJ_CSV = DERIVED_DIR / "plot32b_idg_data_movement_gb_per_joule_summary.csv"
+OUT_PNG = RESULTS_DIR / "plot34e_large_problem_size_with_gbj_by_c_single_column.png"
+OUT_PDF = RESULTS_DIR / "plot34e_large_problem_size_with_gbj_by_c_single_column.pdf"
+OUT_SUMMARY = DERIVED_DIR / "plot34e_large_problem_size_with_gbj_by_c_single_column_summary.csv"
 
 HOST_COLOR = "#d62728"
 DEVICE_COLOR = "#f08080"
@@ -32,8 +35,7 @@ INPUT_COLOR = "#8db8e8"
 OUTPUT_COLOR = "#f1c27d"
 GIB_TO_GB = (1024**3) / 1e9
 
-# Measured `.ms` on-disk sizes from `du -sh` on
-# `/work/seams/orliac/oskar/skalow/gleam_simulations_v2/*.ms`.
+# Measured `.ms` on-disk sizes from `du -sh` on the GLEAM simulation MeasurementSets.
 # These depend on `(Timesteps, Channels)` and are reused across image sizes.
 MEASURED_INPUT_GIB = {
     (1, 1): 13 / 1024,

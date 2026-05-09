@@ -15,9 +15,12 @@ import pandas as pd
 
 
 BASE_DIR = Path(__file__).resolve().parent
-INPUT_CSV = BASE_DIR / "problem_size_memory_table.csv"
-OUT_PNG = BASE_DIR / "plot34b_large_problem_size_stacked_linear.png"
-OUT_PDF = BASE_DIR / "plot34b_large_problem_size_stacked_linear.pdf"
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
+INPUT_CSV = DERIVED_DIR / "problem_size_memory_table.csv"
+OUT_PNG = RESULTS_DIR / "plot34b_large_problem_size_stacked_linear.png"
+OUT_PDF = RESULTS_DIR / "plot34b_large_problem_size_stacked_linear.pdf"
 
 
 def main() -> int:

@@ -10,7 +10,7 @@ from matplotlib.patches import Patch
 # ----------------------------
 # Data
 # ----------------------------
-# Power caps (MW) - 2 to 5 MW
+# Power caps (MW) - 1 to 5 MW
 power_caps = np.array([1, 2, 3, 4, 5])
 
 # Compute requirements in PFLOPS for SKA-Low and SKA-Mid

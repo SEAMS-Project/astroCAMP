@@ -24,9 +24,12 @@ import pandas as pd
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-CPU_CSV = SCRIPT_DIR / "roofline_stacking_summary.csv"
-OUTPUT_STEM = SCRIPT_DIR / "plot25c_cpu_roofline_scalability_comparison"
-SUMMARY_CSV = SCRIPT_DIR / "plot25c_cpu_roofline_scalability_comparison_summary.csv"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+CPU_CSV = DERIVED_DIR / "roofline_stacking_summary.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot25c_cpu_roofline_scalability_comparison"
+SUMMARY_CSV = DERIVED_DIR / "plot25c_cpu_roofline_scalability_comparison_summary.csv"
 
 CPU_COLOR = plt.cm.cividis(0.25)
 CPU_DARK = plt.cm.cividis(0.10)

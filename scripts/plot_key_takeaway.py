@@ -18,12 +18,15 @@ parser.add_argument('-l', '--lifetime', type=int, default=5, help='Lifetime in y
 args = parser.parse_args()
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
 
 # Generate results DataFrame using cea.py logic
 results_df = generate_results_dataframe(
-    BASE_DIR / "benchmarks.csv",
-    BASE_DIR / "machines.csv",
-    BASE_DIR / "locations.csv",
+    DATA_DIR / "benchmarks.csv",
+    DATA_DIR / "machines.csv",
+    DATA_DIR / "locations.csv",
     lifetime_years=args.lifetime,
     location_ids=['SA', 'WA']
 )
@@ -188,7 +191,7 @@ fig.legend(handles=legend_elements, loc='lower center', ncol=4, fontsize=10,
 plt.tight_layout(rect=[0, 0.10, 1, 0.965])
 
 # Save figure
-output_dir = Path(__file__).parent / "results"
+output_dir = RESULTS_DIR
 output_dir.mkdir(exist_ok=True)
 output_path = output_dir / "key_takeaway_efficiency.png"
 plt.savefig(output_path, dpi=300, bbox_inches='tight')

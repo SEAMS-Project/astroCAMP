@@ -26,9 +26,12 @@ import pandas as pd
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
 INPUT_ROOT = REPO_ROOT.parent / "astroCAMP-bench" / "profiling_gpu2"
-OUTPUT_STEM = SCRIPT_DIR / "plot29_gpu_bytes_per_joule"
-CSV_PATH = SCRIPT_DIR / "gpu_bytes_per_joule_summary.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot29_gpu_bytes_per_joule"
+CSV_PATH = DATA_DIR / "gpu_bytes_per_joule_summary.csv"
 
 STAGES = ["gridder", "sub-fft"]
 COLORS = {

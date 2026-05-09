@@ -15,11 +15,14 @@ import pandas as pd
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-CPU_CSV = SCRIPT_DIR / "roofline_stacking_summary.csv"
-MEMORY_TABLE_CSV = SCRIPT_DIR / "problem_size_memory_table.csv"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+CPU_CSV = DERIVED_DIR / "roofline_stacking_summary.csv"
+MEMORY_TABLE_CSV = DERIVED_DIR / "problem_size_memory_table.csv"
 GPU_PROFILING_DIR = SCRIPT_DIR.parent.parent / "astroCAMP-bench" / "profiling_gpu2"
-OUTPUT_STEM = SCRIPT_DIR / "plot26d_cpu_gpu_execution_comparison_gibj"
-SUMMARY_CSV = SCRIPT_DIR / "plot26d_cpu_gpu_execution_comparison_gibj_summary.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot26d_cpu_gpu_execution_comparison_gibj"
+SUMMARY_CSV = DERIVED_DIR / "plot26d_cpu_gpu_execution_comparison_gibj_summary.csv"
 
 ROOF_DRAM_COLOR = "#c44e52"
 ROOF_COMPUTE_COLOR = "#4c72b0"

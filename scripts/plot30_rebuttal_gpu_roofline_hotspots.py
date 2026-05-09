@@ -28,12 +28,15 @@ import pandas as pd
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
 DEFAULT_LOG_PATH = (
     SCRIPT_DIR.parent
     / "../astroCAMP-bench/profiling_rebuttal/slurm-2654179_wsc_dirty_t0-0_c0-7_8192pix_20deg_8cores.out"
 ).resolve()
-OUTPUT_STEM = SCRIPT_DIR / "plot30_rebuttal_gpu_roofline_hotspots"
-SUMMARY_CSV = SCRIPT_DIR / "plot30_rebuttal_gpu_roofline_hotspots_summary.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot30_rebuttal_gpu_roofline_hotspots"
+SUMMARY_CSV = DERIVED_DIR / "plot30_rebuttal_gpu_roofline_hotspots_summary.csv"
 
 ROOF_DRAM_COLOR = "#c44e52"
 ROOF_COMPUTE_COLOR = "#4c72b0"

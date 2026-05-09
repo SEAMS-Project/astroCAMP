@@ -17,10 +17,13 @@ import pandas as pd
 
 
 BASE_DIR = Path(__file__).resolve().parent
-BENCHMARKS_CSV = BASE_DIR / "benchmarks.csv"
-OUT_CSV = BASE_DIR / "problem_size_memory_table.csv"
-OUT_MD = BASE_DIR / "problem_size_memory_table.md"
-OUT_TEX = BASE_DIR / "problem_size_memory_table.tex"
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
+BENCHMARKS_CSV = DATA_DIR / "benchmarks.csv"
+OUT_CSV = DERIVED_DIR / "problem_size_memory_table.csv"
+OUT_MD = RESULTS_DIR / "problem_size_memory_table.md"
+OUT_TEX = RESULTS_DIR / "problem_size_memory_table.tex"
 
 BENCHMARK_COLUMNS = [
     "im_size",

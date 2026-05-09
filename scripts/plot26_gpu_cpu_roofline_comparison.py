@@ -26,10 +26,13 @@ import matplotlib.pyplot as plt
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
-DEFAULT_CPU_SUMMARY = SCRIPT_DIR / "roofline_stacking_summary.csv"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+DEFAULT_CPU_SUMMARY = DERIVED_DIR / "roofline_stacking_summary.csv"
 DEFAULT_GPU_ROOT = REPO_ROOT.parent / "astroCAMP-bench" / "profiling_gpu2"
-DEFAULT_OUTPUT_STEM = SCRIPT_DIR / "plot26_gpu_cpu_roofline_comparison"
-DEFAULT_SUMMARY_CSV = SCRIPT_DIR / "gpu_cpu_roofline_comparison_summary.csv"
+DEFAULT_OUTPUT_STEM = RESULTS_DIR / "plot26_gpu_cpu_roofline_comparison"
+DEFAULT_SUMMARY_CSV = DERIVED_DIR / "gpu_cpu_roofline_comparison_summary.csv"
 
 ROOF_DRAM_COLOR = "#c44e52"
 ROOF_COMPUTE_COLOR = "#4c72b0"

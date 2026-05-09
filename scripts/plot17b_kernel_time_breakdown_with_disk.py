@@ -26,10 +26,13 @@ import matplotlib.pyplot as plt
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
 DEFAULT_LOG_ROOT = REPO_ROOT.parent / "astroCAMP-bench" / "pasc25_16c"
-DEFAULT_MEMORY_TABLE = SCRIPT_DIR / "problem_size_memory_table.csv"
-DEFAULT_OUTPUT_STEM = SCRIPT_DIR / "plot17b_kernel_time_breakdown_with_disk"
-DEFAULT_SUMMARY_CSV = SCRIPT_DIR / "plot17b_kernel_time_breakdown_with_disk_summary.csv"
+DEFAULT_MEMORY_TABLE = DERIVED_DIR / "problem_size_memory_table.csv"
+DEFAULT_OUTPUT_STEM = RESULTS_DIR / "plot17b_kernel_time_breakdown_with_disk"
+DEFAULT_SUMMARY_CSV = DERIVED_DIR / "plot17b_kernel_time_breakdown_with_disk_summary.csv"
 
 MEMORY_COLOR = "#8c6d31"
 

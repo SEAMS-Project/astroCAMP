@@ -16,9 +16,12 @@ import pandas as pd
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
 REPO_ROOT = SCRIPT_DIR.parent
 INPUT_ROOT = REPO_ROOT.parent / "astroCAMP-bench" / "profiling_gpu2"
-OUTPUT_STEM = SCRIPT_DIR / "plot27_hotspots_summary"
+OUTPUT_STEM = RESULTS_DIR / "plot27_hotspots_summary"
 
 KERNELS = ["average-beam", "gridder", "sub-fft", "wtiling"]
 COLORS = {

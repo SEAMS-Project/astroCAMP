@@ -13,8 +13,11 @@ import pandas as pd
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-INPUT_CSV = SCRIPT_DIR / "darshan_io_summary.csv"
-OUTPUT_STEM = SCRIPT_DIR / "plot28_darshan_io_summary"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+INPUT_CSV = DATA_DIR / "darshan_io_summary.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot28_darshan_io_summary"
 
 
 def main() -> int:

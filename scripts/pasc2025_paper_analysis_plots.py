@@ -9,7 +9,9 @@ import matplotlib.pyplot as plt
 
 # Resolve CSV path relative to repo structure
 BASE_DIR = Path(__file__).resolve().parents[1]
-CSV_PATH = BASE_DIR / "scripts" / "benchmarks_comprehensive.csv"
+DATA_DIR = BASE_DIR / "data"
+RESULTS_DIR = BASE_DIR / "results"
+CSV_PATH = DATA_DIR / "benchmarks_comprehensive.csv"
 
 # Load data
 df = pd.read_csv(CSV_PATH)
@@ -23,7 +25,7 @@ df["DynamicFrac"] = df["Dynamic Energy (Wh)"] / df["Energy (Wh)"]
 df["AvgPower_W"] = df["Power (W)"]  # already average power per run
 
 # Save outputs next to this script (results folder)
-out_dir = str(Path(__file__).resolve().parent)
+out_dir = str(RESULTS_DIR)
 os.makedirs(out_dir, exist_ok=True)
 
 def savefig(name):
@@ -742,7 +744,7 @@ with PdfPages(multipage_pdf) as pdf:
 # 11) New data parser: IDG GPU logs (throughput + gridder timings + wall clock)
 RAW_IDG_GPU_LOGS = """
 64 timesteps:
-- 4794: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4794_wsc_dirty_t0-64_c0-1_8192p_8.7890625a.log
+- 4794: <path-redacted>
 |gridding:  40.80 Mvisibilities/s
 gridder:    1.9049e-02 s,  4023.81 GFLOPS,  1062.14 GB/s,   159.49 Watt,    25.23 GFLOPS/W,     3.04 Joules
 gridder:    2.1158e-02 s,  3753.06 GFLOPS,  1082.75 GB/s,   159.47 Watt,    23.54 GFLOPS/W,     3.37 Joules
@@ -750,7 +752,7 @@ gridder:    2.5347e-02 s,  3308.75 GFLOPS,  1081.27 GB/s,   161.46 Watt,    20.4
 gridder:    3.4822e-02 s,  2700.42 GFLOPS,  1091.91 GB/s,   161.66 Watt,    16.70 GFLOPS/W,     5.63 Joules
 gridder:    1.2702e-02 s,  2327.62 GFLOPS,  1107.67 GB/s,   161.68 Watt,    14.40 GFLOPS/W,     2.05 Joules
         Elapsed (wall clock) time (h:mm:ss or m:ss): 1:27.58
-- 4795: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4795_wsc_dirty_t0-64_c0-8_8192p_8.7890625a.log
+- 4795: <path-redacted>
 |gridding:  301.05 Mvisibilities/s
 gridder:    2.4272e-02 s, 12580.49 GFLOPS,   842.92 GB/s,   159.07 Watt,    79.09 GFLOPS/W,     3.86 Joules
 gridder:    2.6411e-02 s, 11552.84 GFLOPS,   876.38 GB/s,   159.46 Watt,    72.45 GFLOPS/W,     4.21 Joules
@@ -758,7 +760,7 @@ gridder:    3.0616e-02 s,  9921.17 GFLOPS,   903.21 GB/s,   159.47 Watt,    62.2
 gridder:    3.7996e-02 s,  7858.94 GFLOPS,  1009.02 GB/s,   308.52 Watt,    25.47 GFLOPS/W,    11.72 Joules
 gridder:    1.4788e-02 s,  5524.62 GFLOPS,   957.98 GB/s,   398.04 Watt,    13.88 GFLOPS/W,     5.89 Joules
         Elapsed (wall clock) time (h:mm:ss or m:ss): 1:59.96
-- 4796: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4796_wsc_dirty_t0-64_c0-64_8192p_8.7890625a.log
+- 4796: <path-redacted>
 |gridding:  959.96 Mvisibilities/s
 |gridding:  889.91 Mvisibilities/s
 |gridding:  351.00 Mvisibilities/s
@@ -769,7 +771,7 @@ gridder:    9.3100e-02 s, 24737.64 GFLOPS,   309.78 GB/s,   159.02 Watt,   155.5
 gridder:    6.2405e-02 s, 22254.74 GFLOPS,   480.91 GB/s,   348.34 Watt,    63.89 GFLOPS/W,    21.74 Joules
 gridder:    3.8015e-02 s, 21805.08 GFLOPS,   501.90 GB/s,   168.62 Watt,   129.31 GFLOPS/W,     6.41 Joules
         Elapsed (wall clock) time (h:mm:ss or m:ss): 5:35.11
-- 4797: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4797_wsc_dirty_t0-64_c0-128_8192p_8.7890625a.log
+- 4797: <path-redacted>
 |gridding:  958.61 Mvisibilities/s
 |gridding:  917.29 Mvisibilities/s
 |gridding:  920.33 Mvisibilities/s
@@ -785,7 +787,7 @@ gridder:    1.2274e-01 s, 26059.43 GFLOPS,   222.28 GB/s,   239.21 Watt,   108.9
 gridder:    2.4256e-02 s, 24016.44 GFLOPS,   363.76 GB/s,   472.18 Watt,    50.86 GFLOPS/W,    11.45 Joules
 gridder:    7.6016e-02 s, 24956.74 GFLOPS,   289.92 GB/s,   163.26 Watt,   152.87 GFLOPS/W,    12.41 Joules
         Elapsed (wall clock) time (h:mm:ss or m:ss): 9:48.26
-- 4857: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4857_wsc_dirty_t0-64_c0-256_8192p_8.7890625a.log
+- 4857: <path-redacted>
 |gridding:  948.85 Mvisibilities/s
 |gridding:  950.30 Mvisibilities/s
 |gridding:  950.93 Mvisibilities/s
@@ -813,7 +815,7 @@ gridder:    1.1654e-02 s, 25522.45 GFLOPS,   254.74 GB/s,   467.59 Watt,    54.5
         Elapsed (wall clock) time (h:mm:ss or m:ss): 17:58.63
 
 256 timesteps:
-- 4838: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4838_wsc_dirty_t0-256_c0-1_8192p_8.7890625a.log
+- 4838: <path-redacted>
 |gridding:  128.34 Mvisibilities/s
 gridder:    2.2143e-02 s,  8575.93 GFLOPS,   889.40 GB/s,   159.56 Watt,    53.75 GFLOPS/W,     3.53 Joules
 gridder:    2.3289e-02 s,  8190.08 GFLOPS,   931.93 GB/s,   163.49 Watt,    50.09 GFLOPS/W,     3.81 Joules
@@ -822,7 +824,7 @@ gridder:    2.9562e-02 s,  6512.84 GFLOPS,   985.41 GB/s,   195.07 Watt,    33.3
 gridder:    3.9055e-02 s,  5031.92 GFLOPS,  1039.82 GB/s,   280.63 Watt,    17.93 GFLOPS/W,    10.96 Joules
 gridder:    1.4755e-02 s,  3969.76 GFLOPS,  1075.21 GB/s,   342.64 Watt,    11.59 GFLOPS/W,     5.06 Joules
         Elapsed (wall clock) time (h:mm:ss or m:ss): 4:02.97
-- 4839: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4839_wsc_dirty_t0-256_c0-8_8192p_8.7890625a.log
+- 4839: <path-redacted>
 |gridding:  721.89 Mvisibilities/s
 |gridding:  93.83 Mvisibilities/s
 gridder:    4.6442e-02 s, 21333.12 GFLOPS,   468.48 GB/s,   159.35 Watt,   133.88 GFLOPS/W,     7.40 Joules
@@ -832,7 +834,7 @@ gridder:    5.2849e-02 s, 17734.43 GFLOPS,   662.46 GB/s,   433.71 Watt,    40.8
 gridder:    4.6567e-02 s, 14173.23 GFLOPS,   841.78 GB/s,   440.25 Watt,    32.19 GFLOPS/W,    20.50 Joules
 gridder:    1.6887e-02 s, 12701.80 GFLOPS,   877.37 GB/s,   159.20 Watt,    79.78 GFLOPS/W,     2.69 Joules
         Elapsed (wall clock) time (h:mm:ss or m:ss): 6:06.90
-- 4840: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4840_wsc_dirty_t0-256_c0-64_8192p_8.7890625a.log
+- 4840: <path-redacted>
 |gridding:  936.21 Mvisibilities/s
 |gridding:  899.13 Mvisibilities/s
 |gridding:  894.97 Mvisibilities/s
@@ -863,7 +865,7 @@ gridder:    1.2823e-01 s, 26511.41 GFLOPS,   180.96 GB/s,   290.06 Watt,    91.4
 gridder:    1.0593e-02 s, 23834.23 GFLOPS,   272.99 GB/s,   398.26 Watt,    59.85 GFLOPS/W,     4.22 Joules
 gridder:    4.9774e-02 s, 24634.70 GFLOPS,   298.45 GB/s,   169.99 Watt,   144.92 GFLOPS/W,     8.46 Joules
         Elapsed (wall clock) time (h:mm:ss or m:ss): 20:30.00
-- 4841: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4841_wsc_dirty_t0-256_c0-128_8192p_8.7890625a.log
+- 4841: <path-redacted>
 |gridding:  939.03 Mvisibilities/s
 |gridding:  912.93 Mvisibilities/s
 |gridding:  920.05 Mvisibilities/s
@@ -903,7 +905,7 @@ gridder:    1.3857e-01 s, 27142.79 GFLOPS,   140.92 GB/s,   297.62 Watt,    91.2
 gridder:    1.3855e-01 s, 27162.95 GFLOPS,   141.24 GB/s,   233.62 Watt,   116.27 GFLOPS/W,    32.37 Joules
 gridder:    3.2795e-02 s, 24934.04 GFLOPS,   388.94 GB/s,   168.90 Watt,   147.63 GFLOPS/W,     5.54 Joules
         Elapsed (wall clock) time (h:mm:ss or m:ss): 36:36.39
-- 4859: /work/seams/orliac/oskar/skalow/gleam_benchmarks/pasc25_16c/slurm-4859_wsc_dirty_t0-256_c0-256_8192p_8.7890625a.log
+- 4859: <path-redacted>
 |gridding:  953.06 Mvisibilities/s
 |gridding:  953.00 Mvisibilities/s
 |gridding:  952.89 Mvisibilities/s
@@ -1096,7 +1098,7 @@ if not idg_gpu_df.empty:
     # Attach workload visibility counts so we can compute end-to-end throughput
     # from total work / wall time for each parsed run.
     idg_gpu_df["image_size"] = 8192
-    nvis_lookup_path = BASE_DIR / "scripts" / "benchmarks.csv"
+    nvis_lookup_path = DATA_DIR / "benchmarks.csv"
     if nvis_lookup_path.exists():
         nvis_raw = pd.read_csv(
             nvis_lookup_path,
@@ -1410,7 +1412,7 @@ if not idg_gpu_df.empty:
     fig.savefig(str(Path(out_dir) / "plot16_idg_gpu_raw_log_explainer.pdf"), format="pdf", bbox_inches="tight")
     plt.close(fig)
 
-    idg_gpu_df.to_csv(str(Path(out_dir) / "idg_gpu_parsed_log_summary.csv"), index=False)
+    idg_gpu_df.to_csv(str(DATA_DIR / "idg_gpu_parsed_log_summary.csv"), index=False)
 
 
 # 14) CPU-only vs GPU wall-time comparison from external benchmark folder.
@@ -1478,7 +1480,7 @@ if not idg_gpu_df.empty:
 
 
 def _load_nvis_lookup():
-    bench_csv = BASE_DIR / "scripts" / "benchmarks.csv"
+    bench_csv = DATA_DIR / "benchmarks.csv"
     if not bench_csv.exists():
         return pd.DataFrame(columns=["image_size", "timesteps", "channels", "n_vis"])
 
@@ -1585,7 +1587,7 @@ if not idg_cpu_gpu_wall_df.empty:
                 fig.savefig(str(Path(out_dir) / "plot14_cpu_vs_gpu_walltime_from_bench.pdf"), format="pdf", bbox_inches="tight")
                 plt.close(fig)
 
-        valid.to_csv(str(Path(out_dir) / "idg_cpu_gpu_walltime_from_bench.csv"), index=False)
+        valid.to_csv(str(DATA_DIR / "idg_cpu_gpu_walltime_from_bench.csv"), index=False)
 
 
 # 17) Kernel time breakdown from pasc25_16c raw logs across image size, timesteps, and channels.
@@ -1762,7 +1764,7 @@ def _parse_monit_gpu_resource_metrics(monit_root):
     return out.sort_values("run_id").reset_index(drop=True)
 
 
-kernel_logs_root = os.environ.get("ASTROCAMP_BENCH_PASC_DIR", "/Users/nisa/code/astroCAMP-bench/pasc25_16c")
+kernel_logs_root = os.environ.get("ASTROCAMP_BENCH_PASC_DIR", "")
 kernel_df = _parse_kernel_breakdown_from_logs(kernel_logs_root)
 
 if not kernel_df.empty:
@@ -2731,7 +2733,7 @@ if not kernel_df.empty:
             fig.savefig(str(Path(out_dir) / "plot23_plot11_explanation_throughput_active_memory_util.pdf"), format="pdf", bbox_inches="tight")
             plt.close(fig)
 
-    kernel_summary.to_csv(str(Path(out_dir) / "kernel_breakdown_pasc25_16c_summary.csv"), index=False)
+    kernel_summary.to_csv(str(DATA_DIR / "kernel_breakdown_pasc25_16c_summary.csv"), index=False)
 
 
 (flagship_pdf, multipage_pdf)

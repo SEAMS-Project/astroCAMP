@@ -1,5 +1,11 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
+_SCRIPT_DIR = Path(__file__).resolve().parent
+DATA_DIR = _SCRIPT_DIR.parent / 'data'
+DERIVED_DIR = DATA_DIR / 'derived'
+RESULTS_DIR = _SCRIPT_DIR.parent / 'results'
+RESULTS_DIR.mkdir(exist_ok=True)
 import argparse
 
 
@@ -14,7 +20,7 @@ Lifetime = args.lifetime * 365 * 24  # Lifetime in hours
 location_ids = ['SA', 'WA']
 
 # Plot benchmarks
-benchmarks_df = pd.read_csv("benchmarks.csv",
+benchmarks_df = pd.read_csv(DATA_DIR / "benchmarks.csv",
                  header=None,
                  names=["im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
                         "n_idg",
@@ -39,8 +45,8 @@ benchmarks_df['time'] = benchmarks_df['wall_time_sec']
 benchmarks_df['mvis'] = benchmarks_df['n_vis'] / 1e6
 
 # Read the three CSV files
-machines_df = pd.read_csv('machines.csv').set_index('machine')
-locations_df = pd.read_csv('locations.csv').set_index('id').reset_index()
+machines_df = pd.read_csv(DATA_DIR / 'machines.csv').set_index('machine')
+locations_df = pd.read_csv(DATA_DIR / 'locations.csv').set_index('id').reset_index()
 locations_df = locations_df[locations_df['id'].isin(location_ids)]
 
 # Create a comprehensive table with benchmarks in rows

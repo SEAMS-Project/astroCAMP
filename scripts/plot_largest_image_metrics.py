@@ -14,7 +14,11 @@ from pathlib import Path
 from results_dataframe import generate_results_dataframe
 
 # Create results directory if it doesn't exist
-results_dir = Path('results')
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
+results_dir = RESULTS_DIR
 results_dir.mkdir(exist_ok=True)
 
 # Parse command line arguments
@@ -32,9 +36,9 @@ print(f"Using lifetime of {args.lifetime} years for all machines.")
 
 # Generate results DataFrame using helper function
 results_df = generate_results_dataframe(
-    benchmarks_csv_path='benchmarks.csv',
-    machines_csv_path='machines.csv',
-    locations_csv_path='locations.csv',
+    benchmarks_csv_path=DATA_DIR / 'benchmarks.csv',
+    machines_csv_path=DATA_DIR / 'machines.csv',
+    locations_csv_path=DATA_DIR / 'locations.csv',
     lifetime_years=args.lifetime,
     location_ids=['WA']
 )

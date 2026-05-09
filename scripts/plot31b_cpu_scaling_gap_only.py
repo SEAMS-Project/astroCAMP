@@ -28,8 +28,11 @@ from plot31_cpu_scaling_phase_limits import (
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-DEFAULT_OUTPUT_STEM = SCRIPT_DIR / "plot31b_cpu_scaling_gap_only"
-DEFAULT_SUMMARY_CSV = SCRIPT_DIR / "plot31b_cpu_scaling_gap_only_summary.csv"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+DEFAULT_OUTPUT_STEM = RESULTS_DIR / "plot31b_cpu_scaling_gap_only"
+DEFAULT_SUMMARY_CSV = DERIVED_DIR / "plot31b_cpu_scaling_gap_only_summary.csv"
 
 plt.rcParams.update(
     {

@@ -13,18 +13,21 @@ import argparse
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
 
 parser = argparse.ArgumentParser(description="Bar + line plots grouped by image size")
 parser.add_argument("--location", type=str, default="WA")
 parser.add_argument("--dpi", type=int, default=300)
 args = parser.parse_args()
 
-results_dir = BASE_DIR / "results"
+results_dir = RESULTS_DIR
 results_dir.mkdir(exist_ok=True)
 
 # Load benchmarks
 benchmarks = pd.read_csv(
-    BASE_DIR / "benchmarks.csv",
+    DATA_DIR / "benchmarks.csv",
     header=None,
     names=[
         "im_size","n_times","n_chans","wall_time","wall_time_sec","n_rows","n_vis","n_idg",
@@ -185,7 +188,7 @@ pdu_kj = largest_df["tot_pdu_j"].values / 1000
 
 # Calculate carbon emissions (g CO2) = energy (kWh) × CI (kg CO2/kWh) × 1000 (g/kg)
 # Use location default (WA)
-locations_df = pd.read_csv(BASE_DIR / "locations.csv")
+locations_df = pd.read_csv(DATA_DIR / "locations.csv")
 ci_wa = locations_df[locations_df["id"] == "WA"]["ci"].values[0]  # kg CO2/kWh
 energy_kwh = pdu_kj / 3.6  # Convert kJ to kWh
 carbon_g = energy_kwh * ci_wa * 1000  # g CO2

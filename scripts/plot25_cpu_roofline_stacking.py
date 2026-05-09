@@ -29,9 +29,12 @@ CPU_BAR_COLOR = plt.cm.cividis(0.32)
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
 DEFAULT_INPUT_ROOT = REPO_ROOT.parent / "astroCAMP-bench" / "roofline_stacking"
-DEFAULT_OUTPUT_STEM = SCRIPT_DIR / "plot25_cpu_roofline_stacking"
-DEFAULT_SUMMARY_CSV = SCRIPT_DIR / "roofline_stacking_summary.csv"
+DEFAULT_OUTPUT_STEM = RESULTS_DIR / "plot25_cpu_roofline_stacking"
+DEFAULT_SUMMARY_CSV = DERIVED_DIR / "roofline_stacking_summary.csv"
 
 plt.rcParams.update(
     {

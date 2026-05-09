@@ -24,8 +24,11 @@ from plot26_gpu_cpu_roofline_comparison import (
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-OUTPUT_STEM = SCRIPT_DIR / "plot26_gpu_cpu_roofline_comparison_conference"
-SUMMARY_CSV = SCRIPT_DIR / "plot26_gpu_cpu_roofline_comparison_conference_summary.csv"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+OUTPUT_STEM = RESULTS_DIR / "plot26_gpu_cpu_roofline_comparison_conference"
+SUMMARY_CSV = DERIVED_DIR / "plot26_gpu_cpu_roofline_comparison_conference_summary.csv"
 
 ROOF_DRAM_COLOR = "#b22222"
 ROOF_COMPUTE_COLOR = "#1f4e79"

@@ -16,8 +16,11 @@ import pandas as pd
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 BASE_DIR = SCRIPT_DIR.parent
-CSV_PATH = BASE_DIR / "scripts" / "benchmarks_comprehensive.csv"
-OUTPUT_STEM = SCRIPT_DIR / "plot9b_flagship_energy_stack_throughput_facets_linear"
+DATA_DIR = BASE_DIR / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR / "results"
+CSV_PATH = BASE_DIR / "data" / "benchmarks_comprehensive.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot9b_flagship_energy_stack_throughput_facets_linear"
 
 MVIS_COLOR = "#d95f5f"
 

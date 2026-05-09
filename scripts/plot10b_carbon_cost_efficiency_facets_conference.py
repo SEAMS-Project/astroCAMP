@@ -19,9 +19,12 @@ from matplotlib.patches import Patch
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-CSV_PATH = SCRIPT_DIR / "benchmarks_comprehensive.csv"
-OUTPUT_STEM = SCRIPT_DIR / "plot10b_carbon_cost_efficiency_facets_conference"
-SUMMARY_CSV = SCRIPT_DIR / "plot10b_carbon_cost_efficiency_facets_conference_summary.csv"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+CSV_PATH = DATA_DIR / "benchmarks_comprehensive.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot10b_carbon_cost_efficiency_facets_conference"
+SUMMARY_CSV = DERIVED_DIR / "plot10b_carbon_cost_efficiency_facets_conference_summary.csv"
 
 CARBON_OPERATIONAL = "#d95f5f"
 CARBON_EMBODIED = "#5b8ecb"

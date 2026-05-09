@@ -14,8 +14,11 @@ import pandas as pd
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-INPUT_CSV = SCRIPT_DIR / "roofline_stacking_summary.csv"
-OUTPUT_STEM = SCRIPT_DIR / "plot25b_cpu_roofline_scaling_gap"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+INPUT_CSV = DERIVED_DIR / "roofline_stacking_summary.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot25b_cpu_roofline_scaling_gap"
 
 
 def main() -> int:

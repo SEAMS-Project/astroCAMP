@@ -29,12 +29,15 @@ output_path = results_dir / args.output
 print(f"Using lifetime of {args.lifetime} years for all machines.")
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
 
 # Generate results DataFrame using helper function for consistent calculations
 results_df = generate_results_dataframe(
-    benchmarks_csv_path=BASE_DIR / 'benchmarks.csv',
-    machines_csv_path=BASE_DIR / 'machines.csv',
-    locations_csv_path=BASE_DIR / 'locations.csv',
+    benchmarks_csv_path=DATA_DIR / 'benchmarks.csv',
+    machines_csv_path=DATA_DIR / 'machines.csv',
+    locations_csv_path=DATA_DIR / 'locations.csv',
     lifetime_years=args.lifetime,
     location_ids=['WA', 'SA']
 )
@@ -147,7 +150,7 @@ print("LOCATION COMPARISON ANALYSIS")
 print("="*80)
 
 # Load locations to get CI and EP
-locations_df = pd.read_csv(BASE_DIR / 'locations.csv').set_index('id')
+locations_df = pd.read_csv(DATA_DIR / 'locations.csv').set_index('id')
 wa_ci = locations_df.loc['WA', 'ci']
 sa_ci = locations_df.loc['SA', 'ci']
 wa_ep = locations_df.loc['WA', 'ep']

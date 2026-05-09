@@ -26,12 +26,14 @@ parser.add_argument('-l', '--lifetime', type=int, default=5, help='Lifetime in y
 args = parser.parse_args()
 
 BASE_DIR = Path(__file__).resolve().parent
-RESULTS_DIR = BASE_DIR / "results"
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
 RESULTS_DIR.mkdir(exist_ok=True)
 
 # Load benchmarks
 benchmarks_df = pd.read_csv(
-    BASE_DIR / "benchmarks.csv",
+    DATA_DIR / "benchmarks.csv",
     header=None,
     names=[
         "im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
@@ -53,8 +55,8 @@ Lifetime = args.lifetime * 365 * 24  # Lifetime in hours
 location_ids = ['WA']
 
 # Load locations and machines
-machines_df = pd.read_csv(BASE_DIR / 'machines.csv').set_index('machine')
-locations_df = pd.read_csv(BASE_DIR / 'locations.csv').set_index('id').reset_index()
+machines_df = pd.read_csv(DATA_DIR / 'machines.csv').set_index('machine')
+locations_df = pd.read_csv(DATA_DIR / 'locations.csv').set_index('id').reset_index()
 locations_df = locations_df[locations_df['id'].isin(location_ids)]
 
 # Calculate idle power from baseline

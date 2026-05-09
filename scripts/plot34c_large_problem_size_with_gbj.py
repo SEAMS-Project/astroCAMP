@@ -15,11 +15,14 @@ import pandas as pd
 
 
 BASE_DIR = Path(__file__).resolve().parent
-SIZE_CSV = BASE_DIR / "problem_size_memory_table.csv"
-GBJ_CSV = BASE_DIR / "plot32b_idg_data_movement_gb_per_joule_summary.csv"
-OUT_PNG = BASE_DIR / "plot34c_large_problem_size_with_gbj.png"
-OUT_PDF = BASE_DIR / "plot34c_large_problem_size_with_gbj.pdf"
-OUT_SUMMARY = BASE_DIR / "plot34c_large_problem_size_with_gbj_summary.csv"
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
+SIZE_CSV = DERIVED_DIR / "problem_size_memory_table.csv"
+GBJ_CSV = DERIVED_DIR / "plot32b_idg_data_movement_gb_per_joule_summary.csv"
+OUT_PNG = RESULTS_DIR / "plot34c_large_problem_size_with_gbj.png"
+OUT_PDF = RESULTS_DIR / "plot34c_large_problem_size_with_gbj.pdf"
+OUT_SUMMARY = DERIVED_DIR / "plot34c_large_problem_size_with_gbj_summary.csv"
 
 HOST_COLOR = plt.cm.cividis(0.26)
 DEVICE_COLOR = plt.cm.cividis(0.72)

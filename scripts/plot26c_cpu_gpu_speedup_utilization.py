@@ -24,9 +24,12 @@ import pandas as pd
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
-CPU_CSV = SCRIPT_DIR / "roofline_stacking_summary.csv"
-OUTPUT_STEM = SCRIPT_DIR / "plot26c_cpu_gpu_speedup_utilization"
-SUMMARY_CSV = SCRIPT_DIR / "plot26c_cpu_gpu_speedup_utilization_summary.csv"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+CPU_CSV = DERIVED_DIR / "roofline_stacking_summary.csv"
+OUTPUT_STEM = RESULTS_DIR / "plot26c_cpu_gpu_speedup_utilization"
+SUMMARY_CSV = DERIVED_DIR / "plot26c_cpu_gpu_speedup_utilization_summary.csv"
 
 CPU_COLOR = plt.cm.cividis(0.25)
 CPU_DARK = plt.cm.cividis(0.10)

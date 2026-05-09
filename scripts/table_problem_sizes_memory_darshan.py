@@ -18,13 +18,16 @@ import pandas as pd
 
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
 REPO_ROOT = BASE_DIR.parent
 BENCH_ROOT = REPO_ROOT.parent / "astroCAMP-bench"
 
-BENCHMARKS_CSV = BASE_DIR / "benchmarks.csv"
-OUT_CSV = BASE_DIR / "problem_size_memory_darshan_table.csv"
-OUT_MD = BASE_DIR / "problem_size_memory_darshan_table.md"
-OUT_TEX = BASE_DIR / "problem_size_memory_darshan_table.tex"
+BENCHMARKS_CSV = DATA_DIR / "benchmarks.csv"
+OUT_CSV = DERIVED_DIR / "problem_size_memory_darshan_table.csv"
+OUT_MD = RESULTS_DIR / "problem_size_memory_darshan_table.md"
+OUT_TEX = RESULTS_DIR / "problem_size_memory_darshan_table.tex"
 
 BENCHMARK_COLUMNS = [
     "im_size",

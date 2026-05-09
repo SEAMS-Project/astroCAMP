@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 
 # Resolve CSV path relative to repo structure
 BASE_DIR = Path(__file__).resolve().parents[1]
-CSV_PATH = BASE_DIR / "scripts" / "benchmarks_comprehensive.csv"
+DATA_DIR = BASE_DIR / "data"
+RESULTS_DIR = BASE_DIR / "results"
+CSV_PATH = DATA_DIR / "benchmarks_comprehensive.csv"
 
 # Load data
 df = pd.read_csv(CSV_PATH)
@@ -19,8 +21,8 @@ df["StaticFrac"] = df["Static Energy (Wh)"] / df["Energy (Wh)"]
 df["DynamicFrac"] = df["Dynamic Energy (Wh)"] / df["Energy (Wh)"]
 df["AvgPower_W"] = df["Power (W)"]  # already average power per run
 
-# Save outputs next to this script (results folder)
-out_dir = str(Path(__file__).resolve().parent)
+# Save outputs to results/ folder
+out_dir = str(RESULTS_DIR)
 os.makedirs(out_dir, exist_ok=True)
 
 def savefig(name):

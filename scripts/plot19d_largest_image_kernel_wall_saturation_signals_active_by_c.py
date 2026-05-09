@@ -15,9 +15,12 @@ import pandas as pd
 
 
 BASE_DIR = Path(__file__).resolve().parent
-INPUT_CSV = BASE_DIR / "kernel_breakdown_pasc25_16c_summary.csv"
-OUT_PNG = BASE_DIR / "plot19d_largest_image_kernel_wall_saturation_signals_active_by_c.png"
-OUT_PDF = BASE_DIR / "plot19d_largest_image_kernel_wall_saturation_signals_active_by_c.pdf"
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
+INPUT_CSV = DATA_DIR / "kernel_breakdown_pasc25_16c_summary.csv"
+OUT_PNG = RESULTS_DIR / "plot19d_largest_image_kernel_wall_saturation_signals_active_by_c.png"
+OUT_PDF = RESULTS_DIR / "plot19d_largest_image_kernel_wall_saturation_signals_active_by_c.pdf"
 
 
 def add_channel_group_guides(ax: plt.Axes, c_series: np.ndarray) -> None:

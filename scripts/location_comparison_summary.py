@@ -11,7 +11,11 @@ import argparse
 from pathlib import Path
 
 # Create results directory if it doesn't exist
-results_dir = Path('results')
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
+results_dir = RESULTS_DIR
 results_dir.mkdir(exist_ok=True)
 
 parser = argparse.ArgumentParser(description='Generate location comparison summary.')
@@ -23,7 +27,7 @@ args = parser.parse_args()
 output_path = results_dir / args.output
 
 # Read benchmarks
-benchmarks_df = pd.read_csv("benchmarks.csv",
+benchmarks_df = pd.read_csv(DATA_DIR / "benchmarks.csv",
                  header=None,
                  names=["im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
                         "n_idg", "idg_h_sec", "idg_h_watt", "idg_h_jou", "idg_d_sec", "idg_d_watt", "idg_d_jou",
@@ -35,8 +39,8 @@ benchmarks_df['time'] = benchmarks_df['wall_time_sec'] / 3600
 benchmarks_df['mvis'] = benchmarks_df['n_vis'] / 1e6
 
 # Read machine and location data
-machines_df = pd.read_csv('machines.csv').set_index('machine')
-locations_df = pd.read_csv('locations.csv').set_index('id')
+machines_df = pd.read_csv(DATA_DIR / 'machines.csv').set_index('machine')
+locations_df = pd.read_csv(DATA_DIR / 'locations.csv').set_index('id')
 
 # Calculate metrics
 results = []

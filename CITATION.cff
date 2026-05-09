@@ -10,7 +10,7 @@ version: "1.0.0"
 date-released: "2026-05-09"
 doi: 10.5281/zenodo.20093790
 url: "https://github.com/SEAMS-Project/astroCAMP"
-license: Apache-2.0
+license: CC-BY-4.0
 repository-code: "https://github.com/SEAMS-Project/astroCAMP"
 keywords:
   - radio astronomy

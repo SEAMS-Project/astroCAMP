@@ -15,10 +15,13 @@ import pandas as pd
 
 
 BASE_DIR = Path(__file__).resolve().parent
-SIZE_CSV = BASE_DIR / "problem_size_memory_table.csv"
-GBJ_CSV = BASE_DIR / "plot32b_idg_data_movement_gb_per_joule_summary.csv"
-OUT_PNG = BASE_DIR / "plot34f_largest_problem_size_with_gbj_by_c.png"
-OUT_PDF = BASE_DIR / "plot34f_largest_problem_size_with_gbj_by_c.pdf"
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
+SIZE_CSV = DERIVED_DIR / "problem_size_memory_table.csv"
+GBJ_CSV = DERIVED_DIR / "plot32b_idg_data_movement_gb_per_joule_summary.csv"
+OUT_PNG = RESULTS_DIR / "plot34f_largest_problem_size_with_gbj_by_c.png"
+OUT_PDF = RESULTS_DIR / "plot34f_largest_problem_size_with_gbj_by_c.pdf"
 
 INPUT_COLOR = "#8db8e8"
 OUTPUT_COLOR = "#f1c27d"

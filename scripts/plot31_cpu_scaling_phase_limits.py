@@ -34,9 +34,12 @@ from plot25_cpu_roofline_stacking import (
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
 DEFAULT_PROFILING_ROOT = REPO_ROOT.parent / "astroCAMP-bench" / "profiling_cpu"
-DEFAULT_OUTPUT_STEM = SCRIPT_DIR / "plot31_cpu_scaling_phase_limits"
-DEFAULT_SUMMARY_CSV = SCRIPT_DIR / "plot31_cpu_scaling_phase_limits_summary.csv"
+DEFAULT_OUTPUT_STEM = RESULTS_DIR / "plot31_cpu_scaling_phase_limits"
+DEFAULT_SUMMARY_CSV = DERIVED_DIR / "plot31_cpu_scaling_phase_limits_summary.csv"
 
 PHASE_COLORS = {
     "weights_grid_s": plt.cm.cividis(0.72),

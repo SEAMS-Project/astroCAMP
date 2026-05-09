@@ -32,8 +32,11 @@ from plot26c_cpu_gpu_speedup_utilization import GPU_TABLE2_TIMES, parse_elapsed_
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-DEFAULT_OUTPUT_STEM = SCRIPT_DIR / "plot25e_cpu_scalability_with_gpu_speedup"
-DEFAULT_SUMMARY_CSV = SCRIPT_DIR / "plot25e_cpu_scalability_with_gpu_speedup_summary.csv"
+DATA_DIR = SCRIPT_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = SCRIPT_DIR.parent / "results"
+DEFAULT_OUTPUT_STEM = RESULTS_DIR / "plot25e_cpu_scalability_with_gpu_speedup"
+DEFAULT_SUMMARY_CSV = DERIVED_DIR / "plot25e_cpu_scalability_with_gpu_speedup_summary.csv"
 GPU_BAR_COLOR = plt.cm.cividis(0.78)
 
 plt.rcParams.update(

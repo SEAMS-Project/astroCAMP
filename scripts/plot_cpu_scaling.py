@@ -9,6 +9,9 @@ from pathlib import Path
 import numpy as np
 
 BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR.parent / "data"
+DERIVED_DIR = DATA_DIR / "derived"
+RESULTS_DIR = BASE_DIR.parent / "results"
 
 plt.rcParams.update({
     "axes.grid": True,
@@ -197,8 +200,8 @@ def plot_time_speedup_dual(csv_path: Path, results_dir: Path) -> None:
 
 
 def main() -> None:
-    csv_path = BASE_DIR / "cpu_scaling.csv"
-    results_dir = BASE_DIR / "results"
+    csv_path = DATA_DIR / "cpu_scaling.csv"
+    results_dir = RESULTS_DIR
     plot_scaling(csv_path, results_dir)
     plot_time_speedup_dual(csv_path, results_dir)
 
