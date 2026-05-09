@@ -2,98 +2,79 @@
 """
 Generate a single figure showing the key takeaway:
 Universal efficiency advantage for large, balanced workloads across carbon, cost, and throughput metrics.
+Uses results DataFrame from cea.py logic for consistent calculations.
 """
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import argparse
 from pathlib import Path
+from results_dataframe import generate_results_dataframe
 
-# Load benchmarks
-data_path = Path(__file__).parent / "benchmarks.csv"
-locations_path = Path(__file__).parent / "locations.csv"
-benchmarks = pd.read_csv(
-    data_path,
-    header=None,
-    names=["im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
-           "n_idg",
-           "idg_h_sec", "idg_h_watt", "idg_h_jou",
-           "idg_d_sec", "idg_d_watt", "idg_d_jou",
-           "idg_grid_mvs",
-           "cpu_j",
-           "gpu0_j", "gpu1_j", "gpu2_j", "gpu3_j",
-           "tot_gpu_j", "tot_sys_j", "tot_pdu_j"]
+# Parse arguments
+parser = argparse.ArgumentParser(description='Generate key takeaway figure.')
+parser.add_argument('-l', '--lifetime', type=int, default=5, help='Lifetime in years (default: 5)')
+args = parser.parse_args()
+
+BASE_DIR = Path(__file__).resolve().parent
+
+# Generate results DataFrame using cea.py logic
+results_df = generate_results_dataframe(
+    BASE_DIR / "benchmarks.csv",
+    BASE_DIR / "machines.csv",
+    BASE_DIR / "locations.csv",
+    lifetime_years=args.lifetime,
+    location_ids=['SA', 'WA']
 )
 
-# Calculate metrics for all configurations
-benchmarks['mvis'] = benchmarks['n_vis'] / 1e6
+# Filter to largest image only and location-specific views
+largest_im = results_df['Image Size'].max()
+data_wa = results_df[(results_df['Image Size'] == largest_im) & (results_df['Location'] == 'WA')].copy()
+data_sa = results_df[(results_df['Image Size'] == largest_im) & (results_df['Location'] == 'SA')].copy()
 
-# Energy and cost calculations
-benchmarks['tot_sys_kj'] = benchmarks['tot_sys_j'] / 1000
-benchmarks['cpu_kj'] = benchmarks['cpu_j'] / 1000
-benchmarks['tot_gpu_kj'] = benchmarks['tot_gpu_j'] / 1000
-benchmarks['idg_h_kj'] = benchmarks['idg_h_jou'] / 1000
-benchmarks['idg_d_kj'] = benchmarks['idg_d_jou'] / 1000
-benchmarks['pdu_kj'] = benchmarks['tot_pdu_j'] / 1000
-
-benchmarks['carbon_kgco2'] = benchmarks['tot_sys_j'] / 1000 / 612  # 612 J/kgCO2
-benchmarks['cost_usd'] = benchmarks['pdu_kj'] * 0.15 / 3600 + 0.0001  # ~$0.15/kWh
-benchmarks['carbon_efficiency'] = benchmarks['mvis'] / benchmarks['carbon_kgco2']
-benchmarks['throughput'] = benchmarks['mvis'] / benchmarks['wall_time_sec']
-benchmarks['cost_efficiency'] = benchmarks['mvis'] / benchmarks['cost_usd']
-
-# Filter to largest image only
-largest_im = benchmarks['im_size'].max()
-data = benchmarks[benchmarks['im_size'] == largest_im].copy()
-
-# Load location parameters (South Africa, Western Australia)
-locations_df = pd.read_csv(locations_path)
-locations_df = locations_df[locations_df['id'].isin(['SA', 'WA'])]
-ci_map = dict(zip(locations_df['id'], locations_df['ci']))  # kgCO2/kWh
-ep_map = dict(zip(locations_df['id'], locations_df['ep']))  # $/kWh
-
-# Group by (n_times, n_chans) and calculate mean metrics
-grouped = data.groupby(['n_times', 'n_chans']).agg({
-    'carbon_efficiency': 'mean',
-    'throughput': 'mean',
-    'cost_efficiency': 'mean',
-    'wall_time_sec': 'mean',
-    'mvis': 'mean',
-    'pdu_kj': 'mean'
+# Group by (n_times, n_chans) for WA
+grouped_wa = data_wa.groupby(['Timesteps', 'Channels']).agg({
+    'Mvis/kgCO2': 'mean',
+    'Mvis/h': 'mean',
+    'Mvis/$': 'mean',
+    'Time (s)': 'mean',
+    'Mvis': 'mean',
 }).reset_index()
 
-# Convert to integers
-grouped['n_times'] = grouped['n_times'].astype(int)
-grouped['n_chans'] = grouped['n_chans'].astype(int)
+grouped_wa['Timesteps'] = grouped_wa['Timesteps'].astype(int)
+grouped_wa['Channels'] = grouped_wa['Channels'].astype(int)
 
 # Normalize metrics for visualization (0-1 scale for fair comparison)
-carbon_min, carbon_max = grouped['carbon_efficiency'].min(), grouped['carbon_efficiency'].max()
-throughput_min, throughput_max = grouped['throughput'].min(), grouped['throughput'].max()
-cost_min, cost_max = grouped['cost_efficiency'].min(), grouped['cost_efficiency'].max()
+carbon_min, carbon_max = grouped_wa['Mvis/kgCO2'].min(), grouped_wa['Mvis/kgCO2'].max()
+throughput_min, throughput_max = grouped_wa['Mvis/h'].min(), grouped_wa['Mvis/h'].max()
+cost_min, cost_max = grouped_wa['Mvis/$'].min(), grouped_wa['Mvis/$'].max()
 
-grouped['carbon_norm'] = (grouped['carbon_efficiency'] - carbon_min) / (carbon_max - carbon_min)
-grouped['throughput_norm'] = (grouped['throughput'] - throughput_min) / (throughput_max - throughput_min)
-grouped['cost_norm'] = (grouped['cost_efficiency'] - cost_min) / (cost_max - cost_min)
+grouped_wa['carbon_norm'] = (grouped_wa['Mvis/kgCO2'] - carbon_min) / (carbon_max - carbon_min)
+grouped_wa['throughput_norm'] = (grouped_wa['Mvis/h'] - throughput_min) / (throughput_max - throughput_min)
+grouped_wa['cost_norm'] = (grouped_wa['Mvis/$'] - cost_min) / (cost_max - cost_min)
 
 # Calculate composite score (average of normalized metrics)
-grouped['composite'] = (grouped['carbon_norm'] + grouped['throughput_norm'] + grouped['cost_norm']) / 3
+grouped_wa['composite'] = (grouped_wa['carbon_norm'] + grouped_wa['throughput_norm'] + grouped_wa['cost_norm']) / 3
 
-# Location-specific carbon and cost efficiencies
-energy_kwh = grouped['pdu_kj'] / 3600.0  # kWh
-grouped['carbon_eff_sa'] = grouped['mvis'] / (energy_kwh * ci_map.get('SA', 1.0))
-grouped['carbon_eff_wa'] = grouped['mvis'] / (energy_kwh * ci_map.get('WA', 1.0))
-grouped['cost_eff_sa'] = grouped['mvis'] / (energy_kwh * ep_map.get('SA', 1.0))
-grouped['cost_eff_wa'] = grouped['mvis'] / (energy_kwh * ep_map.get('WA', 1.0))
+# Location-specific metrics from results_df
+grouped_wa['carbon_eff_sa'] = data_sa.groupby(['Timesteps', 'Channels'])['Mvis/kgCO2'].mean().values if len(data_sa) > 0 else grouped_wa['Mvis/kgCO2']
+grouped_wa['carbon_eff_wa'] = grouped_wa['Mvis/kgCO2']
+grouped_wa['cost_eff_sa'] = data_sa.groupby(['Timesteps', 'Channels'])['Mvis/$'].mean().values if len(data_sa) > 0 else grouped_wa['Mvis/$']
+grouped_wa['cost_eff_wa'] = grouped_wa['Mvis/$']
+
+# Rename for backwards compatibility
+grouped = grouped_wa
 
 print("\n" + "="*80)
 print(f"KEY TAKEAWAY VISUALIZATION - Image {largest_im}×{largest_im}")
 print("="*80)
 print("\nComposite Efficiency Score (0=worst, 1=best):")
-print(grouped[['n_times', 'n_chans', 'composite', 'carbon_efficiency', 'throughput', 'cost_efficiency']].to_string(index=False))
+print(grouped[['Timesteps', 'Channels', 'composite', 'Mvis/kgCO2', 'Mvis/h', 'Mvis/$']].to_string(index=False))
 
 # Create figure with four subplots
-fig = plt.figure(figsize=(16, 10.5))
-gs = fig.add_gridspec(2, 2, width_ratios=[1.15, 0.85], hspace=0.35, wspace=0.20)
+fig = plt.figure(figsize=(16, 11.5))
+gs = fig.add_gridspec(2, 2, width_ratios=[1.15, 0.85], hspace=0.38, wspace=0.20)
 
 # Color map for bars
 def get_color(value):
@@ -108,7 +89,7 @@ def get_color(value):
 
 # Shared y-limits for consistency
 carbon_ylim = (0, max(grouped['carbon_eff_sa'].max(), grouped['carbon_eff_wa'].max()) * 1.1)
-throughput_ylim = (0, throughput_max * 1.1)
+throughput_ylim = (0, grouped['Mvis/h'].max() * 1.1)
 cost_ylim = (0, max(grouped['cost_eff_sa'].max(), grouped['cost_eff_wa'].max()) * 1.1)
 carbon_offset = carbon_ylim[1] * 0.012
 throughput_offset = throughput_ylim[1] * 0.012
@@ -116,13 +97,13 @@ cost_offset = cost_ylim[1] * 0.012
 
 # Plot 1: Carbon Efficiency
 ax1 = fig.add_subplot(gs[0, 0])
-configs = [f"{int(r['n_times'])},{int(r['n_chans'])}" for _, r in grouped.iterrows()]
+configs = [f"{int(r['Timesteps'])},{int(r['Channels'])}" for _, r in grouped.iterrows()]
 x = np.arange(len(grouped))
 width = 0.4
 bars1_sa = ax1.bar(x - width/2, grouped['carbon_eff_sa'], width, label='South Africa', color='#1a9850', edgecolor='black', linewidth=0.7)
 bars1_wa = ax1.bar(x + width/2, grouped['carbon_eff_wa'], width, label='Western Australia', color='#91bfdb', edgecolor='black', linewidth=0.7)
 ax1.set_xticks(x)
-ax1.set_xticklabels(configs, rotation=60, ha='right', fontsize=12)
+ax1.set_xticklabels(configs, rotation=90, ha='right', fontsize=10)
 ax1.set_ylabel('Mvis/kgCO₂', fontsize=12, fontweight='bold')
 ax1.set_title('Carbon Efficiency by Location', fontsize=13, fontweight='bold', pad=6)
 ax1.set_ylim(carbon_ylim)
@@ -139,9 +120,9 @@ for bars in (bars1_sa, bars1_wa):
 # Plot 2: Throughput
 ax2 = fig.add_subplot(gs[0, 1])
 colors_throughput = [get_color(x) for x in grouped['throughput_norm']]
-bars2 = ax2.bar(range(len(grouped)), grouped['throughput'], color=colors_throughput, edgecolor='black', linewidth=0.8)
+bars2 = ax2.bar(range(len(grouped)), grouped['Mvis/h'], color=colors_throughput, edgecolor='black', linewidth=0.8)
 ax2.set_xticks(range(len(grouped)))
-ax2.set_xticklabels(configs, rotation=60, ha='right', fontsize=12)
+ax2.set_xticklabels(configs, rotation=90, ha='right', fontsize=10)
 ax2.set_ylabel('Mvis/s', fontsize=12, fontweight='bold')
 ax2.set_title('Throughput', fontsize=13, fontweight='bold', pad=6)
 ax2.set_ylim(throughput_ylim)
@@ -158,7 +139,7 @@ ax3 = fig.add_subplot(gs[1, 0])
 bars3_sa = ax3.bar(x - width/2, grouped['cost_eff_sa'], width, label='South Africa', color='#1a9850', edgecolor='black', linewidth=0.7)
 bars3_wa = ax3.bar(x + width/2, grouped['cost_eff_wa'], width, label='Western Australia', color='#91bfdb', edgecolor='black', linewidth=0.7)
 ax3.set_xticks(x)
-ax3.set_xticklabels(configs, rotation=60, ha='right', fontsize=12)
+ax3.set_xticklabels(configs, rotation=90, ha='right', fontsize=10)
 ax3.set_ylabel('Mvis/$', fontsize=12, fontweight='bold')
 ax3.set_title('Cost Efficiency by Location', fontsize=13, fontweight='bold', pad=6)
 ax3.set_ylim(cost_ylim)
@@ -201,10 +182,10 @@ legend_elements = [
     Patch(facecolor='#91bfdb', edgecolor='black', label='Light Blue (50-75%): Good'),
     Patch(facecolor='#1a9850', edgecolor='black', label='Green (75-100%): Excellent'),
 ]
-fig.legend(handles=legend_elements, loc='lower center', ncol=4, fontsize=11,
+fig.legend(handles=legend_elements, loc='lower center', ncol=4, fontsize=10,
           bbox_to_anchor=(0.5, -0.01), frameon=True, framealpha=0.95)
 
-plt.tight_layout(rect=[0, 0.08, 1, 0.965])
+plt.tight_layout(rect=[0, 0.10, 1, 0.965])
 
 # Save figure
 output_dir = Path(__file__).parent / "results"
@@ -224,22 +205,22 @@ worst_idx = grouped['composite'].idxmin()
 best_row = grouped.loc[best_idx]
 worst_row = grouped.loc[worst_idx]
 
-print(f"\nBest Configuration: n_times={int(best_row['n_times'])}, n_chans={int(best_row['n_chans'])}")
-print(f"  → Carbon Efficiency: {best_row['carbon_efficiency']:,.0f} Mvis/kgCO2")
-print(f"  → Throughput: {best_row['throughput']:.2f} Mvis/s")
-print(f"  → Cost Efficiency: {best_row['cost_efficiency']:,.0f} Mvis/$")
+print(f"\nBest Configuration: n_times={int(best_row['Timesteps'])}, n_chans={int(best_row['Channels'])}")
+print(f"  → Carbon Efficiency: {best_row['Mvis/kgCO2']:,.0f} Mvis/kgCO2")
+print(f"  → Throughput: {best_row['Mvis/h']:.2f} Mvis/h")
+print(f"  → Cost Efficiency: {best_row['Mvis/$']:,.0f} Mvis/$")
 print(f"  → Composite Score: {best_row['composite']:.3f}/1.0")
 
-print(f"\nWorst Configuration: n_times={int(worst_row['n_times'])}, n_chans={int(worst_row['n_chans'])}")
-print(f"  → Carbon Efficiency: {worst_row['carbon_efficiency']:,.0f} Mvis/kgCO2")
-print(f"  → Throughput: {worst_row['throughput']:.2f} Mvis/s")
-print(f"  → Cost Efficiency: {worst_row['cost_efficiency']:,.0f} Mvis/$")
+print(f"\nWorst Configuration: n_times={int(worst_row['Timesteps'])}, n_chans={int(worst_row['Channels'])}")
+print(f"  → Carbon Efficiency: {worst_row['Mvis/kgCO2']:,.0f} Mvis/kgCO2")
+print(f"  → Throughput: {worst_row['Mvis/h']:.2f} Mvis/h")
+print(f"  → Cost Efficiency: {worst_row['Mvis/$']:,.0f} Mvis/$")
 print(f"  → Composite Score: {worst_row['composite']:.3f}/1.0")
 
 # Calculate gain factors
-carbon_gain = best_row['carbon_efficiency'] / worst_row['carbon_efficiency']
-throughput_gain = best_row['throughput'] / worst_row['throughput']
-cost_gain = best_row['cost_efficiency'] / worst_row['cost_efficiency']
+carbon_gain = best_row['Mvis/kgCO2'] / worst_row['Mvis/kgCO2']
+throughput_gain = best_row['Mvis/h'] / worst_row['Mvis/h']
+cost_gain = best_row['Mvis/$'] / worst_row['Mvis/$']
 composite_gain = best_row['composite'] / worst_row['composite']
 
 print(f"\nEfficiency Gain (Best / Worst):")
@@ -249,12 +230,12 @@ print(f"  → Cost: {cost_gain:.0f}× improvement")
 print(f"  → Composite: {composite_gain:.2f}× improvement")
 
 # Channel vs Time scaling
-config_1_1 = grouped[(grouped['n_times'] == 1) & (grouped['n_chans'] == 1)].iloc[0]
-config_128_1 = grouped[(grouped['n_times'] == 128) & (grouped['n_chans'] == 1)].iloc[0]
-config_1_128 = grouped[(grouped['n_times'] == 1) & (grouped['n_chans'] == 128)].iloc[0]
+config_1_1 = grouped[(grouped['Timesteps'] == 1) & (grouped['Channels'] == 1)].iloc[0]
+config_128_1 = grouped[(grouped['Timesteps'] == 128) & (grouped['Channels'] == 1)].iloc[0]
+config_1_128 = grouped[(grouped['Timesteps'] == 1) & (grouped['Channels'] == 128)].iloc[0]
 
-time_gain = config_128_1['carbon_efficiency'] / config_1_1['carbon_efficiency']
-channel_gain = config_1_128['carbon_efficiency'] / config_1_1['carbon_efficiency']
+time_gain = config_128_1['Mvis/kgCO2'] / config_1_1['Mvis/kgCO2']
+channel_gain = config_1_128['Mvis/kgCO2'] / config_1_1['Mvis/kgCO2']
 
 print(f"\nScaling Analysis (Carbon Efficiency):")
 print(f"  → Time scaling (1→128 times, 1 channel): {time_gain:.0f}× improvement")

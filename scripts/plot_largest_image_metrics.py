@@ -11,6 +11,7 @@ import matplotlib.colors as mcolors
 from matplotlib.colors import LogNorm
 import argparse
 from pathlib import Path
+from results_dataframe import generate_results_dataframe
 
 # Create results directory if it doesn't exist
 results_dir = Path('results')
@@ -29,72 +30,21 @@ output_path = results_dir / args.output
 
 print(f"Using lifetime of {args.lifetime} years for all machines.")
 
-# Parameters (matching cea.py)
-Lifetime = args.lifetime * 365 * 24  # Lifetime in hours
-idle_cpu_watt = 277.75 / 4  # Idle CPU power consumption in watts
-idle_gpu_watt = 65.44       # Idle GPU power consumption in watts
-location_ids = ['WA']
+# Generate results DataFrame using helper function
+results_df = generate_results_dataframe(
+    benchmarks_csv_path='benchmarks.csv',
+    machines_csv_path='machines.csv',
+    locations_csv_path='locations.csv',
+    lifetime_years=args.lifetime,
+    location_ids=['WA']
+)
 
-# Read benchmarks
-benchmarks_df = pd.read_csv("benchmarks.csv",
-                 header=None,
-                 names=["im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
-                        "n_idg",
-                        "idg_h_sec", "idg_h_watt", "idg_h_jou",
-                        "idg_d_sec", "idg_d_watt", "idg_d_jou",
-                        "idg_grid_mvs",
-                        "cpu_j",
-                        "gpu0_j", "gpu1_j", "gpu2_j", "gpu3_j",
-                        "tot_gpu_j", "tot_sys_j", "tot_pdu_j"])
+# Filter to just WA location
+results_df = results_df[results_df['Location'] == 'WA'].copy()
 
-benchmarks_df['machine'] = 'R675 V3 + 4xH100 96GB'
-benchmarks_df['time'] = benchmarks_df['wall_time_sec']
-benchmarks_df['mvis'] = benchmarks_df['n_vis'] / 1e6
-
-# Read machine and location data
-machines_df = pd.read_csv('machines.csv').set_index('machine')
-locations_df = pd.read_csv('locations.csv').set_index('id').reset_index()
-locations_df = locations_df[locations_df['id'].isin(location_ids)]
-
-# Calculate metrics for each benchmark
-results = []
-for _, benchmark in benchmarks_df.iterrows():
-    machine_name = benchmark['machine']
-    time = benchmark['time'] / 3600  # from seconds to hours
-    energy_static = (idle_cpu_watt + idle_gpu_watt) * time / 1000  # Static energy in kWh
-    energy_dynamic = (benchmark['gpu0_j'] + benchmark['cpu_j']) / 3.6e6  # Dynamic energy in kWh
-    energy = energy_dynamic + energy_static  # Total energy in kWh
-    
-    machine_cost = machines_df.loc[machine_name, 'cost']  # in $
-    machine_embodied = machines_df.loc[machine_name, 'embodied']  # in kg CO2
-    
-    for _, location in locations_df.iterrows():
-        location_id = location['id']
-        ci = location['ci']  # Carbon intensity in kg CO2/kWh
-        ep = location['ep']  # Electricity price in $/kWh
-        
-        operational_energy_cost = energy * ep  # in $
-        operational_carbon = energy * ci  # in kg CO2
-        capital_cost = machine_cost * (time / Lifetime)
-        capital_carbon = machine_embodied * (time / Lifetime)
-        mvis = benchmark['mvis']
-        
-        results.append({
-            'Image Size': benchmark['im_size'],
-            'Timesteps': benchmark['n_times'],
-            'Channels': benchmark['n_chans'],
-            'Mvis': mvis,
-            'Time (s)': time * 3600,
-            'Energy (kWh)': energy,
-            'Carbon (kgCO2)': operational_carbon + capital_carbon,
-            'Cost ($)': operational_energy_cost + capital_cost,
-            'Mvis/s': mvis / (time * 3600),
-            'Mvis/kWh': mvis / energy,
-            'Mvis/kgCO2': mvis / (operational_carbon + capital_carbon),
-            'Mvis/$': mvis / (operational_energy_cost + capital_cost),
-        })
-
-results_df = pd.DataFrame(results)
+# Calculate Mvis/s (throughput) if not present
+if 'Mvis/s' not in results_df.columns:
+    results_df['Mvis/s'] = results_df['Mvis'] / (results_df['Time (s)'] / 3600)
 
 # Define metric labels and column names
 metric_info = {
@@ -136,7 +86,7 @@ largest_subset = results_df[results_df['Image Size'] == largest_im_size]
 
 # Create figure with 2x2 grid for all metrics
 fig, axes = plt.subplots(2, 2, figsize=(10, 9))
-fig.suptitle(f'All Metrics for Image Size {largest_im_size}', 
+fig.suptitle(f'All Metrics for Image Size {int(largest_im_size)}', 
              fontsize=14, fontweight='bold', y=0.995)
 
 axes = axes.flatten()
@@ -145,6 +95,7 @@ colorbars = []
 
 for plot_idx, current_metric in enumerate(metrics_list):
     ax = axes[plot_idx]
+    
     metric_col = metric_info[current_metric]['column']
     metric_title = metric_info[current_metric]['title']
     
@@ -156,20 +107,19 @@ for plot_idx, current_metric in enumerate(metrics_list):
         aggfunc='mean'
     )
     
-    # Find min/max for this metric
+    if heatmap_data.empty:
+        continue
+    
+    # Find global min/max for consistent scale
     vmin = heatmap_data.min().min()
     vmax = heatmap_data.max().max()
-    
-    print(f"\n{metric_col} range: {vmin:.4f} to {vmax:.4f}")
     
     # Determine if we should use log scale
     use_log = (vmax / vmin) > 10
     if use_log:
         norm = LogNorm(vmin=vmin, vmax=vmax)
-        print(f"Using log scale for color mapping (ratio: {vmax/vmin:.2f})")
     else:
         norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
-        print(f"Using linear scale for color mapping")
     
     # Create heatmap
     im = ax.imshow(heatmap_data.values, cmap='RdYlGn', aspect='auto', 
@@ -178,12 +128,12 @@ for plot_idx, current_metric in enumerate(metrics_list):
     # Set ticks and labels
     ax.set_xticks(range(len(n_chans_vals)))
     ax.set_yticks(range(len(n_times_vals)))
-    ax.set_xticklabels(n_chans_vals, fontsize=9)
-    ax.set_yticklabels(n_times_vals, fontsize=9)
+    ax.set_xticklabels(n_chans_vals, fontsize=10)
+    ax.set_yticklabels(n_times_vals, fontsize=10)
     
-    ax.set_xlabel('Channels', fontsize=10, fontweight='bold')
-    ax.set_ylabel('Time Steps', fontsize=10, fontweight='bold')
-    ax.set_title(metric_title, fontsize=11, fontweight='bold')
+    ax.set_xlabel('Channels', fontsize=11, fontweight='bold')
+    ax.set_ylabel('Timesteps', fontsize=11, fontweight='bold')
+    ax.set_title(metric_info[current_metric]['title'], fontsize=12, fontweight='bold')
     
     # Add grid
     ax.set_xticks(np.arange(len(n_chans_vals)) - 0.5, minor=True)
@@ -197,10 +147,7 @@ for plot_idx, current_metric in enumerate(metrics_list):
             if n_times in heatmap_data.index and n_chans in heatmap_data.columns:
                 value = heatmap_data.loc[n_times, n_chans]
                 
-                # Use black text for all cells
-                text_color = 'black'
-                
-                # Format the main value
+                # Format the value
                 if value >= 100:
                     value_text = f'{value:.0f}'
                 elif value >= 10:
@@ -211,39 +158,36 @@ for plot_idx, current_metric in enumerate(metrics_list):
                     value_text = f'{value:.3f}'
                 
                 ax.text(j, i, value_text, ha='center', va='center', 
-                       color=text_color, fontsize=9, fontweight='bold')
+                       color='black', fontsize=10, fontweight='bold')
     
-    # Add individual colorbar for each subplot
-    cbar = plt.colorbar(im, ax=ax, orientation='vertical', pad=0.02, fraction=0.046)
-    cbar.set_label(metric_info[current_metric]['short'], fontsize=8, fontweight='bold')
-    cbar.ax.tick_params(labelsize=7)
+    # Add colorbar for this subplot
+    cbar = plt.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label(metric_info[current_metric]['short'], fontsize=9, fontweight='bold')
+    cbar.ax.tick_params(labelsize=8)
 
-# Overall layout
 plt.tight_layout()
 
 # Save figure
 plt.savefig(output_path, dpi=args.dpi, bbox_inches='tight')
 print(f"\nFigure saved to: {output_path}")
 
-# Print summary statistics for the largest image size
+# Print analysis
 print("\n" + "="*80)
-print(f"SUMMARY STATISTICS FOR IMAGE SIZE {largest_im_size}")
+print(f"ANALYSIS FOR LARGEST IMAGE SIZE ({int(largest_im_size)})")
 print("="*80)
 
 for current_metric in metrics_list:
     metric_col = metric_info[current_metric]['column']
-    print(f"\n{metric_col}:")
-    print(f"  Min: {largest_subset[metric_col].min():.4f}")
-    print(f"  Max: {largest_subset[metric_col].max():.4f}")
+    print(f"\n{metric_info[current_metric]['title']}:")
+    print(f"  Range: {largest_subset[metric_col].min():.4f} to {largest_subset[metric_col].max():.4f}")
     print(f"  Mean: {largest_subset[metric_col].mean():.4f}")
-    print(f"  Median: {largest_subset[metric_col].median():.4f}")
     
-    # Find best and worst for each metric
-    best_config = largest_subset.loc[largest_subset[metric_col].idxmax()]
-    worst_config = largest_subset.loc[largest_subset[metric_col].idxmin()]
+    # Find best and worst configurations
+    best_idx = largest_subset[metric_col].idxmax()
+    worst_idx = largest_subset[metric_col].idxmin()
+    best_row = largest_subset.loc[best_idx]
+    worst_row = largest_subset.loc[worst_idx]
     
-    print(f"  Best: n_times={int(best_config['Timesteps'])}, n_chans={int(best_config['Channels'])}, value={best_config[metric_col]:.4f}")
-    print(f"  Worst: n_times={int(worst_config['Timesteps'])}, n_chans={int(worst_config['Channels'])}, value={worst_config[metric_col]:.4f}")
-    print(f"  Ratio (best/worst): {best_config[metric_col] / worst_config[metric_col]:.2f}x")
-
-print("\n" + "="*80)
+    print(f"  Best: t={int(best_row['Timesteps'])} c={int(best_row['Channels'])}, value={best_row[metric_col]:.4f}")
+    print(f"  Worst: t={int(worst_row['Timesteps'])} c={int(worst_row['Channels'])}, value={worst_row[metric_col]:.4f}")
+    print(f"  Ratio (Best/Worst): {best_row[metric_col] / worst_row[metric_col]:.2f}x")

@@ -1,0 +1,16 @@
+category,label,duration_s,sample_count,median_throughput_gflops,median_bandwidth_gbs,median_time_s,throughput_gflops,bandwidth_gbs,arithmetic_intensity_flop_per_byte
+cpu_hotspot,StartInversion,8.132606,,,,,,,
+cpu_hotspot,Average beam,7.55955,,,,,,,
+cpu_hotspot,Weight cache,0.52507,,,,,,,
+cpu_hotspot,weights->Grid,0.331836,,,,,,,
+cpu_hotspot,Min/max w and beam,0.158706,,,,,,,
+cpu_hotspot,Map rows,0.039048,,,,,,,
+cpu_hotspot,weights->FinishGridding,0.011173,,,,,,,
+gpu_hotspot,device,0.10368,1.0,,,,,,
+gpu_hotspot,host,0.099702,1.0,,,,,,
+gpu_hotspot,wtiling,0.08432200000000001,2.0,,,,,,
+gpu_hotspot,average-beam,0.051490499999999995,2.0,,,,,,
+gpu_hotspot,gridder,0.011684,1.0,2784.75,988.85,,,,
+gpu_hotspot,sub-fft,0.00094604,1.0,19513.87,7805.55,,,,
+gpu_roofline,gridder,,1.0,,,0.011684,2784.75,988.85,2.81615007331749
+gpu_roofline,sub-fft,,1.0,,,0.00094604,19513.87,7805.55,2.499999359430149

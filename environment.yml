@@ -1,0 +1,16 @@
+name: astrocamp
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python>=3.10
+  - matplotlib>=3.8
+  - numpy>=2.0
+  - pandas>=2.0
+  - pillow>=10.0
+  - jupyter
+  - ipython>=8.0
+  - ipykernel>=6.0
+  - pip
+  - pip:
+      - mplcursors>=0.5

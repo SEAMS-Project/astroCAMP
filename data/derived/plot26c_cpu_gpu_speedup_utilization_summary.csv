@@ -1,0 +1,9 @@
+series,threads,elapsed_s,speedup,arithmetic_intensity_flop_per_byte,throughput_gflops,bandwidth_gbs,utilization_pct
+CPU-only application,1,11590.0,1.0,45.7854,55.0707,1.2028,1.9748
+CPU-only application,16,4108.0,2.8213242453748784,43.8069,332.118,7.5814,11.5206
+CPU-only application,32,4090.0,2.8337408312958434,45.6456,388.8594,8.5191,13.9036
+CPU-only application,64,4086.0,2.836514929025942,46.7888,418.8391,8.9517,18.0618
+GPU-accelerated execution (host-side summary),1,4167.0,1.0,0.05560415919684474,0.3877,6.9725,2.0872
+GPU-accelerated execution (host-side summary),16,4197.0,0.9928520371694067,0.05246917850866876,0.3792,7.2271,2.5937
+GPU-accelerated execution (host-side summary),32,4154.0,1.003129513721714,0.051931577935806265,0.4053,7.8045,2.1071
+GPU-accelerated execution (host-side summary),64,4125.0,1.0101818181818183,0.05150730534492325,0.3899,7.5698,2.2229

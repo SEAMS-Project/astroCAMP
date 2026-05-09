@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 from pathlib import Path
+from results_dataframe import generate_results_dataframe
 
 # Create results directory if it doesn't exist
 results_dir = Path('results')
@@ -24,96 +25,27 @@ parser.add_argument('--dpi', type=int, default=300, help='DPI for output image (
 args = parser.parse_args()
 
 # Ensure output path is in results directory
-output_path = results_dir / args.outputprint(f"Using lifetime of {args.lifetime} years for all machines.")
+output_path = results_dir / args.output
+print(f"Using lifetime of {args.lifetime} years for all machines.")
 
-# Parameters (matching cea.py)
-Lifetime = args.lifetime * 365 * 24  # Lifetime in hours
-idle_cpu_watt = 277.75 / 4  # Idle CPU power consumption in watts
-idle_gpu_watt = 65.44       # Idle GPU power consumption in watts
-location_ids = ['WA', 'SA']  # Western Australia and South Africa
+BASE_DIR = Path(__file__).resolve().parent
 
-# Read benchmarks
-benchmarks_df = pd.read_csv("benchmarks.csv",
-                 header=None,
-                 names=["im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
-                        "n_idg",
-                        "idg_h_sec", "idg_h_watt", "idg_h_jou",
-                        "idg_d_sec", "idg_d_watt", "idg_d_jou",
-                        "idg_grid_mvs",
-                        "cpu_j",
-                        "gpu0_j", "gpu1_j", "gpu2_j", "gpu3_j",
-                        "tot_gpu_j", "tot_sys_j", "tot_pdu_j"])
+# Generate results DataFrame using helper function for consistent calculations
+results_df = generate_results_dataframe(
+    benchmarks_csv_path=BASE_DIR / 'benchmarks.csv',
+    machines_csv_path=BASE_DIR / 'machines.csv',
+    locations_csv_path=BASE_DIR / 'locations.csv',
+    lifetime_years=args.lifetime,
+    location_ids=['WA', 'SA']
+)
 
-benchmarks_df['machine'] = 'R675 V3 + 4xH100 96GB'
-benchmarks_df['time'] = benchmarks_df['wall_time_sec']
-benchmarks_df['mvis'] = benchmarks_df['n_vis'] / 1e6
-
-# Read machine and location data
-machines_df = pd.read_csv('machines.csv').set_index('machine')
-locations_df = pd.read_csv('locations.csv').set_index('id').reset_index()
-locations_df = locations_df[locations_df['id'].isin(location_ids)]
-
-# Calculate metrics for each benchmark
-results = []
-for _, benchmark in benchmarks_df.iterrows():
-    machine_name = benchmark['machine']
-    time = benchmark['time'] / 3600  # from seconds to hours
-    energy_static = (idle_cpu_watt + idle_gpu_watt) * time / 1000  # Static energy in kWh
-    energy_dynamic = (benchmark['gpu0_j'] + benchmark['cpu_j']) / 3.6e6  # Dynamic energy in kWh
-    energy = energy_dynamic + energy_static  # Total energy in kWh
-    
-    machine_cost = machines_df.loc[machine_name, 'cost']  # in $
-    machine_embodied = machines_df.loc[machine_name, 'embodied']  # in kg CO2
-    
-    for _, location in locations_df.iterrows():
-        location_id = location['id']
-        ci = location['ci']  # Carbon intensity in kg CO2/kWh
-        ep = location['ep']  # Electricity price in $/kWh
-        
-        operational_energy_cost = energy * ep  # in $
-        operational_carbon = energy * ci  # in kg CO2
-        capital_cost = machine_cost * (time / Lifetime)
-        capital_carbon = machine_embodied * (time / Lifetime)
-        mvis = benchmark['mvis']
-        
-        results.append({
-            'Image Size': benchmark['im_size'],
-            'Timesteps': benchmark['n_times'],
-            'Channels': benchmark['n_chans'],
-            'Benchmark': f"{int(benchmark['im_size'])}_{int(benchmark['n_times'])}_{int(benchmark['n_chans'])}",
-            'Location': location_id,
-            'CI': ci,
-            'EP': ep,
-            'Mvis': mvis,
-            'Time (s)': time * 3600,
-            'Energy Dynamic (kWh)': energy_dynamic,
-            'Energy Static (kWh)': energy_static,
-            'Energy (kWh)': energy,
-            'Operational Carbon (kg CO2)': operational_carbon,
-            'Embodied Carbon (kg CO2)': capital_carbon,
-            'Total Carbon (kg CO2)': operational_carbon + capital_carbon,
-            'Operational Cost ($)': operational_energy_cost,
-            'Capital Cost ($)': capital_cost,
-            'Total Cost ($)': operational_energy_cost + capital_cost,
-        })
-
-results_df = pd.DataFrame(results)
-
-# Calculate percentages
-results_df['Operational Carbon (%)'] = (results_df['Operational Carbon (kg CO2)'] / results_df['Total Carbon (kg CO2)'] * 100)
-results_df['Embodied Carbon (%)'] = (results_df['Embodied Carbon (kg CO2)'] / results_df['Total Carbon (kg CO2)'] * 100)
+# Calculate percentages for breakdown
+results_df['Operational Carbon (%)'] = (results_df['Operational Carbon (g CO2)'] / results_df['Total Carbon (g CO2)'] * 100)
+results_df['Embodied Carbon (%)'] = (results_df['Embodied Carbon (g CO2)'] / results_df['Total Carbon (g CO2)'] * 100)
 results_df['Operational Cost (%)'] = (results_df['Operational Cost ($)'] / results_df['Total Cost ($)'] * 100)
 results_df['Capital Cost (%)'] = (results_df['Capital Cost ($)'] / results_df['Total Cost ($)'] * 100)
-results_df['Dynamic Power (%)'] = (results_df['Energy Dynamic (kWh)'] / results_df['Energy (kWh)'] * 100)
-results_df['Static Power (%)'] = (results_df['Energy Static (kWh)'] / results_df['Energy (kWh)'] * 100)
-
-# Print location parameters
-print("\nLocation Parameters:")
-for location_id in location_ids:
-    loc_data = results_df[results_df['Location'] == location_id].iloc[0]
-    ci = loc_data['CI']
-    ep = loc_data['EP']
-    print(f"  {location_id}: CI = {ci} kg CO2/kWh, EP = ${ep}/kWh")
+results_df['Dynamic Power (%)'] = (results_df['Dynamic Energy (Wh)'] / results_df['Energy (Wh)'] * 100)
+results_df['Static Power (%)'] = (results_df['Static Energy (Wh)'] / results_df['Energy (Wh)'] * 100)
 
 # Print ranges by location
 print("\n" + "="*80)
@@ -122,8 +54,10 @@ print("="*80)
 
 location_names = {'WA': 'Western Australia', 'SA': 'South Africa'}
 
-for location_id in location_ids:
+for location_id in ['WA', 'SA']:
     loc_results = results_df[results_df['Location'] == location_id]
+    if len(loc_results) == 0:
+        continue
     print(f"\n{location_names[location_id]} ({location_id}):")
     print(f"  Operational Carbon: {loc_results['Operational Carbon (%)'].min():.2f}% to {loc_results['Operational Carbon (%)'].max():.2f}%")
     print(f"  Embodied Carbon: {loc_results['Embodied Carbon (%)'].min():.2f}% to {loc_results['Embodied Carbon (%)'].max():.2f}%")
@@ -139,8 +73,10 @@ location_colors = {'WA': '#1f77b4', 'SA': '#ff7f0e'}  # Blue for WA, Orange for 
 color_embodied = '#4ECDC4'    # Teal
 color_capital = '#FFB84D'     # Orange
 
-for col_idx, location_id in enumerate(location_ids):
+for col_idx, location_id in enumerate(['WA', 'SA']):
     location_data = results_df[results_df['Location'] == location_id]
+    if len(location_data) == 0:
+        continue
     location_name = location_names[location_id]
     color_op = location_colors[location_id]
     
@@ -152,7 +88,7 @@ for col_idx, location_id in enumerate(location_ids):
     
     # Row 0: Operational Carbon (absolute)
     ax = axes[0, col_idx]
-    op_carbon = location_sorted['Operational Carbon (kg CO2)']
+    op_carbon = location_sorted['Operational Carbon (g CO2)']
     ax.plot(x_pos, op_carbon, marker='o', color=color_op, linewidth=2, markersize=4)
     ax.fill_between(x_pos, op_carbon, alpha=0.3, color=color_op)
     ax.set_ylabel('Operational Carbon (kg CO2)', fontsize=10, fontweight='bold')
@@ -210,14 +146,15 @@ print("\n" + "="*80)
 print("LOCATION COMPARISON ANALYSIS")
 print("="*80)
 
+# Load locations to get CI and EP
+locations_df = pd.read_csv(BASE_DIR / 'locations.csv').set_index('id')
+wa_ci = locations_df.loc['WA', 'ci']
+sa_ci = locations_df.loc['SA', 'ci']
+wa_ep = locations_df.loc['WA', 'ep']
+sa_ep = locations_df.loc['SA', 'ep']
+
 wa_data = results_df[results_df['Location'] == 'WA']
 sa_data = results_df[results_df['Location'] == 'SA']
-
-# Get first row to access CI and EP values
-wa_ci = wa_data['CI'].iloc[0]
-sa_ci = sa_data['CI'].iloc[0]
-wa_ep = wa_data['EP'].iloc[0]
-sa_ep = sa_data['EP'].iloc[0]
 
 print(f"\nCarbon Intensity Difference:")
 print(f"  WA: {wa_ci} kg CO2/kWh")
@@ -232,8 +169,8 @@ print(f"  → SA has {((wa_ep - sa_ep) / sa_ep * 100):.1f}% LOWER electricity pr
 print(f"  → This means SA's operational cost is {(sa_ep / wa_ep):.2f}x WA's")
 
 print(f"\nCarbon Impact:")
-wa_avg_op_carbon = wa_data['Operational Carbon (kg CO2)'].mean()
-sa_avg_op_carbon = sa_data['Operational Carbon (kg CO2)'].mean()
+wa_avg_op_carbon = wa_data['Operational Carbon (g CO2)'].mean() / 1000.0
+sa_avg_op_carbon = sa_data['Operational Carbon (g CO2)'].mean() / 1000.0
 print(f"  Average operational carbon per workload:")
 print(f"    WA: {wa_avg_op_carbon:.2f} kg CO2")
 print(f"    SA: {sa_avg_op_carbon:.2f} kg CO2")

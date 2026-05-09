@@ -1,0 +1,9 @@
+series,threads,arithmetic_intensity_flop_per_byte,throughput_gflops,bandwidth_gbs,utilization_pct,data_origin
+CPU-only execution,1,45.7854,55.0707,1.2028,1.9748,Local AMD uProf roofline summary
+CPU-only execution,16,43.8069,332.118,7.5814,11.5206,Local AMD uProf roofline summary
+CPU-only execution,32,45.6456,388.8594,8.5191,13.9036,Local AMD uProf roofline summary
+CPU-only execution,64,46.7888,418.8391,8.9517,18.0618,Local AMD uProf roofline summary
+GPU host-to-device transfer,1,0.05560415919684474,0.3877,6.9725,2.0872,Table 3 host-to-device summary
+GPU host-to-device transfer,16,0.05246917850866876,0.3792,7.2271,2.5937,Table 3 host-to-device summary
+GPU host-to-device transfer,32,0.051931577935806265,0.4053,7.8045,2.1071,Table 3 host-to-device summary
+GPU host-to-device transfer,64,0.05150730534492325,0.3899,7.5698,2.2229,Table 3 host-to-device summary

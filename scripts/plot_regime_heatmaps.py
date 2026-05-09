@@ -11,6 +11,7 @@ import matplotlib.colors as mcolors
 from matplotlib.colors import LogNorm
 import argparse
 from pathlib import Path
+from results_dataframe import generate_results_dataframe
 
 # Create results directory if it doesn't exist
 results_dir = Path('results')
@@ -39,72 +40,14 @@ else:
     metrics_to_generate = [args.metric]
     print(f"Primary metric: {args.metric}")
 
-# Parameters (matching cea.py)
-Lifetime = args.lifetime * 365 * 24  # Lifetime in hours
-idle_cpu_watt = 277.75 / 4  # Idle CPU power consumption in watts
-idle_gpu_watt = 65.44       # Idle GPU power consumption in watts
-location_ids = ['WA', 'SA']
-
-# Read benchmarks
-benchmarks_df = pd.read_csv("benchmarks.csv",
-                 header=None,
-                 names=["im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
-                        "n_idg",
-                        "idg_h_sec", "idg_h_watt", "idg_h_jou",
-                        "idg_d_sec", "idg_d_watt", "idg_d_jou",
-                        "idg_grid_mvs",
-                        "cpu_j",
-                        "gpu0_j", "gpu1_j", "gpu2_j", "gpu3_j",
-                        "tot_gpu_j", "tot_sys_j", "tot_pdu_j"])
-
-benchmarks_df['machine'] = 'R675 V3 + 4xH100 96GB'
-benchmarks_df['time'] = benchmarks_df['wall_time_sec']
-benchmarks_df['mvis'] = benchmarks_df['n_vis'] / 1e6
-
-# Read machine and location data
-machines_df = pd.read_csv('machines.csv').set_index('machine')
-locations_df = pd.read_csv('locations.csv').set_index('id').reset_index()
-locations_df = locations_df[locations_df['id'].isin(location_ids)]
-
-# Calculate metrics for each benchmark
-results = []
-for _, benchmark in benchmarks_df.iterrows():
-    machine_name = benchmark['machine']
-    time = benchmark['time'] / 3600  # from seconds to hours
-    energy_static = (idle_cpu_watt + idle_gpu_watt) * time / 1000  # Static energy in kWh
-    energy_dynamic = (benchmark['gpu0_j'] + benchmark['cpu_j']) / 3.6e6  # Dynamic energy in kWh
-    energy = energy_dynamic + energy_static  # Total energy in kWh
-    
-    machine_cost = machines_df.loc[machine_name, 'cost']  # in $
-    machine_embodied = machines_df.loc[machine_name, 'embodied']  # in kg CO2
-    
-    for _, location in locations_df.iterrows():
-        location_id = location['id']
-        ci = location['ci']  # Carbon intensity in kg CO2/kWh
-        ep = location['ep']  # Electricity price in $/kWh
-        
-        operational_energy_cost = energy * ep  # in $
-        operational_carbon = energy * ci  # in kg CO2
-        capital_cost = machine_cost * (time / Lifetime)
-        capital_carbon = machine_embodied * (time / Lifetime)
-        mvis = benchmark['mvis']
-        
-        results.append({
-            'Image Size': benchmark['im_size'],
-            'Timesteps': benchmark['n_times'],
-            'Channels': benchmark['n_chans'],
-            'Mvis': mvis,
-            'Time (s)': time * 3600,
-            'Energy (kWh)': energy,
-            'Carbon (kgCO2)': operational_carbon + capital_carbon,
-            'Cost ($)': operational_energy_cost + capital_cost,
-            'Mvis/s': mvis / (time * 3600),
-            'Mvis/kWh': mvis / energy,
-            'Mvis/kgCO2': mvis / (operational_carbon + capital_carbon),
-            'Mvis/$': mvis / (operational_energy_cost + capital_cost),
-        })
-
-results_df = pd.DataFrame(results)
+# Generate results DataFrame using helper function
+results_df = generate_results_dataframe(
+    benchmarks_csv_path='benchmarks.csv',
+    machines_csv_path='machines.csv',
+    locations_csv_path='locations.csv',
+    lifetime_years=args.lifetime,
+    location_ids=['WA', 'SA']
+)
 
 # Define metric labels and column names
 metric_info = {
@@ -129,6 +72,10 @@ metric_info = {
         'short': 'Throughput'
     }
 }
+
+# Calculate throughput if not present
+if 'Mvis/s' not in results_df.columns:
+    results_df['Mvis/s'] = results_df['Mvis'] / (results_df['Time (s)'] / 3600)
 
 # Get unique values for axes
 im_sizes = sorted(results_df['Image Size'].unique())

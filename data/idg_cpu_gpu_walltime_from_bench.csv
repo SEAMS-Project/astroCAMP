@@ -1,0 +1,9 @@
+run_id,timesteps,channels,image_size,threads,mode,wall_s,monit_file,n_vis,mvis_s_eff
+2622146,256,256,16384,1,CPU,11593.904,/Users/nisa/code/astroCAMP-bench/profiling_cpu/slurm-2622146_wsc_dirty_t0-255_c0-255_16384pix_20deg_1cores.monit,8573157376.0,0.7394538868012016
+2627204,256,256,16384,1,GPU,4361.25,/Users/nisa/code/astroCAMP-bench/profiling_gpu2/slurm-2627204_wsc_dirty_t0-255_c0-255_16384pix_20deg_1cores.monit,8573157376.0,1.9657569219833761
+2622147,256,256,16384,16,CPU,4112.441,/Users/nisa/code/astroCAMP-bench/profiling_cpu/slurm-2622147_wsc_dirty_t0-255_c0-255_16384pix_20deg_16cores.monit,8573157376.0,2.084688236499928
+2627205,256,256,16384,16,GPU,4402.192,/Users/nisa/code/astroCAMP-bench/profiling_gpu2/slurm-2627205_wsc_dirty_t0-255_c0-255_16384pix_20deg_16cores.monit,8573157376.0,1.9474746617139822
+2622148,256,256,16384,32,CPU,4126.894,/Users/nisa/code/astroCAMP-bench/profiling_cpu/slurm-2622148_wsc_dirty_t0-255_c0-255_16384pix_20deg_32cores.monit,8573157376.0,2.077387346512898
+2627206,256,256,16384,32,GPU,4837.044,/Users/nisa/code/astroCAMP-bench/profiling_gpu2/slurm-2627206_wsc_dirty_t0-255_c0-255_16384pix_20deg_32cores.monit,8573157376.0,1.772395987301335
+2622149,256,256,16384,64,CPU,4090.702,/Users/nisa/code/astroCAMP-bench/profiling_cpu/slurm-2622149_wsc_dirty_t0-255_c0-255_16384pix_20deg_64cores.monit,8573157376.0,2.095766784282991
+2627207,256,256,16384,64,GPU,4172.185,/Users/nisa/code/astroCAMP-bench/profiling_gpu2/slurm-2627207_wsc_dirty_t0-255_c0-255_16384pix_20deg_64cores.monit,8573157376.0,2.054836344984702

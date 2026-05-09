@@ -1,0 +1,9 @@
+series,threads,arithmetic_intensity_flop_per_byte,throughput_gflops,bandwidth_gbs,utilization_pct,cpu_memory_gib_per_j,gpu_device_joules,problem_footprint_gib,gpu_device_gib_per_j,data_origin
+CPU-only execution,1,45.7854,55.0707,1.2028,1.9748,,,,,Local AMD uProf roofline summary
+CPU-only execution,16,43.8069,332.118,7.5814,11.5206,,,,,Local AMD uProf roofline summary
+CPU-only execution,32,45.6456,388.8594,8.5191,13.9036,,,,,Local AMD uProf roofline summary
+CPU-only execution,64,46.7888,418.8391,8.9517,18.0618,,,,,Local AMD uProf roofline summary
+GPU host-to-device transfer,1,0.05560415919684474,0.3877,6.9725,2.0872,,2052.44,64.875,0.03160871937791117,Table 3 host-to-device summary + exact device joules from profiling_gpu2 collect-inst logs
+GPU host-to-device transfer,16,0.05246917850866876,0.3792,7.2271,2.5937,,2151.9200000000005,64.875,0.030147496189449414,Table 3 host-to-device summary + exact device joules from profiling_gpu2 collect-inst logs
+GPU host-to-device transfer,32,0.051931577935806265,0.4053,7.8045,2.1071,,2134.02,64.875,0.030400371130542357,Table 3 host-to-device summary + exact device joules from profiling_gpu2 collect-inst logs
+GPU host-to-device transfer,64,0.05150730534492325,0.3899,7.5698,2.2229,,2178.77,64.875,0.029775974517732482,Table 3 host-to-device summary + exact device joules from profiling_gpu2 collect-inst logs

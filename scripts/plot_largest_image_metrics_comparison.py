@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 import argparse
 from pathlib import Path
+from results_dataframe import generate_results_dataframe
 
 # Create results directory if it doesn't exist
 results_dir = Path('results')
@@ -18,74 +19,29 @@ results_dir.mkdir(exist_ok=True)
 
 # Parse arguments
 parser = argparse.ArgumentParser(description='Plot largest image metrics with location comparison.')
+parser.add_argument('-l', '--lifetime', type=int, default=5, help='Lifetime in years (default: 5)')
 parser.add_argument('-o', '--output', type=str, default='largest_image_metrics_comparison.png',
                     help='Output filename')
+parser.add_argument('--dpi', type=int, default=300, help='DPI for output image (default: 300)')
 args = parser.parse_args()
 
 # Ensure output path is in results directory
 output_path = results_dir / args.output
 
-# Read benchmarks
-benchmarks_df = pd.read_csv("benchmarks.csv",
-                 header=None,
-                 names=["im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
-                        "n_idg",
-                        "idg_h_sec", "idg_h_watt", "idg_h_jou",
-                        "idg_d_sec", "idg_d_watt", "idg_d_jou",
-                        "idg_grid_mvs",
-                        "cpu_j",
-                        "gpu0_j", "gpu1_j", "gpu2_j", "gpu3_j",
-                        "tot_gpu_j", "tot_sys_j", "tot_pdu_j"])
+print(f"Using lifetime of {args.lifetime} years for all machines.")
 
-benchmarks_df['machine'] = 'R675 V3 + 4xH100 96GB'
-benchmarks_df['time'] = benchmarks_df['wall_time_sec'] / 3600  # Convert to hours
-benchmarks_df['mvis'] = benchmarks_df['n_vis'] / 1e6
+# Generate results DataFrame using helper function
+results_df = generate_results_dataframe(
+    benchmarks_csv_path='benchmarks.csv',
+    machines_csv_path='machines.csv',
+    locations_csv_path='locations.csv',
+    lifetime_years=args.lifetime,
+    location_ids=['WA', 'SA']
+)
 
-# Read machine and location data
-machines_df = pd.read_csv('machines.csv').set_index('machine')
-locations_df = pd.read_csv('locations.csv').set_index('id')
-
-# Calculate metrics
-results = []
-for _, benchmark in benchmarks_df.iterrows():
-    machine_name = benchmark['machine']
-    time = benchmark['time']
-    energy_dynamic = (benchmark['gpu0_j'] + benchmark['cpu_j']) / 3.6e6  # kWh
-    energy_static = ((277.75 / 4 + 65.44) * time) / 1000  # kWh
-    energy = energy_dynamic + energy_static
-    
-    machine_cost = machines_df.loc[machine_name, 'cost']
-    machine_embodied = machines_df.loc[machine_name, 'embodied']
-    
-    mvis = benchmark['mvis']
-    
-    for location_id in ['WA', 'SA']:
-        if location_id not in locations_df.index:
-            continue
-            
-        location = locations_df.loc[location_id]
-        ci = location['ci']
-        ep = location['ep']
-        
-        operational_carbon = energy * ci
-        capital_carbon = machine_embodied * time / (5 * 365 * 24)  # 5-year amortization
-        
-        operational_cost = energy * ep
-        capital_cost = machine_cost * time / (5 * 365 * 24)
-        
-        results.append({
-            'Image Size': benchmark['im_size'],
-            'Timesteps': benchmark['n_times'],
-            'Channels': benchmark['n_chans'],
-            'Location': location_id,
-            'Mvis': mvis,
-            'Throughput (Mvis/s)': mvis / (time * 3600) if time > 0 else 0,
-            'Energy Eff (Mvis/kWh)': mvis / energy if energy > 0 else 0,
-            'Carbon Eff (Mvis/kgCO2)': mvis / (operational_carbon + capital_carbon) if (operational_carbon + capital_carbon) > 0 else 0,
-            'Cost Eff (Mvis/$)': mvis / (operational_cost + capital_cost) if (operational_cost + capital_cost) > 0 else 0,
-        })
-
-results_df = pd.DataFrame(results)
+# Calculate Mvis/s (throughput) if not present
+if 'Mvis/s' not in results_df.columns:
+    results_df['Mvis/s'] = results_df['Mvis'] / (results_df['Time (s)'] / 3600)
 
 # Filter to largest image size
 largest_size = results_df['Image Size'].max()
@@ -102,15 +58,14 @@ fig.suptitle(f'Efficiency Metrics Comparison: Largest Image ({int(largest_size)}
              fontsize=14, fontweight='bold')
 
 metrics = [
-    ('Throughput (Mvis/s)', 'Throughput', 'viridis'),
-    ('Energy Eff (Mvis/kWh)', 'Energy Efficiency', 'RdYlGn'),
-    ('Carbon Eff (Mvis/kgCO2)', 'Carbon Efficiency', 'RdYlGn'),
-    ('Cost Eff (Mvis/$)', 'Cost Efficiency', 'RdYlGn')
+    ('Mvis/s', 'Throughput', 'viridis'),
+    ('Mvis/kWh', 'Energy Efficiency', 'RdYlGn'),
+    ('Mvis/kgCO2', 'Carbon Efficiency', 'RdYlGn'),
+    ('Mvis/$', 'Cost Efficiency', 'RdYlGn')
 ]
 
 locations = ['WA', 'SA']
 location_names = {'WA': 'Western Australia', 'SA': 'South Africa'}
-location_colors = {'WA': '#1f77b4', 'SA': '#ff7f0e'}
 
 for loc_idx, location_id in enumerate(locations):
     loc_data = largest_df[largest_df['Location'] == location_id].sort_values('Config')
@@ -118,7 +73,7 @@ for loc_idx, location_id in enumerate(locations):
     for metric_idx, (metric_col, metric_title, cmap) in enumerate(metrics):
         ax = axes[loc_idx, metric_idx]
         
-        # Create 2D grid for heatmap (4x4 grid of timesteps × channels)
+        # Create 2D grid for heatmap (times × channels)
         times = sorted(loc_data['Timesteps'].unique())
         chans = sorted(loc_data['Channels'].unique())
         
@@ -129,11 +84,15 @@ for loc_idx, location_id in enumerate(locations):
                 heatmap[i, j] = val.values[0] if len(val) > 0 else 0
         
         # Determine normalization
-        vmin, vmax = heatmap[heatmap > 0].min(), heatmap[heatmap > 0].max()
-        if vmax / vmin > 10:
-            norm = LogNorm(vmin=vmin, vmax=vmax)
+        valid_vals = heatmap[heatmap > 0]
+        if len(valid_vals) > 0:
+            vmin, vmax = valid_vals.min(), valid_vals.max()
+            if vmax / vmin > 10:
+                norm = LogNorm(vmin=vmin, vmax=vmax)
+            else:
+                norm = plt.Normalize(vmin=vmin, vmax=vmax)
         else:
-            norm = plt.Normalize(vmin=vmin, vmax=vmax)
+            norm = plt.Normalize(vmin=0, vmax=1)
         
         # Plot heatmap
         im = ax.imshow(heatmap, cmap=cmap, norm=norm, aspect='auto', origin='lower')
@@ -171,7 +130,7 @@ for loc_idx, location_id in enumerate(locations):
         cbar.ax.tick_params(labelsize=7)
 
 plt.tight_layout()
-plt.savefig(output_path, dpi=300, bbox_inches='tight')
+plt.savefig(output_path, dpi=args.dpi, bbox_inches='tight')
 print(f"\nComparison figure saved to: {output_path}")
 
 # Analysis

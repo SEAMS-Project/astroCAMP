@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+from results_dataframe import generate_results_dataframe
 
 # Matplotlib style tweaks
 plt.rcParams.update({
@@ -28,92 +29,53 @@ BASE_DIR = Path(__file__).resolve().parent
 
 
 def load_data(lifetime_years: int, location_id: str) -> pd.DataFrame:
-    """Load benchmarks, machines, and locations; compute derived metrics."""
-    benchmarks_df = pd.read_csv(
-        BASE_DIR / "benchmarks.csv",
-        header=None,
-        names=[
-            "im_size",
-            "n_times",
-            "n_chans",
-            "wall_time",
-            "wall_time_sec",
-            "n_rows",
-            "n_vis",
-            "n_idg",
-            "idg_h_sec",
-            "idg_h_watt",
-            "idg_h_jou",
-            "idg_d_sec",
-            "idg_d_watt",
-            "idg_d_jou",
-            "idg_grid_mvs",
-            "cpu_j",
-            "gpu0_j",
-            "gpu1_j",
-            "gpu2_j",
-            "gpu3_j",
-            "tot_gpu_j",
-            "tot_sys_j",
-            "tot_pdu_j",
-        ],
+    """Load benchmarks, machines, and locations; compute derived metrics using helper function."""
+    # Generate results DataFrame using helper function
+    results_df = generate_results_dataframe(
+        benchmarks_csv_path=BASE_DIR / 'benchmarks.csv',
+        machines_csv_path=BASE_DIR / 'machines.csv',
+        locations_csv_path=BASE_DIR / 'locations.csv',
+        lifetime_years=lifetime_years,
+        location_ids=[location_id]
     )
-
-    machines_df = pd.read_csv(BASE_DIR / "machines.csv").set_index("machine")
-    locations_df = pd.read_csv(BASE_DIR / "locations.csv").set_index("id")
-
-    # Constants (aligned with existing scripts)
-    lifetime_hours = lifetime_years * 365 * 24
-    idle_cpu_watt = 277.75 / 4  # per node idle CPU draw
-    idle_gpu_watt = 65.44       # aggregate idle GPU draw
-
-    machine_name = "R675 V3 + 4xH100 96GB"
-    machine_cost = machines_df.loc[machine_name, "cost"]
-    machine_embodied = machines_df.loc[machine_name, "embodied"]
-
-    # Select one location (default WA)
-    loc = locations_df.loc[location_id]
-    ci = loc["ci"]  # kg CO2 / kWh
-    ep = loc["ep"]  # $ / kWh
-
-    df = benchmarks_df.copy()
-    df["machine"] = machine_name
-    df["benchmark"] = (
-        df["im_size"].astype(str)
-        + "_"
-        + df["n_times"].astype(str)
-        + "_"
-        + df["n_chans"].astype(str)
-    )
-
-    # Derived metrics
-    df["time_s"] = df["wall_time_sec"]
-    df["time_h"] = df["time_s"] / 3600.0
-    df["mvis"] = df["n_vis"] / 1e6
-
-    # Energy components (kWh)
-    df["energy_static_kwh"] = (idle_cpu_watt + idle_gpu_watt) * df["time_h"] / 1000.0
-    df["energy_dynamic_kwh"] = (df["gpu0_j"] + df["cpu_j"]) / 3.6e6
-    df["energy_kwh"] = df["energy_static_kwh"] + df["energy_dynamic_kwh"]
-
+    
+    # Filter to selected location
+    results_df = results_df[results_df['Location'] == location_id].copy()
+    
+    # Rename columns to match expected names in plotting functions
+    df = results_df.copy()
+    
+    # Map results DataFrame columns to expected column names
+    df['im_size'] = df['Image Size']
+    df['n_times'] = df['Timesteps']
+    df['n_chans'] = df['Channels']
+    df['time_s'] = df['Time (s)']
+    df['time_h'] = df['Time (s)'] / 3600.0
+    df['mvis'] = df['Mvis']
+    
+    # Convert energy from Wh to kWh
+    df['energy_static_kwh'] = df['Static Energy (Wh)'] / 1000.0
+    df['energy_dynamic_kwh'] = df['Dynamic Energy (Wh)'] / 1000.0
+    df['energy_kwh'] = df['Energy (Wh)'] / 1000.0
+    
     # Performance & efficiency
-    df["throughput_mvis_s"] = df["mvis"] / df["time_s"]
-    df["efficiency_mvis_kwh"] = df["mvis"] / df["energy_kwh"]
-
-    # Cost & carbon (per run)
-    df["operational_cost_$"] = df["energy_kwh"] * ep
-    df["operational_carbon_kg"] = df["energy_kwh"] * ci
-    df["capital_cost_$"] = machine_cost * (df["time_h"] / lifetime_hours)
-    df["capital_carbon_kg"] = machine_embodied * (df["time_h"] / lifetime_hours)
-    df["total_cost_$"] = df["operational_cost_$"] + df["capital_cost_$"]
-    df["total_carbon_kg"] = df["operational_carbon_kg"] + df["capital_carbon_kg"]
-
+    df['throughput_mvis_s'] = df['Mvis'] / (df['Time (s)'] / 3600.0)  # Mvis per hour / 3600
+    df['efficiency_mvis_kwh'] = df['Mvis/kWh']
+    
+    # Cost & carbon (convert from grams to kg where needed)
+    df['operational_cost_$'] = df['Operational Cost ($)']
+    df['operational_carbon_kg'] = df['Operational Carbon (g CO2)'] / 1000.0
+    df['capital_cost_$'] = df['Capital Cost ($)']
+    df['capital_carbon_kg'] = df['Embodied Carbon (g CO2)'] / 1000.0
+    df['total_cost_$'] = df['Total Cost ($)']
+    df['total_carbon_kg'] = df['Total Carbon (g CO2)'] / 1000.0
+    
     # Regime indicator for visual encoding
-    df["regime"] = df.apply(
+    df['regime'] = df.apply(
         lambda row: "Time-heavy"
-        if row["n_times"] > row["n_chans"]
+        if row['n_times'] > row['n_chans']
         else "Channel-heavy"
-        if row["n_chans"] > row["n_times"]
+        if row['n_chans'] > row['n_times']
         else "Balanced",
         axis=1,
     )
@@ -307,7 +269,7 @@ def plot_energy_breakdown(df: pd.DataFrame, results_dir: Path) -> None:
     ax.set_ylabel("Energy (kJ)", fontsize=14, fontweight="bold")
     ax.set_title("Energy Breakdown (kJ): Static vs Dynamic (Best Throughput Configs)", fontsize=14, fontweight="bold")
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=10)
+    ax.set_xticklabels(labels, rotation=90, ha="right", fontsize=9)
     ax.legend(fontsize=12, loc="upper left")
     ax.tick_params(axis="y", labelsize=12)
     ax.grid(axis="y", alpha=0.3, linestyle="--")
@@ -318,8 +280,8 @@ def plot_energy_breakdown(df: pd.DataFrame, results_dir: Path) -> None:
     print(f"✓ Saved energy breakdown to {outfile}\n")
 
 
-def plot_energy_breakdown_grouped(df: pd.DataFrame, results_dir: Path, group_by: str = "n_times") -> None:
-    """Stacked energy bars per configuration grouped by `group_by` (n_times or n_chans).
+def plot_energy_breakdown_grouped(df: pd.DataFrame, results_dir: Path, group_by: str = "im_size") -> None:
+    """Stacked energy bars per configuration grouped by `group_by` (im_size, n_times, or n_chans).
     Adds text markers above each bar with total carbon (g CO2).
     Uses consistent y-axis range across all subplots for easy comparison.
     Right y-axis shows wall time in seconds.
@@ -334,32 +296,39 @@ def plot_energy_breakdown_grouped(df: pd.DataFrame, results_dir: Path, group_by:
     print(f"groups. Larger workloads show higher energy and carbon. Balance is key.")
     print()
     
-    assert group_by in {"n_times", "n_chans"}
+    assert group_by in {"im_size", "n_times", "n_chans"}
     groups = sorted(df[group_by].unique())
 
-    # Build labels per configuration: im_size x n_times x n_chans
+    # Build labels per configuration: just n_times x n_chans (im_size is obvious from grouping)
     def label_row(row):
-        return f"im{row.im_size}\nt{int(row.n_times)} c{int(row.n_chans)}"
+        return f"{int(row.n_times)}×{int(row.n_chans)}"
 
     # Compute global y-axis limits (in kiloJoules) for consistent comparison across subplots
     all_totals_kj = (df["energy_static_kwh"].values + df["energy_dynamic_kwh"].values) * 3.6e3
     y_min = 0.0
-    y_max = all_totals_kj.max() * 1.15  # Add 15% headroom for carbon labels
+    y_max = all_totals_kj.max() * 1.30  # Add 30% headroom for carbon labels and margins
 
     # Compute global wall time limits for consistent right y-axis
     time_min = 0.0
-    time_max = (df["time_s"].max() / 60.0) * 1.1  # Add 10% headroom, convert to minutes
+    time_max = (df["time_s"].max() / 60.0) * 1.25  # Add 25% headroom, convert to minutes
 
     # Create a multi-row figure to keep bars readable
     nrows = len(groups)
-    fig, axes = plt.subplots(nrows, 1, figsize=(6, max(2 * nrows, 2.5)), sharex=False)
+    # Calculate figure height based on number of bars per subplot
+    bars_per_subplot = len(df) // nrows if nrows > 0 else len(df)
+    fig_height = max(3 + (bars_per_subplot * 0.2), 4 * nrows)
+    fig_width = max(8, 2 + bars_per_subplot * 0.4)
+    fig, axes = plt.subplots(nrows, 1, figsize=(fig_width, fig_height), sharex=False)
     if nrows == 1:
         axes = [axes]
 
     for idx, (ax, g) in enumerate(zip(axes, groups)):
         subset = df[df[group_by] == g].copy()
         # Sort for consistent display
-        subset = subset.sort_values(["im_size", "n_times", "n_chans"]).reset_index(drop=True)
+        if group_by == "im_size":
+            subset = subset.sort_values(["n_times", "n_chans"]).reset_index(drop=True)
+        else:
+            subset = subset.sort_values(["im_size", "n_times", "n_chans"]).reset_index(drop=True)
 
         x = np.arange(len(subset))
         labels = [label_row(r) for _, r in subset.iterrows()]
@@ -388,17 +357,15 @@ def plot_energy_breakdown_grouped(df: pd.DataFrame, results_dir: Path, group_by:
         ax.set_title(f"Grouped by {group_by} = {int(g)}", fontsize=12, fontweight="bold")
         ax.set_ylabel("Energy (kJ)", fontsize=12, fontweight="bold", color="navy")
         
-        # Halve y-axis max for top 2 subplots, full max for rest
-        if idx < 2:
-            ax.set_ylim(y_min, y_max / 4)
-        else:
-            ax.set_ylim(y_min, y_max)
+        # Set y-axis limits with proper scaling
+        ax.set_ylim(y_min, y_max)
         
         ax.set_xticks(x)
         
-        # Only show x-axis labels on bottom subplot
+        # Only show x-axis labels on bottom subplot with better formatting
         if idx == len(axes) - 1:
-            ax.set_xticklabels(labels, rotation=90, ha="center", fontsize=9)
+            ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=9)
+            ax.margins(x=0.01)  # Reduce margins to compress x-axis
         else:
             ax.set_xticklabels([])
         
@@ -410,14 +377,12 @@ def plot_energy_breakdown_grouped(df: pd.DataFrame, results_dir: Path, group_by:
         ax_right = ax.twinx()
         ax_right.plot(x, subset["time_s"] / 60.0, color="red", marker="o", linewidth=2, markersize=5, label="Wall Time", alpha=0.4)
         ax_right.set_ylabel("Wall Time (min)", fontsize=12, fontweight="bold", color="darkred")
-        # Halve right y-axis max for top 2 subplots, full max for rest
-        if idx < 2:
-            ax_right.set_ylim(time_min, time_max / 5)
-        else:
-            ax_right.set_ylim(time_min, time_max)
-        # Set ticks every 1 minute on the right y-axis for higher resolution
-        right_ymin, right_ymax = ax_right.get_ylim()
-        ax_right.set_yticks(np.arange(np.ceil(right_ymin), right_ymax + 1e-9, 1))
+        # Set right y-axis limits with proper scaling
+        ax_right.set_ylim(time_min, time_max)
+        # Set ticks dynamically based on time_max
+        max_ticks = 6
+        tick_interval = time_max / max_ticks
+        ax_right.set_yticks(np.arange(0, time_max + tick_interval/2, tick_interval))
         ax_right.tick_params(axis="y", labelsize=11, labelcolor="red")
 
     plt.tight_layout()
@@ -545,13 +510,16 @@ def plot_metric_grouped(df: pd.DataFrame, results_dir: Path, metric: str, group_
     print(f"Patterns reveal how {config['name'].lower()} varies with workload parameters.")
     print()
     
-    assert group_by in {"n_times", "n_chans"}
+    assert group_by in {"im_size", "n_times", "n_chans"}
     groups = sorted(df[group_by].unique())
-    other_param = "n_chans" if group_by == "n_times" else "n_times"
-
-    # Build labels per configuration
-    def label_row(row):
-        return f"im{row.im_size}\n{other_param[0]}{int(row[other_param])}"
+    
+    # Set other_param based on group_by
+    if group_by == "im_size":
+        label_template = lambda row: f"t{int(row.n_times)}×c{int(row.n_chans)}"
+    elif group_by == "n_times":
+        label_template = lambda row: f"im{row.im_size}\nc{int(row.n_chans)}"
+    else:  # n_chans
+        label_template = lambda row: f"im{row.im_size}\nt{int(row.n_times)}"
 
     # Compute global y-axis limits for consistent comparison
     y_min = 0.0
@@ -571,10 +539,13 @@ def plot_metric_grouped(df: pd.DataFrame, results_dir: Path, metric: str, group_
     for ax, g in zip(axes, groups):
         subset = df[df[group_by] == g].copy()
         # Sort for consistent display
-        subset = subset.sort_values(["im_size", other_param]).reset_index(drop=True)
+        if group_by == "im_size":
+            subset = subset.sort_values(["n_times", "n_chans"]).reset_index(drop=True)
+        else:
+            subset = subset.sort_values(["im_size", "n_times", "n_chans"]).reset_index(drop=True)
 
         x = np.arange(len(subset))
-        labels = [label_row(r) for _, r in subset.iterrows()]
+        labels = [label_template(r) for _, r in subset.iterrows()]
         bar_colors = [color_map[r.im_size] for _, r in subset.iterrows()]
 
         # Convert energy to kJ if plotting energy
@@ -604,18 +575,19 @@ def plot_metric_grouped(df: pd.DataFrame, results_dir: Path, metric: str, group_
             effective_y_max = (df[metric].max() * 3.6e3) * 1.15
         ax.set_ylim(y_min, effective_y_max)
         ax.set_xticks(x)
-        ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=9)
+        ax.set_xticklabels(labels, rotation=90, ha="right", fontsize=8)
         ax.tick_params(axis="y", labelsize=11)
         ax.grid(axis="y", alpha=0.3, linestyle="--")
 
-        # Legend for image size colors
-        color_handles = [
-            plt.Line2D([0], [0], marker="s", color="w", label=f"im={im}",
-                      markerfacecolor=color_map[im], markeredgecolor="black",
-                      markeredgewidth=0.5, markersize=10)
-            for im in im_sizes
-        ]
-        ax.legend(handles=color_handles, title="Image Size", loc="upper left", fontsize=11, title_fontsize=11)
+    # Create legend for image size colors (outside loop, visible for all)
+    color_handles = [
+        plt.Line2D([0], [0], marker="s", color="w", label=f"im={im}",
+                  markerfacecolor=color_map[im], markeredgecolor="black",
+                  markeredgewidth=0.5, markersize=10)
+        for im in im_sizes
+    ]
+    fig.legend(handles=color_handles, title="Image Size", loc="upper center", 
+               bbox_to_anchor=(0.5, 1.02), ncol=len(im_sizes), fontsize=11, title_fontsize=11, frameon=True)
 
     plt.tight_layout()
     metric_name = metric.replace("_", "-")
@@ -725,6 +697,132 @@ def plot_carbon_cost(df: pd.DataFrame, results_dir: Path) -> None:
     print(f"✓ Saved carbon vs cost scatter to {outfile}\n")
 
 
+def plot_efficiency_throughput_dual_axis(df: pd.DataFrame, results_dir: Path) -> None:
+    """Dual-axis plot: left y-axis shows Efficiency (Mvis/kWh) as bars,
+    right y-axis shows Throughput (Mvis/h) as a line. Generates three figures:
+    - For the largest image size, grouped by timesteps (n_times)
+    - For the largest image size, grouped by channels (n_chans)
+    - For all image sizes, grouped by image size (im_size)
+    """
+    print("="*80)
+    print("FIGURE: Efficiency (Mvis/kWh) vs Throughput (Mvis/h) — Dual Axis")
+    print("="*80)
+    print("Description: Bars show efficiency (Mvis/kWh) on the left axis;")
+    print("a line shows throughput (Mvis/h) on the right axis. Grouped views")
+    print("by timesteps, channels, and image size for comparison.")
+    print()
+
+    # Prepare data
+    largest_im = df["im_size"].max()
+    df_largest = df[df["im_size"] == largest_im].copy()
+    # Throughput per hour
+    df_largest["mvis_per_hour"] = df_largest["throughput_mvis_s"] * 3600.0
+    df_all = df.copy()
+    df_all["mvis_per_hour"] = df_all["throughput_mvis_s"] * 3600.0
+
+    def _plot_grouped(local_df: pd.DataFrame, group_by: str, title_suffix: str, outfile_name: str) -> None:
+        assert group_by in {"im_size", "n_times", "n_chans"}
+        groups = sorted(local_df[group_by].unique())
+
+        # Labels
+        if group_by == "im_size":
+            label_template = lambda row: f"t{int(row.n_times)}×c{int(row.n_chans)}"
+        elif group_by == "n_times":
+            label_template = lambda row: f"c{int(row.n_chans)}"
+        else:  # n_chans
+            label_template = lambda row: f"t{int(row.n_times)}"
+
+        # Color by image size
+        im_sizes = sorted(local_df["im_size"].unique())
+        colors = plt.cm.viridis(np.linspace(0, 1, len(im_sizes)))
+        color_map = dict(zip(im_sizes, colors))
+
+        # Figure sized to content
+        nrows = len(groups)
+        fig, axes = plt.subplots(nrows, 1, figsize=(12, max(3.5 * nrows, 4)), sharex=False)
+        if nrows == 1:
+            axes = [axes]
+
+        # Global axis ranges
+        left_min = 0.0
+        left_max = local_df["efficiency_mvis_kwh"].max() * 1.20
+        right_min = 0.0
+        right_max = local_df["mvis_per_hour"].max() * 1.20
+
+        for ax, g in zip(axes, groups):
+            subset = local_df[local_df[group_by] == g].copy()
+            if group_by == "im_size":
+                subset = subset.sort_values(["n_times", "n_chans"])  # stable ordering
+            else:
+                subset = subset.sort_values(["im_size", "n_times", "n_chans"])  # stable
+
+            x = np.arange(len(subset))
+            labels = [label_template(r) for _, r in subset.iterrows()]
+            bar_colors = [color_map[r.im_size] for _, r in subset.iterrows()]
+
+            # Left axis: efficiency as bars
+            ax.bar(x, subset["efficiency_mvis_kwh"], color=bar_colors, width=0.8, alpha=0.85,
+                   edgecolor="black", linewidth=0.7)
+            ax.set_ylabel("Efficiency (Mvis/kWh)", fontsize=12, fontweight="bold")
+            ax.set_ylim(left_min, left_max)
+            ax.set_xticks(x)
+            # Only show labels on last row
+            if ax is axes[-1]:
+                ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=9)
+            else:
+                ax.set_xticklabels([])
+            ax.grid(axis="y", alpha=0.3, linestyle="--")
+
+            # Right axis: throughput per hour as line
+            ax_r = ax.twinx()
+            ax_r.plot(x, subset["mvis_per_hour"], color="darkred", marker="o",
+                      linewidth=2, markersize=5, alpha=0.7)
+            ax_r.set_ylabel("Throughput (Mvis/h)", fontsize=12, fontweight="bold", color="darkred")
+            ax_r.set_ylim(right_min, right_max)
+            ax_r.tick_params(axis="y", labelsize=11, labelcolor="darkred")
+
+            ax.set_title(f"Grouped by {group_by} = {int(g)}{title_suffix}", fontsize=12, fontweight="bold")
+
+        # Legend for image sizes
+        color_handles = [
+            plt.Line2D([0], [0], marker="s", color="w", label=f"im={im}",
+                        markerfacecolor=color_map[im], markeredgecolor="black",
+                        markeredgewidth=0.5, markersize=10)
+            for im in im_sizes
+        ]
+        plt.tight_layout()
+        fig.legend(handles=color_handles, title="Image Size", loc="upper center",
+                   bbox_to_anchor=(0.5, 1.02), ncol=len(im_sizes), fontsize=11, title_fontsize=11, frameon=True)
+        outfile = results_dir / outfile_name
+        plt.savefig(outfile, dpi=300, bbox_inches="tight")
+        print(f"✓ Saved dual-axis efficiency/throughput plot to {outfile}")
+        plt.close(fig)
+
+    # Largest image size grouped by timesteps
+    _plot_grouped(
+        df_largest,
+        group_by="n_times",
+        title_suffix=f" (Largest im_size={largest_im})",
+        outfile_name=f"efficiency_throughput_dual_largest_grouped_by_n_times.png",
+    )
+
+    # Largest image size grouped by channels
+    _plot_grouped(
+        df_largest,
+        group_by="n_chans",
+        title_suffix=f" (Largest im_size={largest_im})",
+        outfile_name=f"efficiency_throughput_dual_largest_grouped_by_n_chans.png",
+    )
+
+    # All image sizes grouped by image size
+    _plot_grouped(
+        df_all,
+        group_by="im_size",
+        title_suffix="",
+        outfile_name=f"efficiency_throughput_dual_grouped_by_im_size.png",
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate paper-ready benchmark figures")
     parser.add_argument("-l", "--lifetime", type=int, default=5, help="Lifetime in years (default: 5)")
@@ -746,18 +844,20 @@ def main() -> None:
     plot_pareto(df, results_dir)
     plot_iso_heatmaps(df, results_dir)
     plot_energy_breakdown(df, results_dir)
-    plot_energy_breakdown_grouped(df, results_dir, group_by="n_times")
+    plot_energy_breakdown_grouped(df, results_dir, group_by="im_size")
     plot_latency_throughput(df, results_dir)
     
-    # Grouped bar plots for all key metrics
-    plot_metric_grouped(df, results_dir, "time_s", group_by="n_times")
-    plot_metric_grouped(df, results_dir, "throughput_mvis_s", group_by="n_times")
-    plot_metric_grouped(df, results_dir, "energy_kwh", group_by="n_times")
-    plot_metric_grouped(df, results_dir, "total_cost_$", group_by="n_times")
-    plot_metric_grouped(df, results_dir, "total_carbon_kg", group_by="n_times")
-    plot_metric_grouped(df, results_dir, "efficiency_mvis_kwh", group_by="n_times")
+    # Grouped bar plots for all key metrics - group by image size
+    plot_metric_grouped(df, results_dir, "time_s", group_by="im_size")
+    plot_metric_grouped(df, results_dir, "throughput_mvis_s", group_by="im_size")
+    plot_metric_grouped(df, results_dir, "energy_kwh", group_by="im_size")
+    plot_metric_grouped(df, results_dir, "total_cost_$", group_by="im_size")
+    plot_metric_grouped(df, results_dir, "total_carbon_kg", group_by="im_size")
+    plot_metric_grouped(df, results_dir, "efficiency_mvis_kwh", group_by="im_size")
     
     plot_carbon_cost(df, results_dir)
+    # Dual-axis efficiency vs throughput plots
+    plot_efficiency_throughput_dual_axis(df, results_dir)
     
     print("="*80)
     print("✓ All figures generated and saved to:", results_dir)

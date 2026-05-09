@@ -89,19 +89,21 @@ def plot_time_speedup_dual(csv_path: Path, results_dir: Path) -> None:
     fig, ax_time = plt.subplots(figsize=(5.5, 3.5))
     ax_speed = ax_time.twinx()
 
-    colors = plt.cm.viridis(np.linspace(0, 1, len(image_sizes)))
+    bar_colors = plt.cm.Blues(np.linspace(0.35, 0.85, len(image_sizes)))
+    red_shades = plt.cm.Reds(np.linspace(0.5, 0.95, len(image_sizes)))
+    bar_hatches = ["///", "...", "xxx", "---", "\\\\\\\\"]
+    bar_markers = ["o", "s", "^", "D", "v"]
+
     bar_width = 0.5 / max(len(image_sizes), 1)
     x = np.arange(len(threads), dtype=float)
 
-    # Calculate max speedup for consistent right y-axis
-    max_speedup = df["speedup"].max() * 1.1  # Add 10% headroom
+    max_threads = int(max(threads))
 
     bar_handles = []
     line_handles = []
 
-    for idx, (im, color) in enumerate(zip(image_sizes, colors)):
+    for idx, im in enumerate(image_sizes):
         subset = df[df["image_size"] == im].sort_values("threads")
-        # Align data to full thread list
         time_vals = []
         speed_vals = []
         for t in threads:
@@ -114,72 +116,77 @@ def plot_time_speedup_dual(csv_path: Path, results_dir: Path) -> None:
             x + offset,
             time_vals,
             width=bar_width,
-            color=color,
-            alpha=0.75,
+            color=bar_colors[idx],
+            alpha=0.80,
             edgecolor="black",
             linewidth=0.6,
+            hatch=bar_hatches[idx % len(bar_hatches)],
             label=f"Time im={im}",
         )
         bar_handles.append(bars)
 
+        marker_offset = (idx - (len(image_sizes) - 1) / 2) * 0.15
         line, = ax_speed.plot(
-            x,
+            x + marker_offset,
             speed_vals,
-            color=color,
-            marker="o",
+            color=red_shades[idx],
+            marker=bar_markers[idx % len(bar_markers)],
             linewidth=2.2,
             markersize=7,
+            markeredgecolor="black",
+            markeredgewidth=0.5,
             label=f"Speedup im={im}",
         )
         line_handles.append(line)
 
-        # Annotate last point speedup
-        ax_speed.text(
-            x[-1],
-            speed_vals[-1] * 1.03,
-            f"{speed_vals[-1]:.2f}×",
-            ha="center",
-            va="bottom",
-            fontsize=12,
-            fontweight="bold",
-            color=color,
-        )
 
-    # Ideal linear reference for speedup
+    # Ideal linear reference — solid red line through all x points
+    ideal_speedup = [threads[i] for i in range(len(threads))]
     ax_speed.plot(
         x,
-        threads,
-        linestyle=":",
-        color="black",
+        ideal_speedup,
+        linestyle="-",
+        color="#d62728",
         linewidth=2,
+        alpha=0.5,
         label="Ideal linear",
+        zorder=1,
     )
 
     ax_time.set_xlabel("CPU Threads", fontsize=13, fontweight="bold")
     ax_time.set_ylabel("Absolute Time (seconds)", fontsize=13, fontweight="bold")
-    ax_speed.set_ylabel("Speedup (× vs 1 thread)", fontsize=13, fontweight="bold")
+    ax_speed.set_ylabel("Speedup (× vs 1 thread)", fontsize=13, fontweight="bold", color="#d62728")
+    ax_speed.tick_params(axis="y", labelsize=13, colors="#d62728")
+    ax_speed.spines["right"].set_edgecolor("#d62728")
     ax_time.set_title("CPU Scalability: Time (bars) and Speedup (line)", fontsize=14, fontweight="bold")
 
     ax_time.set_xticks(x)
     ax_time.set_xticklabels([str(t) for t in threads], fontsize=14)
     ax_time.tick_params(axis="y", labelsize=11)
-    ax_speed.tick_params(axis="y", labelsize=13)
-    ax_speed.set_ylim(0, max_speedup)
+    ax_speed.set_yscale("log", base=2)
+    ax_speed.set_ylim(0.8, max_threads * 1.5)
+    ax_speed.set_yticks(threads)
+    ax_speed.yaxis.set_major_formatter(plt.ScalarFormatter())
 
-    # Legends: combine bars and lines
-    first_bar = bar_handles[0]
-    handles = [first_bar] + line_handles + [
-        plt.Line2D([0], [0], color="black", linestyle=":", linewidth=1.8, label="Ideal linear")
-    ]
-    labels = ["Time (bars)"] + [f"im={im}" for im in image_sizes] + ["Ideal linear"]
+    handles = (
+        bar_handles
+        + line_handles
+        + [plt.Line2D([0], [0], color="#d62728", linestyle="-", linewidth=1.8, alpha=0.5, label="Ideal linear")]
+    )
+    labels = (
+        [f"Time im={im}" for im in image_sizes]
+        + [f"Speedup im={im}" for im in image_sizes]
+        + ["Ideal linear"]
+    )
+
     ax_time.legend(
         handles,
         labels,
         loc="upper center",
-        bbox_to_anchor=(0.5, 1.02),
-        ncol=2,
-        fontsize=10,
-        title_fontsize=11,
+        bbox_to_anchor=(0.4, 1.02),
+        ncol=1,
+        fontsize=9,
+        title_fontsize=9,
     )
 
     results_dir.mkdir(exist_ok=True)

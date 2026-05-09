@@ -11,6 +11,7 @@ import matplotlib.patches as mpatches
 from matplotlib.lines import Line2D
 import argparse
 from pathlib import Path
+from results_dataframe import generate_results_dataframe
 
 # Optional hover tooltips (avoids clutter vs static annotations)
 try:
@@ -39,71 +40,20 @@ output_path = results_dir / args.output
 
 print(f"Using lifetime of {args.lifetime} years for all machines.")
 
-# Parameters (matching cea.py)
-Lifetime = args.lifetime * 365 * 24  # Lifetime in hours
-idle_cpu_watt = 277.75 / 4  # Idle CPU power consumption in watts
-idle_gpu_watt = 65.44       # Idle GPU power consumption in watts
-location_ids = ['WA']
+# Generate results DataFrame using helper function
+results_df = generate_results_dataframe(
+    benchmarks_csv_path='benchmarks.csv',
+    machines_csv_path='machines.csv',
+    locations_csv_path='locations.csv',
+    lifetime_years=args.lifetime,
+    location_ids=['WA']
+)
 
-# Read benchmarks
-benchmarks_df = pd.read_csv("benchmarks.csv",
-                 header=None,
-                 names=["im_size", "n_times", "n_chans", "wall_time", "wall_time_sec", "n_rows", "n_vis",
-                        "n_idg",
-                        "idg_h_sec", "idg_h_watt", "idg_h_jou",
-                        "idg_d_sec", "idg_d_watt", "idg_d_jou",
-                        "idg_grid_mvs",
-                        "cpu_j",
-                        "gpu0_j", "gpu1_j", "gpu2_j", "gpu3_j",
-                        "tot_gpu_j", "tot_sys_j", "tot_pdu_j"])
+# Filter to just WA location for consistency
+results_df = results_df[results_df['Location'] == 'WA'].copy()
 
-benchmarks_df['machine'] = 'R675 V3 + 4xH100 96GB'
-benchmarks_df['benchmark'] = benchmarks_df['im_size'].astype(str) + '_' + benchmarks_df['n_times'].astype(str) + '_' + benchmarks_df['n_chans'].astype(str)
-benchmarks_df['time'] = benchmarks_df['wall_time_sec']
-benchmarks_df['mvis'] = benchmarks_df['n_vis'] / 1e6
-
-# Read machine and location data
-machines_df = pd.read_csv('machines.csv').set_index('machine')
-locations_df = pd.read_csv('locations.csv').set_index('id').reset_index()
-locations_df = locations_df[locations_df['id'].isin(location_ids)]
-
-# Calculate metrics for each benchmark
-results = []
-for _, benchmark in benchmarks_df.iterrows():
-    benchmark_name = benchmark['benchmark']
-    machine_name = benchmark['machine']
-    time = benchmark['time'] / 3600  # from seconds to hours
-    energy_static = (idle_cpu_watt + idle_gpu_watt) * time / 1000  # Static energy in kWh
-    energy_dynamic = (benchmark['gpu0_j'] + benchmark['cpu_j']) / 3.6e6  # Dynamic energy in kWh
-    energy = energy_dynamic + energy_static  # Total energy in kWh
-    
-    machine_cost = machines_df.loc[machine_name, 'cost']  # in $
-    machine_embodied = machines_df.loc[machine_name, 'embodied']  # in kg CO2
-    
-    for _, location in locations_df.iterrows():
-        location_id = location['id']
-        location_name = location['location']
-        ci = location['ci']  # Carbon intensity in kg CO2/kWh
-        ep = location['ep']  # Electricity price in $/kWh
-        
-        operational_energy_cost = energy * ep  # in $
-        operational_carbon = energy * ci  # in kg CO2
-        capital_cost = machine_cost * (time / Lifetime)
-        capital_carbon = machine_embodied * (time / Lifetime)
-        mvis = benchmark['mvis']
-        
-        results.append({
-            'Image Size': benchmark['im_size'],
-            'Timesteps': benchmark['n_times'],
-            'Channels': benchmark['n_chans'],
-            'Mvis': mvis,
-            'Time (s)': time * 3600,
-            'Energy (kWh)': energy,
-            'Mvis/s': mvis / (time * 3600),
-            'Mvis/kWh': mvis / energy,
-        })
-
-results_df = pd.DataFrame(results)
+# Calculate Mvis/s (throughput) from Mvis and Time (s)
+results_df['Mvis/s'] = results_df['Mvis'] / (results_df['Time (s)'] / 3600)
 
 # Add regime classification (time-heavy vs channel-heavy)
 results_df['regime'] = results_df.apply(
@@ -304,8 +254,8 @@ print(f"             AND above median efficiency {median_efficiency:.2f} Mvis/kW
 print("-"*80)
 if not sweet_spots.empty:
     for idx, row in sweet_spots.head(10).iterrows():
-        print(f"  Image: {row['Image Size']:5d}, Times: {row['Timesteps']:3d}, "
-              f"Chans: {row['Channels']:3d}, Mvis: {row['Mvis']:8.2f}, "
+        print(f"  Image: {row['Image Size']:5.0f}, Times: {row['Timesteps']:3.0f}, "
+              f"Chans: {row['Channels']:3.0f}, Mvis: {row['Mvis']:8.2f}, "
               f"Throughput: {row['Mvis/s']:.4f} Mvis/s, "
               f"Efficiency: {row['Mvis/kWh']:.2f} Mvis/kWh")
 else:
@@ -319,7 +269,7 @@ for im_size in im_sizes:
     subset = results_df[results_df['Image Size'] == im_size]
     avg_throughput = subset['Mvis/s'].mean()
     avg_efficiency = subset['Mvis/kWh'].mean()
-    print(f"  Image Size {im_size:5d}: Avg Throughput = {avg_throughput:.4f} Mvis/s, "
+    print(f"  Image Size {im_size:5.0f}: Avg Throughput = {avg_throughput:.4f} Mvis/s, "
           f"Avg Efficiency = {avg_efficiency:.2f} Mvis/kWh")
 
 # Scaling behavior
@@ -345,46 +295,3 @@ print(f"  Throughput ratio: {throughput_ratio:.2f}x")
 print(f"  Efficiency ratio: {efficiency_ratio:.2f}x")
 
 plt.show()
-
-
-# Example output using 5 years lifetime:
-# ================================================================================
-# KEY INSIGHTS
-# ================================================================================
-
-# Sweet spots (above median throughput 0.3969 Mvis/s
-#              AND above median efficiency 7829.74 Mvis/kWh):
-# --------------------------------------------------------------------------------
-#   Image: 16384, Times: 128, Chans: 128, Mvis:  2143.29, Throughput: 1.9543 Mvis/s, Efficiency: 40542.43 Mvis/kWh
-#   Image: 32768, Times: 128, Chans: 128, Mvis:  2143.29, Throughput: 1.9016 Mvis/s, Efficiency: 39165.28 Mvis/kWh
-#   Image: 16384, Times:  64, Chans: 128, Mvis:  1071.64, Throughput: 1.8965 Mvis/s, Efficiency: 39014.99 Mvis/kWh
-#   Image:  8192, Times: 128, Chans: 128, Mvis:  2143.29, Throughput: 1.8782 Mvis/s, Efficiency: 38660.05 Mvis/kWh
-#   Image:  4096, Times: 128, Chans: 128, Mvis:  2143.29, Throughput: 1.8253 Mvis/s, Efficiency: 37622.80 Mvis/kWh
-#   Image:  8192, Times:  64, Chans: 128, Mvis:  1071.64, Throughput: 1.8217 Mvis/s, Efficiency: 37300.97 Mvis/kWh
-#   Image:  4096, Times:  64, Chans: 128, Mvis:  1071.64, Throughput: 1.8079 Mvis/s, Efficiency: 37241.20 Mvis/kWh
-#   Image: 32768, Times:  64, Chans: 128, Mvis:  1071.64, Throughput: 1.7523 Mvis/s, Efficiency: 36030.97 Mvis/kWh
-#   Image: 16384, Times: 128, Chans:  64, Mvis:  1071.64, Throughput: 1.6994 Mvis/s, Efficiency: 35060.25 Mvis/kWh
-#   Image:  8192, Times: 128, Chans:  64, Mvis:  1071.64, Throughput: 1.6749 Mvis/s, Efficiency: 34380.95 Mvis/kWh
-
-# ================================================================================
-# EFFICIENCY TRENDS BY IMAGE SIZE
-# ================================================================================
-#   Image Size  4096: Avg Throughput = 0.7030 Mvis/s, Avg Efficiency = 14369.33 Mvis/kWh
-#   Image Size  8192: Avg Throughput = 0.7132 Mvis/s, Avg Efficiency = 14501.42 Mvis/kWh
-#   Image Size 16384: Avg Throughput = 0.7059 Mvis/s, Avg Efficiency = 14372.99 Mvis/kWh
-#   Image Size 32768: Avg Throughput = 0.6037 Mvis/s, Avg Efficiency = 12250.76 Mvis/kWh
-
-# ================================================================================
-# SCALING BEHAVIOR
-# ================================================================================
-# Small workloads (Mvis < 8.37):
-#   Avg Throughput: 0.0159 Mvis/s
-#   Avg Efficiency: 308.35 Mvis/kWh
-
-# Large workloads (Mvis > 133.96):
-#   Avg Throughput: 1.7263 Mvis/s
-#   Avg Efficiency: 35482.42 Mvis/kWh
-
-# Scaling from small to large workloads:
-#   Throughput ratio: 108.85x
-#   Efficiency ratio: 115.07x

@@ -4,6 +4,8 @@ import matplotlib
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 
 # ----------------------------
 # Data
@@ -11,7 +13,7 @@ import numpy as np
 # Power caps (MW) - 2 to 5 MW
 power_caps = np.array([1, 2, 3, 4, 5])
 
-# Compute requirements in PFLOPS for SKA1-Low and SKA1-Mid
+# Compute requirements in PFLOPS for SKA-Low and SKA-Mid
 ska_low_pflops = [16, 41.5]
 ska_mid_pflops = [20, 72]
 
@@ -40,24 +42,24 @@ astro_high_avg = 0.15 * top500_avg
 # ----------------------------
 plt.figure(figsize=(8, 4.8))
 
-# SKA1-Low range - light blue band with diagonal hatch
+# SKA-Low range - light blue band with diagonal hatch
 plt.fill_between(
     power_caps, eff_low_min, eff_low_max,
-    color="#8cc3e1", alpha=0.5, label="SKA1-Low (required)",
+    facecolor="#8cc3e1", alpha=0.5,
     hatch='//', edgecolor="#084594", linewidth=0.0
 )
 
-# SKA1-Mid range - orange band with dotted hatch
+# SKA-Mid range - orange band with dotted hatch
 plt.fill_between(
     power_caps, eff_mid_min, eff_mid_max,
-    color="#dfb536", alpha=0.25, label="SKA1-Mid (required)",
+    facecolor="#dfb536", alpha=0.25,
     hatch='..', edgecolor="#7f2704", linewidth=0.0
 )
 
 # Astronomy utilization bands (hatching for texture)
 plt.axhspan(
     astro_low_avg, astro_high_avg,
-    color="#fbb4b9", alpha=0.5, label="Astronomy avg deployment (5–15%)",
+    facecolor="#fbb4b9", alpha=0.5,
     hatch='++', edgecolor="#7a0177", linewidth=0.0
 )
 
@@ -69,9 +71,9 @@ plt.axhspan(
 
 # Reference lines (made semi-transparent)
 plt.axhline(top500_avg, linestyle="--", linewidth=2, color="#030303",
-            alpha=0.4, label="Top500 avg (LINPACK) ~35 GFLOPS/W")
+            alpha=0.4)
 plt.axhline(top500_best, linestyle="-", linewidth=2, color="#006837",
-            alpha=0.4, label="Top500 best (Green500) ~73 GFLOPS/W")
+            alpha=0.4)
 
 # Annotate efficiency values for 2–5 MW points
 for i, p in enumerate(power_caps):
@@ -87,22 +89,59 @@ plt.grid(alpha=0.3, zorder=0)
 plt.ylim(0, 80)
 plt.xticks(power_caps)
 
-# Legend: smaller, single column, positioned in the white space
-# Using framealpha and edgecolor so hatched patches show nicely in legend too
+# Legend: smaller, single column, positioned in the white space.
+# Build explicit handles so the legend matches the plotted hatch, fill, and line styling.
+legend_handles = [
+    Patch(
+        facecolor="#8cc3e1",
+        edgecolor="#084594",
+        hatch='//',
+        alpha=0.5,
+        linewidth=0.0,
+        label="SKA-Low (required)",
+    ),
+    Patch(
+        facecolor="#dfb536",
+        edgecolor="#7f2704",
+        hatch='..',
+        alpha=0.25,
+        linewidth=0.0,
+        label="SKA-Mid (required)",
+    ),
+    Patch(
+        facecolor="#fbb4b9",
+        edgecolor="#7a0177",
+        hatch='++',
+        alpha=0.5,
+        linewidth=0.0,
+        label="Astronomy avg deployment (5–15%)",
+    ),
+    Line2D(
+        [0], [0],
+        linestyle="--",
+        linewidth=2,
+        color="#030303",
+        alpha=0.4,
+        label="Top500 avg (LINPACK) ~35 GFLOPS/W",
+    ),
+    Line2D(
+        [0], [0],
+        linestyle="-",
+        linewidth=2,
+        color="#006837",
+        alpha=0.4,
+        label="Top500 best (Green500) ~73 GFLOPS/W",
+    ),
+]
+
 leg = plt.legend(
+    handles=legend_handles,
     loc="lower right",
     fontsize=12,
     framealpha=0.9,
     bbox_to_anchor=(1.0, 0.48),
     ncol=1
 )
-# Improve legend patch edges for hatched items
-for patch in leg.legend_handles:
-    try:
-        patch.set_linewidth(0.8)
-        patch.set_edgecolor("black")
-    except Exception:
-        pass
 
 plt.tight_layout()
 
