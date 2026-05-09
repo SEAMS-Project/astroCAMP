@@ -34,18 +34,19 @@ It supports **hardware–software co-design** for SKA-scale workloads (SKA1-Low 
 
 ## Repository Structure
 
-| Directory | Contents |
-|---|---|
-| `scripts/` | All analysis and plotting scripts (Python only) |
-| `data/` | Primary input CSVs from Zenodo (tracked in git) |
-| `data/derived/` | Generated summary CSVs produced by scripts (tracked in git) |
-| `results/` | Generated figure outputs (PNG/PDF, gitignored) |
-| `docs/` | Metric specification, benchmarking protocol, and documentation index |
-| `baselines/` | Reference baseline pipeline descriptions (WSClean, IDG, BIPP) |
-| `configs/` | Configuration file templates for controlled experiments |
-| `datasets/` | Dataset generation recipe and descriptions (data itself is on Zenodo) |
-| `figures/paper_figs/` | Final publication-ready figures used in the paper |
-| `metrics/` | Metric definitions and evaluation utilities |
+| Directory               | Contents                                                              |
+| ----------------------- | --------------------------------------------------------------------- |
+| `scripts/`            | All analysis and plotting scripts (Python only)                       |
+| `data/`               | Primary input CSVs from Zenodo (tracked in git)                       |
+| `data/derived/`       | Generated summary CSVs produced by scripts (tracked in git)           |
+| `results/`            | Generated figure outputs (PNG/PDF, gitignored)                        |
+| `docs/`               | Metric specification, benchmarking protocol, and documentation index  |
+| `baselines/`          | Reference baseline pipeline descriptions (WSClean, IDG, BIPP)         |
+| `configs/`            | Configuration file templates for controlled experiments               |
+| `datasets/`           | Dataset generation recipe and descriptions (data itself is on Zenodo) |
+| `figures/paper_figs/` | Final publication-ready figures used in the paper                     |
+| `metrics/`            | Metric definitions and evaluation utilities                           |
+
 ---
 
 # 📐 **Core astroCAMP Co-Design Metrics**
@@ -53,59 +54,48 @@ It supports **hardware–software co-design** for SKA-scale workloads (SKA1-Low 
 astroCAMP defines **four co-design layers**, each quantifying a different aspect of imaging performance and scientific validity.
 All symbols are defined **inline** so the table is fully self-contained.
 
-
-
 ## **1. System-Level Metrics (End-to-End Execution on Heterogeneous Nodes)**
 
-| ID     | Metric             | Formula           | Unit           | Meaning & Notation                                          |
-| ------ | ------------------ | ----------------- | -------------- | ----------------------------------------------------------- |
-| **A1** | Time-to-solution   | `T_c`             | s              | Total job runtime. `T_c` = wall-clock time.                 |
-| **A2** | Energy-to-solution | `E_c = ∫ P(t) dt` | J              | Total energy. `P(t)` = instantaneous power.                 |
-| **A3** | Throughput         | `Θ = N / T_c`     | vis/s or img/s | Science processed per second. `N` = visibilities or images. |
-| **A4** | Energy efficiency  | `η_E = N / E_c`   | vis/J          | Visibilities per joule.                                     |
-
+| ID           | Metric             | Formula              | Unit           | Meaning & Notation                                           |
+| ------------ | ------------------ | -------------------- | -------------- | ------------------------------------------------------------ |
+| **A1** | Time-to-solution   | `T_c`              | s              | Total job runtime.`T_c` = wall-clock time.                 |
+| **A2** | Energy-to-solution | `E_c = ∫ P(t) dt` | J              | Total energy.`P(t)` = instantaneous power.                 |
+| **A3** | Throughput         | `Θ = N / T_c`     | vis/s or img/s | Science processed per second.`N` = visibilities or images. |
+| **A4** | Energy efficiency  | `η_E = N / E_c`   | vis/J          | Visibilities per joule.                                      |
 
 ## **2. Platform-Level Metrics (CPU / GPU / FPGA / ASIC Devices)**
 
-| ID     | Metric            | Formula                  | Unit | Meaning & Notation                                |
-| ------ | ----------------- | ------------------------ | ---- | ------------------------------------------------- |
-| **A5** | Utilisation       | `U = t_active / t_total` | –    | Device activity. `t_active` = active kernel time. |
-| **A6** | Memory bandwidth  | `B_mem = Bytes / T_c`    | GB/s | Sustained device memory throughput.               |
-| **A7** | Peak memory usage | `M_peak`                 | GB   | Maximum resident memory footprint.                |
-
-
+| ID           | Metric            | Formula                    | Unit | Meaning & Notation                                 |
+| ------------ | ----------------- | -------------------------- | ---- | -------------------------------------------------- |
+| **A5** | Utilisation       | `U = t_active / t_total` | –   | Device activity.`t_active` = active kernel time. |
+| **A6** | Memory bandwidth  | `B_mem = Bytes / T_c`    | GB/s | Sustained device memory throughput.                |
+| **A7** | Peak memory usage | `M_peak`                 | GB   | Maximum resident memory footprint.                 |
 
 ## **3. Algorithmic Quality Metrics (Scientific Validity)**
 
-| ID   | Metric                 | Formula                                           | Unit    | Meaning & Notation (Self-contained)                                                                                                                                               |
-|------|------------------------|---------------------------------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| B1   | Dirty-image RMS        | `σ_dirty = sqrt( (1/N) Σ (I_i – Ī)² )`            | Jy/beam | Noise + artefacts in the dirty image. `I_i` = pixel values; `Ī` = mean pixel intensity; `N` = number of pixels; `σ_dirty` = root-mean-square deviation from the mean.             |
-| B2   | PSNR / SSIM            | `PSNR = 10 log10( I_max² / MSE )`                 | dB / –  | Fidelity vs reference image `I_ref`. `I_max` = maximum pixel value; `MSE` = mean squared error between reconstruction `Ĩ` and `I_ref`; SSIM = structural similarity between them. |
-| B3   | Dynamic range          | `DR = I_max / σ_res`                              | –       | Ratio of peak brightness to residual noise. `I_max` = brightest pixel in the image; `σ_res` = RMS of the residual image; higher `DR` = better faint-source detectability.         |
-| B4   | Astrometric error      | `ε_astro = (1/N) Σ L2(x_i – x_i_ref)`           | arcsec or px | Position error of detected sources. `x_i` = measured source positions; `x_i_ref` = reference (catalogue) positions; `ε_astro` = mean positional offset over `N` sources.     |
-| B5   | Photometric error      | `ε_photo = (1/N) Σ L1(S_i – S_i_ref)`             | Jy      | Flux-density error. `S_i` = measured flux densities; `S_i_ref` = reference fluxes; `ε_photo` = mean absolute flux difference over `N` matched sources.                            |
-| B6   | Spectral fidelity      | `ε_spec = (1/N_ν) Σ L1 (I(ν) – I_ref(ν))`          | Jy      | Per-channel spectral error. `I(ν)` = reconstructed intensity at frequency `ν`; `I_ref(ν)` = reference intensity; `N_ν` = number of frequency channels; `ε_spec` = mean absolute per-channel deviation. |
-
-
+| ID | Metric            | Formula                                           | Unit         | Meaning & Notation (Self-contained)                                                                                                                                                                                  |
+| -- | ----------------- | ------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B1 | Dirty-image RMS   | `σ_dirty = sqrt( (1/N) Σ (I_i – Ī)² )`     | Jy/beam      | Noise + artefacts in the dirty image.`I_i` = pixel values; `Ī` = mean pixel intensity; `N` = number of pixels; `σ_dirty` = root-mean-square deviation from the mean.                                       |
+| B2 | PSNR / SSIM       | `PSNR = 10 log10( I_max² / MSE )`              | dB / –      | Fidelity vs reference image `I_ref`. `I_max` = maximum pixel value; `MSE` = mean squared error between reconstruction `Ĩ` and `I_ref`; SSIM = structural similarity between them.                         |
+| B3 | Dynamic range     | `DR = I_max / σ_res`                           | –           | Ratio of peak brightness to residual noise.`I_max` = brightest pixel in the image; `σ_res` = RMS of the residual image; higher `DR` = better faint-source detectability.                                      |
+| B4 | Astrometric error | `ε_astro = (1/N) Σ L2(x_i – x_i_ref)`        | arcsec or px | Position error of detected sources.`x_i` = measured source positions; `x_i_ref` = reference (catalogue) positions; `ε_astro` = mean positional offset over `N` sources.                                     |
+| B5 | Photometric error | `ε_photo = (1/N) Σ L1(S_i – S_i_ref)`        | Jy           | Flux-density error.`S_i` = measured flux densities; `S_i_ref` = reference fluxes; `ε_photo` = mean absolute flux difference over `N` matched sources.                                                       |
+| B6 | Spectral fidelity | `ε_spec = (1/N_ν) Σ L1 (I(ν) – I_ref(ν))` | Jy           | Per-channel spectral error.`I(ν)` = reconstructed intensity at frequency `ν`; `I_ref(ν)` = reference intensity; `N_ν` = number of frequency channels; `ε_spec` = mean absolute per-channel deviation. |
 
 ## **4. Sustainability Metrics (Energy → Carbon)**
 
-| ID     | Metric             | Formula              | Unit      | Meaning & Notation                                  |
-| ------ | ------------------ | -------------------- | --------- | --------------------------------------------------- |
-| **C1** | Carbon-to-solution | `C_c = E_c * κ(t,r)` | gCO₂e     | Carbon footprint. `κ(t,r)` = grid carbon intensity. |
-| **C2** | Carbon efficiency  | `η_C = N / C_c`      | vis/gCO₂e | Science per gram CO₂ emitted.                       |
-
-
+| ID           | Metric             | Formula                 | Unit       | Meaning & Notation                                    |
+| ------------ | ------------------ | ----------------------- | ---------- | ----------------------------------------------------- |
+| **C1** | Carbon-to-solution | `C_c = E_c * κ(t,r)` | gCO₂e     | Carbon footprint.`κ(t,r)` = grid carbon intensity. |
+| **C2** | Carbon efficiency  | `η_C = N / C_c`      | vis/gCO₂e | Science per gram CO₂ emitted.                        |
 
 ## **5. Economic Metrics (Cost-Aware Co-Design)**
 
-| ID     | Metric                  | Formula                    | Unit  | Meaning & Notation                                  |
-| ------ | ----------------------- | -------------------------- | ----- | --------------------------------------------------- |
-| **E1** | Total cost of ownership | `C_TTO = C_capex + C_opex` | €     | Hardware lifetime cost.                             |
-| **E2** | Cost per job            | `C_E = E_c * p_E`          | €     | Monetary execution cost. `p_E` = electricity price. |
-| **E3** | Cost efficiency         | `Θ / C_TTO`                | ops/€ | Science per euro invested.                          |
-
-
+| ID           | Metric                  | Formula                      | Unit   | Meaning & Notation                                   |
+| ------------ | ----------------------- | ---------------------------- | ------ | ---------------------------------------------------- |
+| **E1** | Total cost of ownership | `C_TTO = C_capex + C_opex` | €     | Hardware lifetime cost.                              |
+| **E2** | Cost per job            | `C_E = E_c * p_E`          | €     | Monetary execution cost.`p_E` = electricity price. |
+| **E3** | Cost efficiency         | `Θ / C_TTO`               | ops/€ | Science per euro invested.                           |
 
 # Quick Start
 
@@ -131,6 +121,7 @@ python scripts/regenerate_all_plots.py
 ```
 
 Alternatively, using conda:
+
 ```bash
 conda env create -f environment.yml
 conda activate astrocamp
@@ -143,31 +134,31 @@ conda activate astrocamp
 All figures are regenerated by `python scripts/regenerate_all_plots.py`.
 Individual scripts can also be run directly from the repo root:
 
-| Script | Description |
-|---|---|
-| `pasc2025_paper_analysis_plots.py` | Main analysis: energy, throughput, carbon, cost facet plots |
-| `plot9b_flagship_energy_stack_throughput_facets_linear.py` | Flagship energy + throughput (linear scale) |
-| `plot10b_carbon_cost_efficiency_facets_conference.py` | Carbon & cost efficiency — conference layout |
-| `plot17b_kernel_time_breakdown_with_disk.py` | Kernel time breakdown including disk I/O |
-| `plot19e_largest_image_kernel_wall_saturation_signals_active_by_c.py` | GPU saturation signals for largest image |
-| `plot25_cpu_roofline_stacking.py` | CPU roofline model with stacking |
-| `plot25c_cpu_roofline_scalability_comparison.py` | CPU roofline scalability comparison |
-| `plot26_gpu_cpu_roofline_comparison_conference.py` | GPU vs CPU roofline — conference layout |
-| `plot26b_cpu_execution_comparison_conference.py` | CPU execution time comparison |
-| `plot27_hotspots_summary.py` | AMD uProf hotspot summary |
-| `plot28_darshan_io_summary.py` | Darshan I/O summary |
-| `plot29_gpu_bytes_per_joule.py` | GPU data movement efficiency (GB/J) |
-| `plot32b_idg_data_movement_gb_per_joule.py` | IDG data movement efficiency (GB/J) |
-| `plot33_problem_sizes_memory_io_overview.py` | Problem size × memory × I/O overview |
-| `plot34e_large_problem_size_with_gbj_by_c_single_column.py` | Large problem sizes with GB/J |
-| `plot34f_largest_problem_size_with_gbj_by_c.py` | Largest (32k²) problem size with GB/J |
-| `plot_cpu_scaling.py` | CPU thread scalability: time and speedup |
-| `plot_key_takeaway.py` | Key takeaway composite efficiency figure |
-| `plot_largest_bars_and_lines.py` | Component energy breakdown for largest image |
-| `plot_largest_image_metrics_comparison.py` | Efficiency metrics: WA vs SA location |
-| `plot_lifetime_breakdown_comparison.py` | Lifetime carbon & cost breakdown by location |
-| `plot_performance_vs_workload.py` | Throughput and energy efficiency vs workload |
-| `plot_regime_heatmaps.py` | Regime heatmaps (throughput, energy, carbon, cost) |
+| Script                                                                  | Description                                                 |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `pasc2025_paper_analysis_plots.py`                                    | Main analysis: energy, throughput, carbon, cost facet plots |
+| `plot9b_flagship_energy_stack_throughput_facets_linear.py`            | Flagship energy + throughput (linear scale)                 |
+| `plot10b_carbon_cost_efficiency_facets_conference.py`                 | Carbon & cost efficiency — conference layout               |
+| `plot17b_kernel_time_breakdown_with_disk.py`                          | Kernel time breakdown including disk I/O                    |
+| `plot19e_largest_image_kernel_wall_saturation_signals_active_by_c.py` | GPU saturation signals for largest image                    |
+| `plot25_cpu_roofline_stacking.py`                                     | CPU roofline model with stacking                            |
+| `plot25c_cpu_roofline_scalability_comparison.py`                      | CPU roofline scalability comparison                         |
+| `plot26_gpu_cpu_roofline_comparison_conference.py`                    | GPU vs CPU roofline — conference layout                    |
+| `plot26b_cpu_execution_comparison_conference.py`                      | CPU execution time comparison                               |
+| `plot27_hotspots_summary.py`                                          | AMD uProf hotspot summary                                   |
+| `plot28_darshan_io_summary.py`                                        | Darshan I/O summary                                         |
+| `plot29_gpu_bytes_per_joule.py`                                       | GPU data movement efficiency (GB/J)                         |
+| `plot32b_idg_data_movement_gb_per_joule.py`                           | IDG data movement efficiency (GB/J)                         |
+| `plot33_problem_sizes_memory_io_overview.py`                          | Problem size × memory × I/O overview                      |
+| `plot34e_large_problem_size_with_gbj_by_c_single_column.py`           | Large problem sizes with GB/J                               |
+| `plot34f_largest_problem_size_with_gbj_by_c.py`                       | Largest (32k²) problem size with GB/J                      |
+| `plot_cpu_scaling.py`                                                 | CPU thread scalability: time and speedup                    |
+| `plot_key_takeaway.py`                                                | Key takeaway composite efficiency figure                    |
+| `plot_largest_bars_and_lines.py`                                      | Component energy breakdown for largest image                |
+| `plot_largest_image_metrics_comparison.py`                            | Efficiency metrics: WA vs SA location                       |
+| `plot_lifetime_breakdown_comparison.py`                               | Lifetime carbon & cost breakdown by location                |
+| `plot_performance_vs_workload.py`                                     | Throughput and energy efficiency vs workload                |
+| `plot_regime_heatmaps.py`                                             | Regime heatmaps (throughput, energy, carbon, cost)          |
 
 ---
 
@@ -177,26 +168,34 @@ Individual scripts can also be run directly from the repo root:
 - [docs/protocol_v0.1.md](docs/protocol_v0.1.md) — benchmarking protocol
 - [docs/index.md](docs/index.md) — documentation index
 
+## PREESM
+
+The simulator used to generate heterogeneous conmfigurations is available on [framagit](https://framagit.org/eclat/breizh-hackathon/simulateur.git).
+
 ---
+
+## Code of Conduct
+
+We follow the [NumFOCUS Code of Conduct](https://numfocus.org/code-of-conduct).
 
 ## Authors astroCAMP Dataset
 
-| Name | Affiliation | Role |
-|---|---|---|
-| Orliac, Etienne Jacques | École Polytechnique Fédérale de Lausanne | Data collector |
+| Name                           | Affiliation                                               | Role           |
+| ------------------------------ | --------------------------------------------------------- | -------------- |
+| Orliac, Etienne Jacques        | École Polytechnique Fédérale de Lausanne               | Data collector |
 | Constantinescu, Denisa-Andreea | EPFL-EcoCloud, Laboratoire des systèmes embarqués, EPFL | Project leader |
-| Rodriguez Alvarez, Ruben | École Polytechnique Fédérale de Lausanne | Researcher |
-| Morin, Jacques | Université de Rennes | Researcher |
-| Dardaillon, Mickael | Institut National des Sciences Appliquées de Rennes | Project member |
-| Wang, Sunrise | Observatoire de la Côte d'Azur | Researcher |
-| Miomandre, Hugo | — | Project member |
-| Javier Russo, Antonio | Swiss Federal Institute of Technology in Lausanne | Other |
-| Mbuyi, Junior | Swiss Federal Institute of Technology in Lausanne | Other |
-| Lopes, Yves | Swiss Federal Institute of Technology in Lausanne | Other |
-| Nezan, Jean-François | — | Project member |
-| Ouvrard, Xavier | Swiss Federal Institute of Technology in Lausanne | Data collector |
-| Peón-Quirós, Miguel | École Polytechnique Fédérale de Lausanne | Project leader |
-| Atienza Alonso, David | École Polytechnique Fédérale de Lausanne (EPFL) | Project member |
+| Rodriguez Alvarez, Ruben       | École Polytechnique Fédérale de Lausanne               | Researcher     |
+| Morin, Jacques                 | Université de Rennes                                     | Researcher     |
+| Dardaillon, Mickael            | Institut National des Sciences Appliquées de Rennes      | Project member |
+| Wang, Sunrise                  | Observatoire de la Côte d'Azur                           | Researcher     |
+| Miomandre, Hugo                | —                                                        | Project member |
+| Javier Russo, Antonio          | Swiss Federal Institute of Technology in Lausanne         | Other          |
+| Mbuyi, Junior                  | Swiss Federal Institute of Technology in Lausanne         | Other          |
+| Lopes, Yves                    | Swiss Federal Institute of Technology in Lausanne         | Other          |
+| Nezan, Jean-François          | —                                                        | Project member |
+| Ouvrard, Xavier                | Swiss Federal Institute of Technology in Lausanne         | Data collector |
+| Peón-Quirós, Miguel          | École Polytechnique Fédérale de Lausanne               | Project leader |
+| Atienza Alonso, David          | École Polytechnique Fédérale de Lausanne (EPFL)        | Project member |
 
 ---
 
