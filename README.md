@@ -178,7 +178,8 @@ The simulator used to generate heterogeneous conmfigurations is available on [fr
 
 We follow the [NumFOCUS Code of Conduct](https://numfocus.org/code-of-conduct).
 
-## Authors astroCAMP Dataset
+## Authors astroCAMP Dataset Contributors
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20093790.svg)](https://doi.org/10.5281/zenodo.20093790)
 
 | Name                           | Affiliation                                               | Role           |
 | ------------------------------ | --------------------------------------------------------- | -------------- |
@@ -209,7 +210,7 @@ If you use astroCAMP or the companion dataset in your research, please cite:
   title     = {astroCAMP: A Co-design Analysis and Metrics Platform for SKA-scale Radio Interferometric Imaging},
   booktitle = {Proceedings of the Platform for Advanced Scientific Computing (PASC) Conference},
   year      = {2026},
-  doi       = {[https://arxiv.org/abs/2512.13591](https://arxiv.org/abs/2512.13591)},
+  doi       = {https://doi.org/10.48550/arXiv.2512.13591},
 }
 ```
 
