@@ -1,6 +1,5 @@
 # astroCAMP — PASC 2026 Companion Repository
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20093790.svg)](https://doi.org/10.5281/zenodo.20093790)
 [![License](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg)](LICENSE)
 
 <img width="682" height="425" alt="astroCAMP overview" src="https://github.com/user-attachments/assets/20cc4fcc-3351-45a1-a5c9-6c1f0e505557" />
@@ -173,15 +172,15 @@ We follow the [NumFOCUS Code of Conduct](https://numfocus.org/code-of-conduct).
 
 ## Datasets & Traces (Zenodo)
 
-> The benchmark datasets and raw measurement traces used to produce all figures in this paper are published separately on Zenodo:
+> The benchmark datasets and raw measurement traces used to produce all figures in this paper are published separately on Zenodo.
 >
-> **DOI: [10.5281/zenodo.20093790](https://doi.org/10.5281/zenodo.20093790)**
+
 >
 > Download the archive and place the CSV files under `data/` before running any plot scripts (see Quick Start below).
 
 
 ## astroCAMP Dataset Contributors
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20093790.svg)](https://doi.org/10.5281/zenodo.20093790)
+
 
 | Name                           | Affiliation                                               | Role           |
 | ------------------------------ | --------------------------------------------------------- | -------------- |
@@ -191,12 +190,12 @@ We follow the [NumFOCUS Code of Conduct](https://numfocus.org/code-of-conduct).
 | Morin, Jacques                 | Université de Rennes                                     | Researcher     |
 | Dardaillon, Mickael            | Institut National des Sciences Appliquées de Rennes      | Project member |
 | Wang, Sunrise                  | Observatoire de la Côte d'Azur                           | Researcher     |
-| Miomandre, Hugo                | —                                                        | Project member |
+| Miomandre, Hugo                | Université de Rennes                                     | Project member |
 | Mbuyi, Junior                  | Swiss Federal Institute of Technology in Lausanne         | Other          |
 | Lopes, Yves                    | Swiss Federal Institute of Technology in Lausanne         | Other          |
 | Ouvrard, Xavier                | Swiss Federal Institute of Technology in Lausanne         | Data collector |
-| Peón-Quirós, Miguel          | École Polytechnique Fédérale de Lausanne               | Project leader |
-| Nezan, Jean-François          | —                                                        | Project member |
+| Peón-Quirós, Miguel            | École Polytechnique Fédérale de Lausanne               | Project leader |
+| Nezan, Jean-François           | Université de Rennes                                  | Project member |
 | Atienza Alonso, David          | École Polytechnique Fédérale de Lausanne (EPFL)        | Project member |
 
 ---
@@ -206,13 +205,25 @@ We follow the [NumFOCUS Code of Conduct](https://numfocus.org/code-of-conduct).
 If you use astroCAMP or the companion dataset in your research, please cite:
 
 ```bibtex
-@inproceedings{astrocamp_pasc26,
+
+@inproceedings{astroCAMPpasc26,
   authors   = {Denisa-Andreea Constantinescu, Rubén Rodríguez Álvarez, Jacques Morin, Etienne Orliac, Mickaël Dardaillon, Sunrise Wang, Hugo Miomandre, Miguel Peón-Quirós, Jean-François Nezan, David Atienza},
   title     = {astroCAMP: A Co-design Analysis and Metrics Platform for SKA-scale Radio Interferometric Imaging},
   booktitle = {Proceedings of the Platform for Advanced Scientific Computing (PASC) Conference},
   year      = {2026},
   doi       = {https://doi.org/10.48550/arXiv.2512.13591},
 }
+
+@dataset{astroCAMPdata2026,
+  author       = { Etienne Orliac,  Denisa-Andreea Constantinescu,  Rubén Rodríguez Álvarez, Jacques Morin,  Mickaël Dardaillon, Sunrise Wang, Hugo Miomandre, Junior Mbuyi, Yves Lopes, Xavier Ouvrard,  Miguel Peón-Quirós, Jean-François Nezan, David Atienza},
+  title        = {{astroCAMP-data-v1.0}: {SKA}-{Low} visibility datasets and reference dirty images for cross-layer co-design benchmarking},
+  year         = {2026},
+  publisher    = {Zenodo},
+  version      = {1.0},
+  doi          = {10.5281/zenodo.20093790},
+  url          = {https://doi.org/10.5281/zenodo.20093790}
+}
+
 ```
 
 ---
