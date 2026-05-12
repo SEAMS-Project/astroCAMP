@@ -160,7 +160,7 @@ Individual scripts can also be run directly from the repo root:
 
 ## PREESM
 
-The simulator used to generate heterogeneous configurations is available under data/simulator or on gitlab : https://gitlab.insa-rennes.fr/jamorin/simulateur.
+The simulator used to generate heterogeneous configurations is available under [simulateur](simulateur) and mainatined on gitlab : https://gitlab.insa-rennes.fr/jamorin/simulateur.
 
 ---
 
