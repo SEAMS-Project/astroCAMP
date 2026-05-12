@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <flags>
+        <sizesAreInBit/>
+    </flags>
+    <files>
+        <algorithm url="/simulateur/Algo/FFT2D_cpu.pi"/>
+        <architecture url="/simulateur/Archi/1CoreX86.slam"/>
+        <codegenDirectory url="/simulateur/Code/gen_FFT_full_cpu_1core/"/>
+    </files>
+    <constraints excelUrl="">
+        <constraintGroup>
+            <operator name="Core0"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu"/>
+            <task name="FFT2D_cpu/degridder_parallel/Degridder"/>
+            <task name="FFT2D_cpu/degridder_parallel/iterator"/>
+            <task name="FFT2D_cpu/degridder_parallel"/>
+        </constraintGroup>
+    </constraints>
+    <timings excelUrl="">
+        <memcpyspeed opname="x86" setuptime="1" timeperunit="0.001"/>
+    </timings>
+    <simuParams>
+        <mainCore>Core0</mainCore>
+        <mainComNode>shared_mem</mainComNode>
+        <averageDataSize>1000</averageDataSize>
+        <dataTypes>
+            <dataType name="cmpxDataOut" size="64"/>
+            <dataType name="float" size="32"/>
+            <dataType name="std::complex&lt;float&gt;" size="64"/>
+            <dataType name="cmpxDataIn" size="64"/>
+            <dataType name="PRECISION2" size="128"/>
+            <dataType name="PRECISION" size="64"/>
+            <dataType name="int2" size="64"/>
+            <dataType name="PRECISION3" size="192"/>
+            <dataType name="Config" size="2432"/>
+            <dataType name="double" size="64"/>
+            <dataType name="int" size="32"/>
+            <dataType name="float2" size="64"/>
+            <dataType name="float3" size="96"/>
+        </dataTypes>
+        <specialVertexOperators>
+            <specialVertexOperator path="Core0"/>
+        </specialVertexOperators>
+    </simuParams>
+    <parameterValues/>
+    <papifyConfigs xmlUrl=""/>
+    <energyConfigs xmlUrl="">
+        <performanceObjective objectiveEPS="0.0"/>
+        <pePower opName="Base" pePower="10.0"/>
+        <pePower opName="x86" pePower="10.0"/>
+        <peActorsEnergy/>
+    </energyConfigs>
+</scenario>

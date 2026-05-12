@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+   <vertices>
+      <vertex id="core0" x="57" y="70"/>
+      <vertex id="shared_mem" x="224" y="130"/>
+      <vertex id="KRIA260" x="57" y="189"/>
+      <vertex id="core1" x="334" y="72"/>
+      <vertex id="core2" x="188" y="34"/>
+      <vertex id="core3" x="382" y="170"/>
+   </vertices>
+</layout>

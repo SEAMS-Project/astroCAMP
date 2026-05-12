@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+    <graph edgedefault="directed">
+        <data key="name">top_degridder</data>
+        <node expr="2560.0" id="GRID_SIZE" kind="param"/>
+        <node expr="3924480.0" id="NUM_VISIBILITIES" kind="param"/>
+        <node expr="16.0" id="OVERSAMPLING_FACTOR" kind="param"/>
+        <node expr="17.0" id="NUM_KERNELS" kind="param"/>
+        <node expr="NUM_KERNELS*NUMBER_SAMPLE_IN_KERNEL" id="TOTAL_KERNELS_SAMPLES" kind="param"/>
+        <node expr="pow((NUM_KERNEL_SUPPORT+1)*OVERSAMPLING_FACTOR,2)" id="NUMBER_SAMPLE_IN_KERNEL" kind="param"/>
+        <node expr="16.0" id="NUM_KERNEL_SUPPORT" kind="param"/>
+        <node expr="1.0" id="NUM_SCENARIO" kind="param"/>
+        <node id="config_struct_set_up" kind="actor">
+            <data key="graph_desc">Code/include/top.h</data>
+            <loop name="config_struct_set_up">
+                <param direction="IN" isConfig="true" name="GRID_SIZE" type="int"/>
+                <param direction="IN" isConfig="true" name="NUM_KERNELS" type="int"/>
+                <param direction="IN" isConfig="true" name="NUM_SCENARIO" type="int"/>
+                <param direction="OUT" isConfig="false" name="config_struct" type="Config"/>
+            </loop>
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port kind="cfg_input" name="NUM_KERNELS"/>
+            <port kind="cfg_input" name="NUM_SCENARIO"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="config_struct"/>
+        </node>
+        <node id="broadcast_config" kind="broadcast">
+            <port annotation="NONE" expr="1.0" kind="input" name="input"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="degridder"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="visibility_host_setup"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="vis_to_csv"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="fft_real_to_complex"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="load_image_from_file"/>
+        </node>
+        <node id="visibility_host_set_up" kind="actor">
+            <data key="graph_desc">Code/include/top.h</data>
+            <loop name="visibility_host_set_up2">
+                <param direction="IN" isConfig="true" name="NUM_VISIBILITIES" type="int"/>
+                <param direction="IN" isConfig="false" name="config" type="Config"/>
+                <param direction="OUT" isConfig="false" name="vis_uvw_coords" type="float3"/>
+            </loop>
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port annotation="READ_ONLY" expr="1.0" kind="input" name="config"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="output" name="vis_uvw_coords"/>
+        </node>
+        <node id="convert_vis_to_csv" kind="actor">
+            <data key="graph_desc">Code/include/vis_to_csv.h</data>
+            <loop name="convert_vis_to_csv">
+                <param direction="IN" isConfig="true" name="NUM_VISIBILITIES" type="int"/>
+                <param direction="IN" isConfig="false" name="output_visibilities" type="float2"/>
+                <param direction="IN" isConfig="false" name="vis_uvw_coords" type="float3"/>
+                <param direction="IN" isConfig="false" name="config" type="Config"/>
+            </loop>
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="input" name="output_visibilities"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="input" name="vis_uvw_coords"/>
+            <port annotation="NONE" expr="1.0" kind="input" name="config"/>
+        </node>
+        <node id="broadcast_vis_uvw_coords" kind="broadcast">
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="input" name="vis_uvw_coords"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="output" name="degridder"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="output" name="vis_to_csv"/>
+        </node>
+        <node id="CUFFT_EXECUTE_FORWARD_C2C_actor" kind="actor">
+            <data key="graph_desc">Code/include/fft_run.h</data>
+            <loop name="CUFFT_EXECUTE_FORWARD_C2C_actor">
+                <param direction="IN" isConfig="true" name="GRID_SIZE" type="int"/>
+                <param direction="IN" isConfig="false" name="uv_grid_in" type="float2"/>
+                <param direction="OUT" isConfig="false" name="uv_grid_out" type="float2"/>
+            </loop>
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port annotation="READ_ONLY" expr="GRID_SIZE*GRID_SIZE" kind="input" name="uv_grid_in"/>
+            <port annotation="WRITE_ONLY" expr="GRID_SIZE*GRID_SIZE" kind="output" name="uv_grid_out"/>
+        </node>
+        <node id="fft_shift_complex_to_complex_actor" kind="actor">
+            <data key="graph_desc">Code/include/fft_run.h</data>
+            <loop name="fft_shift_complex_to_complex_actor">
+                <param direction="IN" isConfig="true" name="GRID_SIZE" type="int"/>
+                <param direction="IN" isConfig="false" name="uv_grid_in" type="float2"/>
+                <param direction="OUT" isConfig="false" name="uv_grid_out" type="float2"/>
+            </loop>
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port annotation="READ_ONLY" expr="GRID_SIZE*GRID_SIZE" kind="input" name="uv_grid_in"/>
+            <port annotation="WRITE_ONLY" expr="GRID_SIZE*GRID_SIZE" kind="output" name="uv_grid_out"/>
+        </node>
+        <node id="fft_shift_real_to_complex_actor" kind="actor">
+            <data key="graph_desc">Code/include/fft_run.h</data>
+            <loop name="fft_shift_real_to_complex_actor">
+                <param direction="IN" isConfig="true" name="GRID_SIZE" type="int"/>
+                <param direction="IN" isConfig="false" name="input_grid" type="float"/>
+                <param direction="IN" isConfig="false" name="config" type="Config"/>
+                <param direction="OUT" isConfig="false" name="fourier" type="float2"/>
+            </loop>
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port annotation="NONE" expr="1.0" kind="input" name="config"/>
+            <port annotation="NONE" expr="GRID_SIZE*GRID_SIZE" kind="input" name="input_grid"/>
+            <port annotation="NONE" expr="GRID_SIZE*GRID_SIZE" kind="output" name="fourier"/>
+        </node>
+        <node id="load_image_from_file" kind="actor">
+            <data key="graph_desc">Code/include/top.h</data>
+            <loop name="load_image_from_file">
+                <param direction="IN" isConfig="true" name="GRID_SIZE" type="int"/>
+                <param direction="IN" isConfig="false" name="config" type="Config"/>
+                <param direction="OUT" isConfig="false" name="output" type="float"/>
+            </loop>
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port annotation="NONE" expr="1.0" kind="input" name="config"/>
+            <port annotation="NONE" expr="GRID_SIZE*GRID_SIZE" kind="output" name="output"/>
+        </node>
+        <node id="degridder_parallel" kind="actor">
+            <data key="graph_desc">Algo/degridder_actor.pi</data>
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port kind="cfg_input" name="NUM_KERNELS"/>
+            <port kind="cfg_input" name="TOTAL_KERNELS_SAMPLES"/>
+            <port kind="cfg_input" name="OVERSAMPLING_FACTOR"/>
+            <port annotation="NONE" expr="GRID_SIZE*GRID_SIZE" kind="input" name="input_grid"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="input" name="vis_uvw_coord"/>
+            <port annotation="NONE" expr="NUM_KERNELS" kind="input" name="support"/>
+            <port annotation="NONE" expr="TOTAL_KERNELS_SAMPLES" kind="input" name="kernels"/>
+            <port annotation="NONE" expr="1.0" kind="input" name="config"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="output" name="output_visibilities"/>
+        </node>
+        <node id="generate_kernels" kind="actor">
+            <data key="graph_desc">Code/include/top.h</data>
+            <loop name="generate_kernel">
+                <param direction="IN" isConfig="true" name="NUM_KERNELS" type="int"/>
+                <param direction="IN" isConfig="true" name="OVERSAMPLING_FACTOR" type="int"/>
+                <param direction="IN" isConfig="true" name="NUM_KERNEL_SUPPORT" type="int"/>
+                <param direction="IN" isConfig="true" name="TOTAL_KERNELS_SAMPLES" type="int"/>
+                <param direction="OUT" isConfig="false" name="kernels" type="float2"/>
+                <param direction="OUT" isConfig="false" name="kernel_supports" type="int2"/>
+            </loop>
+            <port kind="cfg_input" name="NUM_KERNELS"/>
+            <port kind="cfg_input" name="OVERSAMPLING_FACTOR"/>
+            <port kind="cfg_input" name="TOTAL_KERNELS_SAMPLES"/>
+            <port kind="cfg_input" name="NUM_KERNEL_SUPPORT"/>
+            <port annotation="NONE" expr="TOTAL_KERNELS_SAMPLES" kind="output" name="kernels"/>
+            <port annotation="NONE" expr="NUM_KERNELS" kind="output" name="kernel_supports"/>
+        </node>
+        <edge kind="fifo" source="config_struct_set_up" sourceport="config_struct" target="broadcast_config" targetport="input" type="Config"/>
+        <edge kind="fifo" source="broadcast_config" sourceport="degridder" target="degridder_parallel" targetport="config" type="Config"/>
+        <edge kind="fifo" source="broadcast_config" sourceport="visibility_host_setup" target="visibility_host_set_up" targetport="config" type="Config"/>
+        <edge kind="fifo" source="visibility_host_set_up" sourceport="vis_uvw_coords" target="broadcast_vis_uvw_coords" targetport="vis_uvw_coords" type="float3"/>
+        <edge kind="fifo" source="broadcast_vis_uvw_coords" sourceport="degridder" target="degridder_parallel" targetport="vis_uvw_coord" type="float3"/>
+        <edge kind="fifo" source="broadcast_vis_uvw_coords" sourceport="vis_to_csv" target="convert_vis_to_csv" targetport="vis_uvw_coords" type="float3"/>
+        <edge kind="fifo" source="broadcast_config" sourceport="vis_to_csv" target="convert_vis_to_csv" targetport="config" type="Config"/>
+        <edge kind="fifo" source="broadcast_config" sourceport="fft_real_to_complex" target="fft_shift_real_to_complex_actor" targetport="config" type="Config"/>
+        <edge kind="fifo" source="broadcast_config" sourceport="load_image_from_file" target="load_image_from_file" targetport="config" type="Config"/>
+        <edge kind="fifo" source="load_image_from_file" sourceport="output" target="fft_shift_real_to_complex_actor" targetport="input_grid" type="float"/>
+        <edge kind="fifo" source="degridder_parallel" sourceport="output_visibilities" target="convert_vis_to_csv" targetport="output_visibilities" type="float2"/>
+        <edge kind="fifo" source="fft_shift_complex_to_complex_actor" sourceport="uv_grid_out" target="degridder_parallel" targetport="input_grid" type="float2"/>
+        <edge kind="fifo" source="CUFFT_EXECUTE_FORWARD_C2C_actor" sourceport="uv_grid_out" target="fft_shift_complex_to_complex_actor" targetport="uv_grid_in" type="float2"/>
+        <edge kind="fifo" source="fft_shift_real_to_complex_actor" sourceport="fourier" target="CUFFT_EXECUTE_FORWARD_C2C_actor" targetport="uv_grid_in" type="float2"/>
+        <edge kind="fifo" source="generate_kernels" sourceport="kernel_supports" target="degridder_parallel" targetport="support" type="int2"/>
+        <edge kind="fifo" source="generate_kernels" sourceport="kernels" target="degridder_parallel" targetport="kernels" type="float2"/>
+        <edge kind="dependency" source="GRID_SIZE" target="config_struct_set_up" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="visibility_host_set_up" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="convert_vis_to_csv" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="NUM_KERNELS" target="config_struct_set_up" targetport="NUM_KERNELS"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="broadcast_vis_uvw_coords" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="OVERSAMPLING_FACTOR" target="NUMBER_SAMPLE_IN_KERNEL"/>
+        <edge kind="dependency" source="NUM_KERNEL_SUPPORT" target="NUMBER_SAMPLE_IN_KERNEL"/>
+        <edge kind="dependency" source="NUM_KERNELS" target="TOTAL_KERNELS_SAMPLES"/>
+        <edge kind="dependency" source="NUMBER_SAMPLE_IN_KERNEL" target="TOTAL_KERNELS_SAMPLES"/>
+        <edge kind="dependency" source="GRID_SIZE" target="visibility_host_set_up" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="GRID_SIZE" target="CUFFT_EXECUTE_FORWARD_C2C_actor" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="GRID_SIZE" target="fft_shift_complex_to_complex_actor" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="GRID_SIZE" target="fft_shift_real_to_complex_actor" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="GRID_SIZE" target="load_image_from_file" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="NUM_SCENARIO" target="config_struct_set_up" targetport="NUM_SCENARIO"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="degridder_parallel" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="GRID_SIZE" target="degridder_parallel" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="TOTAL_KERNELS_SAMPLES" target="degridder_parallel" targetport="TOTAL_KERNELS_SAMPLES"/>
+        <edge kind="dependency" source="OVERSAMPLING_FACTOR" target="degridder_parallel" targetport="OVERSAMPLING_FACTOR"/>
+        <edge kind="dependency" source="NUM_KERNELS" target="degridder_parallel" targetport="NUM_KERNELS"/>
+        <edge kind="dependency" source="OVERSAMPLING_FACTOR" target="generate_kernels" targetport="OVERSAMPLING_FACTOR"/>
+        <edge kind="dependency" source="NUM_KERNELS" target="generate_kernels" targetport="NUM_KERNELS"/>
+        <edge kind="dependency" source="TOTAL_KERNELS_SAMPLES" target="generate_kernels" targetport="TOTAL_KERNELS_SAMPLES"/>
+        <edge kind="dependency" source="NUM_KERNEL_SUPPORT" target="generate_kernels" targetport="NUM_KERNEL_SUPPORT"/>
+    </graph>
+</graphml>

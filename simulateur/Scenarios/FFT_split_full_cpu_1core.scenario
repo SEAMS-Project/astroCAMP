@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario>
+  <flags>
+    <sizesAreInBit/>
+  </flags>
+  <files>
+    <algorithm url="/simulateur/Algo/FFT2D_split_cpu.pi"/>
+    <architecture url="/simulateur/Archi/1CoreX86.slam"/>
+    <codegenDirectory url="/simulateur/Code/gen_FFT_split_full_cpu_1core/"/>
+  </files>
+  <constraints excelUrl="">
+    <constraintGroup>
+      <operator name="Core0"/>
+      <task name="FFT2D_split_cpu/config_struct_set_up"/>
+      <task name="FFT2D_split_cpu/visibility_host_set_up"/>
+      <task name="FFT2D_split_cpu/convert_vis_to_csv"/>
+      <task name="FFT2D_split_cpu/fft_shift_complex_to_complex_actor"/>
+      <task name="FFT2D_split_cpu/export_image_to_csv"/>
+      <task name="FFT2D_split_cpu/fft_shift_real_to_complex_actor"/>
+      <task name="FFT2D_split_cpu/load_image_from_file"/>
+      <task name="FFT2D_split_cpu/gridding_cpu"/>
+      <task name="FFT2D_split_cpu/CUFFT_EXECUTE_INVERSE_C2C_actor"/>
+      <task name="FFT2D_split_cpu/fft_complex_to_real_actor"/>
+      <task name="FFT2D_split_cpu/export_image_to_csv_input_grid"/>
+      <task name="FFT2D_split_cpu/export_image_to_csv_uv_grid"/>
+      <task name="FFT2D_split_cpu/export_image_to_csv_uv_grid_shift"/>
+      <task name="FFT2D_split_cpu/export_image_to_csv_reconstructed"/>
+      <task name="FFT2D_split_cpu/export_image_to_csv_gridding"/>
+      <task name="FFT2D_split_cpu/export_kernels_to_csv"/>
+      <task name="FFT2D_split_cpu/export_supports_to_csv"/>
+      <task name="FFT2D_split_cpu/generate_kernels"/>
+      <task name="FFT2D_split_cpu/degridder"/>
+      <task name="FFT2D_split_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor/FFT1DLines"/>
+      <task name="FFT2D_split_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor/FFT1DColumns"/>
+      <task name="FFT2D_split_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor/TransposeLines"/>
+      <task name="FFT2D_split_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor/TransposeColumns"/>
+      <task name="FFT2D_split_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+      <task name="FFT2D_split_cpu"/>
+      <task name="fft2d/FFT1DColumns/FFT"/>
+      <task name="fft2d/FFT1DColumns/downscale"/>
+      <task name="fft2d/FFT1DColumns/maxStream"/>
+      <task name="fft2d/FFT1DColumns/upscale"/>
+      <task name="fft2d/FFT1DLines/FFT"/>
+      <task name="fft2d/FFT1DLines/downscale"/>
+      <task name="fft2d/FFT1DLines/maxStream"/>
+      <task name="fft2d/FFT1DLines/upscale"/>
+    </constraintGroup>
+  </constraints>
+  <timings excelUrl="">
+    <memcpyspeed opname="x86" setuptime="1" timeperunit="0.001"/>
+  </timings>
+  <simuParams>
+    <mainCore>Core0</mainCore>
+    <mainComNode>shared_mem</mainComNode>
+    <averageDataSize>1000</averageDataSize>
+    <dataTypes>
+      <dataType name="cmpxDataOut" size="64"/>
+      <dataType name="float" size="32"/>
+      <dataType name="std::complex&lt;float&gt;" size="64"/>
+      <dataType name="cmpxDataIn" size="64"/>
+      <dataType name="PRECISION2" size="128"/>
+      <dataType name="PRECISION" size="64"/>
+      <dataType name="int2" size="64"/>
+      <dataType name="PRECISION3" size="192"/>
+      <dataType name="Config" size="2432"/>
+      <dataType name="double" size="64"/>
+      <dataType name="int" size="32"/>
+      <dataType name="float2" size="64"/>
+      <dataType name="float3" size="96"/>
+    </dataTypes>
+    <specialVertexOperators>
+      <specialVertexOperator path="Core0"/>
+    </specialVertexOperators>
+  </simuParams>
+  <parameterValues/>
+  <papifyConfigs xmlUrl=""/>
+  <energyConfigs xmlUrl="">
+    <performanceObjective objectiveEPS="0.0"/>
+    <pePower opName="Base" pePower="10.0"/>
+    <pePower opName="x86" pePower="10.0"/>
+    <peActorsEnergy/>
+  </energyConfigs>
+</scenario>

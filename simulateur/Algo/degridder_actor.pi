@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+    <graph edgedefault="directed">
+        <data key="name">degridder_actor</data>
+        <node defaultValue="3924480.0" id="NUM_VISIBILITIES" kind="cfg_in_iface"/>
+        <node defaultValue="2560.0" id="GRID_SIZE" kind="cfg_in_iface"/>
+        <node defaultValue="16.0" id="NUM_KERNELS" kind="cfg_in_iface"/>
+        <node defaultValue="108800.0" id="TOTAL_KERNELS_SAMPLES" kind="cfg_in_iface"/>
+        <node defaultValue="16.0" id="OVERSAMPLING_FACTOR" kind="cfg_in_iface"/>
+        <node expr="4.0" id="NUM_CHUNK" kind="param"/>
+        <node id="input_grid" kind="src">
+            <port annotation="NONE" expr="GRID_SIZE*GRID_SIZE" kind="output" name="input_grid"/>
+        </node>
+        <node id="vis_uvw_coord" kind="src">
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="output" name="vis_uvw_coord"/>
+        </node>
+        <node id="support" kind="src">
+            <port annotation="NONE" expr="NUM_KERNELS" kind="output" name="support"/>
+        </node>
+        <node id="kernels" kind="src">
+            <port annotation="NONE" expr="TOTAL_KERNELS_SAMPLES" kind="output" name="kernels"/>
+        </node>
+        <node id="config" kind="src">
+            <port annotation="NONE" expr="1.0" kind="output" name="config"/>
+        </node>
+        <node id="Degridder" kind="actor">
+            <data key="graph_desc">Code/include/degridding.h</data>
+            <loop name="std_degridding_parallel">
+                <param direction="IN" isConfig="true" name="GRID_SIZE" type="int"/>
+                <param direction="IN" isConfig="true" name="NUM_VISIBILITIES" type="int"/>
+                <param direction="IN" isConfig="true" name="NUM_KERNELS" type="int"/>
+                <param direction="IN" isConfig="true" name="TOTAL_KERNELS_SAMPLES" type="int"/>
+                <param direction="IN" isConfig="true" name="OVERSAMPLING_FACTOR" type="int"/>
+                <param direction="IN" isConfig="true" name="NUM_CHUNK" type="int"/>
+                <param direction="IN" isConfig="false" name="kernels" type="float2"/>
+                <param direction="IN" isConfig="false" name="kernel_supports" type="int2"/>
+                <param direction="IN" isConfig="false" name="input_grid" type="float2"/>
+                <param direction="IN" isConfig="false" name="vis_uvw_coords" type="float3"/>
+                <param direction="IN" isConfig="false" name="config" type="Config"/>
+                <param direction="IN" isConfig="false" name="iterator" type="int"/>
+                <param direction="OUT" isConfig="false" name="output_visibilities" type="float2"/>
+            </loop>
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port kind="cfg_input" name="NUM_KERNELS"/>
+            <port kind="cfg_input" name="TOTAL_KERNELS_SAMPLES"/>
+            <port kind="cfg_input" name="OVERSAMPLING_FACTOR"/>
+            <port kind="cfg_input" name="NUM_CHUNK"/>
+            <port annotation="READ_ONLY" expr="1.0" kind="input" name="config"/>
+            <port annotation="READ_ONLY" expr="GRID_SIZE*GRID_SIZE" kind="input" name="input_grid"/>
+            <port annotation="READ_ONLY" expr="TOTAL_KERNELS_SAMPLES" kind="input" name="kernels"/>
+            <port annotation="READ_ONLY" expr="NUM_KERNELS" kind="input" name="kernel_supports"/>
+            <port annotation="READ_ONLY" expr="NUM_VISIBILITIES" kind="input" name="vis_uvw_coords"/>
+            <port annotation="READ_ONLY" expr="1.0" kind="input" name="iterator"/>
+            <port annotation="WRITE_ONLY" expr="NUM_VISIBILITIES /NUM_CHUNK" kind="output" name="output_visibilities"/>
+        </node>
+        <node id="output_visibilities" kind="snk">
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="input" name="output_visibilities"/>
+        </node>
+        <node id="iterator" kind="actor">
+            <data key="graph_desc">Code/include/degridding.h</data>
+            <loop name="iterator">
+                <param direction="IN" isConfig="true" name="NUM_VISIBILITIES" type="int"/>
+                <param direction="IN" isConfig="true" name="NUM_CHUNK" type="int"/>
+                <param direction="OUT" isConfig="false" name="out" type="int"/>
+            </loop>
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="NUM_CHUNK"/>
+            <port annotation="NONE" expr="NUM_CHUNK" kind="output" name="out"/>
+        </node>
+        <node id="broadcast_input_grid" kind="broadcast">
+            <port kind="cfg_input" name="GRID_SIZE"/>
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="NUM_CHUNK"/>
+            <port annotation="NONE" expr="GRID_SIZE*GRID_SIZE" kind="input" name="input_grid"/>
+            <port annotation="NONE" expr="GRID_SIZE*GRID_SIZE*NUM_CHUNK" kind="output" name="single_line_input_grid"/>
+        </node>
+        <node id="broadcast_config_parallel" kind="broadcast">
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="NUM_CHUNK"/>
+            <port annotation="NONE" expr="1.0" kind="input" name="config_in"/>
+            <port annotation="NONE" expr="NUM_CHUNK" kind="output" name="config_out"/>
+        </node>
+        <node id="broadcast_kernels_parallel" kind="broadcast">
+            <port kind="cfg_input" name="TOTAL_KERNELS_SAMPLES"/>
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="NUM_CHUNK"/>
+            <port annotation="NONE" expr="TOTAL_KERNELS_SAMPLES" kind="input" name="kernels"/>
+            <port annotation="NONE" expr="TOTAL_KERNELS_SAMPLES*NUM_CHUNK" kind="output" name="kernels_out"/>
+        </node>
+        <node id="broadcast_support_parallel" kind="broadcast">
+            <port kind="cfg_input" name="NUM_KERNELS"/>
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="NUM_CHUNK"/>
+            <port annotation="NONE" expr="NUM_KERNELS" kind="input" name="support_in"/>
+            <port annotation="NONE" expr="NUM_KERNELS*NUM_CHUNK" kind="output" name="support_out"/>
+        </node>
+        <node id="broadcast_uvw_coord" kind="broadcast">
+            <port kind="cfg_input" name="NUM_VISIBILITIES"/>
+            <port kind="cfg_input" name="NUM_CHUNK"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES" kind="input" name="vis_uvw_coord_in"/>
+            <port annotation="NONE" expr="NUM_VISIBILITIES*NUM_CHUNK" kind="output" name="vis_uvw_coord_out"/>
+        </node>
+        <edge kind="fifo" source="Degridder" sourceport="output_visibilities" target="output_visibilities" targetport="output_visibilities" type="float2"/>
+        <edge kind="fifo" source="iterator" sourceport="out" target="Degridder" targetport="iterator" type="int"/>
+        <edge kind="fifo" source="input_grid" sourceport="input_grid" target="broadcast_input_grid" targetport="input_grid" type="float2"/>
+        <edge kind="fifo" source="broadcast_input_grid" sourceport="single_line_input_grid" target="Degridder" targetport="input_grid" type="float2"/>
+        <edge kind="fifo" source="kernels" sourceport="kernels" target="broadcast_kernels_parallel" targetport="kernels" type="float2"/>
+        <edge kind="fifo" source="broadcast_kernels_parallel" sourceport="kernels_out" target="Degridder" targetport="kernels" type="float2"/>
+        <edge kind="fifo" source="support" sourceport="support" target="broadcast_support_parallel" targetport="support_in" type="int2"/>
+        <edge kind="fifo" source="broadcast_support_parallel" sourceport="support_out" target="Degridder" targetport="kernel_supports" type="int2"/>
+        <edge kind="fifo" source="config" sourceport="config" target="broadcast_config_parallel" targetport="config_in" type="Config"/>
+        <edge kind="fifo" source="broadcast_config_parallel" sourceport="config_out" target="Degridder" targetport="config" type="Config"/>
+        <edge kind="fifo" source="vis_uvw_coord" sourceport="vis_uvw_coord" target="broadcast_uvw_coord" targetport="vis_uvw_coord_in" type="float3"/>
+        <edge kind="fifo" source="broadcast_uvw_coord" sourceport="vis_uvw_coord_out" target="Degridder" targetport="vis_uvw_coords" type="float3"/>
+        <edge kind="dependency" source="GRID_SIZE" target="Degridder" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="NUM_KERNELS" target="Degridder" targetport="NUM_KERNELS"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="Degridder" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="OVERSAMPLING_FACTOR" target="Degridder" targetport="OVERSAMPLING_FACTOR"/>
+        <edge kind="dependency" source="TOTAL_KERNELS_SAMPLES" target="Degridder" targetport="TOTAL_KERNELS_SAMPLES"/>
+        <edge kind="dependency" source="GRID_SIZE" target="broadcast_input_grid" targetport="GRID_SIZE"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="iterator" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="GRID_SIZE" target="input_grid"/>
+        <edge kind="dependency" source="TOTAL_KERNELS_SAMPLES" target="kernels"/>
+        <edge kind="dependency" source="NUM_KERNELS" target="support"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="vis_uvw_coord"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="output_visibilities"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="broadcast_input_grid" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="TOTAL_KERNELS_SAMPLES" target="broadcast_kernels_parallel" targetport="TOTAL_KERNELS_SAMPLES"/>
+        <edge kind="dependency" source="NUM_KERNELS" target="broadcast_support_parallel" targetport="NUM_KERNELS"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="broadcast_uvw_coord" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="broadcast_config_parallel" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="broadcast_kernels_parallel" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="NUM_VISIBILITIES" target="broadcast_support_parallel" targetport="NUM_VISIBILITIES"/>
+        <edge kind="dependency" source="NUM_CHUNK" target="broadcast_input_grid" targetport="NUM_CHUNK"/>
+        <edge kind="dependency" source="NUM_CHUNK" target="Degridder" targetport="NUM_CHUNK"/>
+        <edge kind="dependency" source="NUM_CHUNK" target="output_visibilities"/>
+        <edge kind="dependency" source="NUM_CHUNK" target="broadcast_kernels_parallel" targetport="NUM_CHUNK"/>
+        <edge kind="dependency" source="NUM_CHUNK" target="broadcast_support_parallel" targetport="NUM_CHUNK"/>
+        <edge kind="dependency" source="NUM_CHUNK" target="broadcast_uvw_coord" targetport="NUM_CHUNK"/>
+        <edge kind="dependency" source="NUM_CHUNK" target="iterator" targetport="NUM_CHUNK"/>
+        <edge kind="dependency" source="NUM_CHUNK" target="broadcast_config_parallel" targetport="NUM_CHUNK"/>
+    </graph>
+</graphml>

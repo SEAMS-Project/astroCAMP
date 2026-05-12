@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scenario>
+  <flags>
+    <sizesAreInBit/>
+  </flags>
+  <files>
+    <algorithm url="/simulateur/Algo/fft1d.pi"/>
+    <architecture url="/simulateur/Archi/PYNQ.slam"/>
+    <codegenDirectory url="/simulateur/Code/generated"/>
+  </files>
+  <constraints excelUrl="">
+    <constraintGroup>
+      <operator name="Zynq"/>
+      <task name="fft1d/FFT"/>
+      <task name="fft1d/downscale"/>
+      <task name="fft1d/upscale"/>
+      <task name="fft1d/maxStream"/>
+      <task name="fft1d"/>
+      <task name="fft1d/FFT"/>
+      <task name="fft1d/downscale"/>
+      <task name="fft2d/TransposeColumns"/>
+      <task name="fft2d/TransposeLines"/>
+      <task name="fft2d/FFT1DColumns/FFT"/>
+      <task name="fft2d/FFT1DColumns/downscale"/>
+      <task name="fft2d/FFT1DColumns/maxStream"/>
+      <task name="fft2d/FFT1DColumns/upscale"/>
+      <task name="fft2d/FFT1DLines/FFT"/>
+      <task name="fft2d/FFT1DLines/downscale"/>
+      <task name="fft2d/FFT1DLines/maxStream"/>
+      <task name="fft2d/FFT1DLines/upscale"/>
+    </constraintGroup>
+  </constraints>
+  <timings excelUrl="">
+    <timing opname="FPGA" time="N" timingtype="EXECUTION_TIME" vertexname="fft1d/FFT"/>
+    <timing opname="FPGA" time="N" timingtype="INITIATION_INTERVAL" vertexname="fft1d/FFT"/>
+    <timing opname="FPGA" time="N" timingtype="EXECUTION_TIME" vertexname="fft1d/downscale"/>
+    <timing opname="FPGA" time="N" timingtype="INITIATION_INTERVAL" vertexname="fft1d/downscale"/>
+    <timing opname="FPGA" time="N" timingtype="EXECUTION_TIME" vertexname="fft1d/maxStream"/>
+    <timing opname="FPGA" time="N" timingtype="INITIATION_INTERVAL" vertexname="fft1d/maxStream"/>
+    <timing opname="FPGA" time="N" timingtype="EXECUTION_TIME" vertexname="fft1d/upscale"/>
+    <timing opname="FPGA" time="N" timingtype="INITIATION_INTERVAL" vertexname="fft1d/upscale"/>
+    <memcpyspeed opname="FPGA" setuptime="1" timeperunit="0.001"/>
+    <timing opname="KRIA260" time="12490" timingtype="EXECUTION_TIME" vertexname="fft2d/TransposeColumns"/>
+    <timing opname="KRIA260" time="12490" timingtype="INITIATION_INTERVAL" vertexname="fft2d/TransposeColumns"/>
+    <timing opname="KRIA260" time="12490" timingtype="EXECUTION_TIME" vertexname="fft2d/TransposeLines"/>
+    <timing opname="KRIA260" time="12490" timingtype="INITIATION_INTERVAL" vertexname="fft2d/TransposeLines"/>
+    <timing opname="KRIA260" time="282" timingtype="EXECUTION_TIME" vertexname="fft2d/FFT1DColumns/FFT"/>
+    <timing opname="KRIA260" time="282" timingtype="INITIATION_INTERVAL" vertexname="fft2d/FFT1DColumns/FFT"/>
+    <timing opname="KRIA260" time="82" timingtype="EXECUTION_TIME" vertexname="fft2d/FFT1DColumns/downscale"/>
+    <timing opname="KRIA260" time="82" timingtype="INITIATION_INTERVAL" vertexname="fft2d/FFT1DColumns/downscale"/>
+    <timing opname="KRIA260" time="133" timingtype="EXECUTION_TIME" vertexname="fft2d/FFT1DColumns/maxStream"/>
+    <timing opname="KRIA260" time="133" timingtype="INITIATION_INTERVAL" vertexname="fft2d/FFT1DColumns/maxStream"/>
+    <timing opname="KRIA260" time="81" timingtype="EXECUTION_TIME" vertexname="fft2d/FFT1DColumns/upscale"/>
+    <timing opname="KRIA260" time="81" timingtype="INITIATION_INTERVAL" vertexname="fft2d/FFT1DColumns/upscale"/>
+    <timing opname="KRIA260" time="282" timingtype="EXECUTION_TIME" vertexname="fft2d/FFT1DLines/FFT"/>
+    <timing opname="KRIA260" time="282" timingtype="INITIATION_INTERVAL" vertexname="fft2d/FFT1DLines/FFT"/>
+    <timing opname="KRIA260" time="82" timingtype="EXECUTION_TIME" vertexname="fft2d/FFT1DLines/downscale"/>
+    <timing opname="KRIA260" time="82" timingtype="INITIATION_INTERVAL" vertexname="fft2d/FFT1DLines/downscale"/>
+    <timing opname="KRIA260" time="133" timingtype="EXECUTION_TIME" vertexname="fft2d/FFT1DLines/maxStream"/>
+    <timing opname="KRIA260" time="133" timingtype="INITIATION_INTERVAL" vertexname="fft2d/FFT1DLines/maxStream"/>
+    <timing opname="KRIA260" time="81" timingtype="EXECUTION_TIME" vertexname="fft2d/FFT1DLines/upscale"/>
+    <timing opname="KRIA260" time="81" timingtype="INITIATION_INTERVAL" vertexname="fft2d/FFT1DLines/upscale"/>
+  </timings>
+  <simuParams>
+    <mainCore>Zynq</mainCore>
+    <mainComNode/>
+    <averageDataSize>1000</averageDataSize>
+    <dataTypes>
+      <dataType name="cmpxDataIn" size="64"/>
+      <dataType name="cmpxDataOut" size="64"/>
+      <dataType name="std::complex&lt;float&gt;" size="64"/>
+    </dataTypes>
+    <specialVertexOperators>
+      <specialVertexOperator path="Zynq"/>
+    </specialVertexOperators>
+  </simuParams>
+  <parameterValues/>
+  <papifyConfigs xmlUrl=""/>
+  <energyConfigs xmlUrl="">
+    <performanceObjective objectiveEPS="0.0"/>
+    <peActorsEnergy/>
+  </energyConfigs>
+</scenario>

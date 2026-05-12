@@ -1,0 +1,1039 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <flags>
+        <sizesAreInBit/>
+    </flags>
+    <files>
+        <algorithm url="/simulateur/Algo/FFT2D_cpu.pi"/>
+        <architecture url="/simulateur/Archi/64CoresX86.slam"/>
+        <codegenDirectory url="/simulateur/Code/gen_FFT_full_cpu_64core/"/>
+    </files>
+    <constraints excelUrl="">
+        <constraintGroup>
+            <operator name="Core0"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core1"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core2"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core3"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core4"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core5"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core6"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core7"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core8"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core9"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core10"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core11"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core12"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core13"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core14"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core15"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core16"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core17"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core18"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core19"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core20"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core21"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core22"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core23"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core24"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core25"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core26"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core27"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core28"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core29"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core30"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core31"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core32"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core33"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core34"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core35"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core36"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core37"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core38"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core63"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core62"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core61"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core60"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core59"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core58"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core57"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core56"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core55"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core54"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core53"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core52"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core51"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core50"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core49"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core48"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core47"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core46"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core45"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core44"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core43"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core42"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core41"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core40"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="Core39"/>
+            <task name="FFT2D_cpu/config_struct_set_up"/>
+            <task name="FFT2D_cpu/visibility_host_set_up"/>
+            <task name="FFT2D_cpu/convert_vis_to_csv"/>
+            <task name="FFT2D_cpu/CUFFT_EXECUTE_FORWARD_C2C_actor"/>
+            <task name="FFT2D_cpu/fft_shift_complex_to_complex_actor"/>
+            <task name="FFT2D_cpu/fft_shift_real_to_complex_actor"/>
+            <task name="FFT2D_cpu/load_image_from_file"/>
+            <task name="FFT2D_cpu/gridding_cpu"/>
+            <task name="FFT2D_cpu/generate_kernels"/>
+            <task name="FFT2D_cpu/degridder"/>
+            <task name="FFT2D_cpu"/>
+        </constraintGroup>
+    </constraints>
+    <timings excelUrl="">
+        <memcpyspeed opname="x86" setuptime="1" timeperunit="0.001"/>
+        <memcpyspeed opname="x86" setuptime="1" timeperunit="0.001"/>
+    </timings>
+    <simuParams>
+        <mainCore>Core0</mainCore>
+        <mainComNode>shared_mem</mainComNode>
+        <averageDataSize>1000</averageDataSize>
+        <dataTypes>
+            <dataType name="cmpxDataOut" size="64"/>
+            <dataType name="float" size="32"/>
+            <dataType name="std::complex&lt;float&gt;" size="64"/>
+            <dataType name="cmpxDataIn" size="64"/>
+            <dataType name="PRECISION2" size="128"/>
+            <dataType name="PRECISION" size="64"/>
+            <dataType name="int2" size="64"/>
+            <dataType name="PRECISION3" size="192"/>
+            <dataType name="Config" size="2432"/>
+            <dataType name="double" size="64"/>
+            <dataType name="int" size="32"/>
+            <dataType name="float2" size="64"/>
+            <dataType name="float3" size="96"/>
+        </dataTypes>
+        <specialVertexOperators>
+            <specialVertexOperator path="Core0"/>
+            <specialVertexOperator path="Core1"/>
+            <specialVertexOperator path="Core2"/>
+            <specialVertexOperator path="Core3"/>
+            <specialVertexOperator path="Core4"/>
+            <specialVertexOperator path="Core5"/>
+            <specialVertexOperator path="Core6"/>
+            <specialVertexOperator path="Core7"/>
+            <specialVertexOperator path="Core8"/>
+            <specialVertexOperator path="Core9"/>
+            <specialVertexOperator path="Core10"/>
+            <specialVertexOperator path="Core11"/>
+            <specialVertexOperator path="Core12"/>
+            <specialVertexOperator path="Core13"/>
+            <specialVertexOperator path="Core14"/>
+            <specialVertexOperator path="Core15"/>
+            <specialVertexOperator path="Core16"/>
+            <specialVertexOperator path="Core17"/>
+            <specialVertexOperator path="Core18"/>
+            <specialVertexOperator path="Core19"/>
+            <specialVertexOperator path="Core20"/>
+            <specialVertexOperator path="Core21"/>
+            <specialVertexOperator path="Core22"/>
+            <specialVertexOperator path="Core23"/>
+            <specialVertexOperator path="Core24"/>
+            <specialVertexOperator path="Core25"/>
+            <specialVertexOperator path="Core26"/>
+            <specialVertexOperator path="Core27"/>
+            <specialVertexOperator path="Core28"/>
+            <specialVertexOperator path="Core29"/>
+            <specialVertexOperator path="Core30"/>
+            <specialVertexOperator path="Core31"/>
+            <specialVertexOperator path="Core0"/>
+            <specialVertexOperator path="Core1"/>
+            <specialVertexOperator path="Core2"/>
+            <specialVertexOperator path="Core3"/>
+            <specialVertexOperator path="Core4"/>
+            <specialVertexOperator path="Core5"/>
+            <specialVertexOperator path="Core6"/>
+            <specialVertexOperator path="Core7"/>
+            <specialVertexOperator path="Core8"/>
+            <specialVertexOperator path="Core9"/>
+            <specialVertexOperator path="Core10"/>
+            <specialVertexOperator path="Core11"/>
+            <specialVertexOperator path="Core12"/>
+            <specialVertexOperator path="Core13"/>
+            <specialVertexOperator path="Core14"/>
+            <specialVertexOperator path="Core15"/>
+            <specialVertexOperator path="Core16"/>
+            <specialVertexOperator path="Core17"/>
+            <specialVertexOperator path="Core18"/>
+            <specialVertexOperator path="Core19"/>
+            <specialVertexOperator path="Core20"/>
+            <specialVertexOperator path="Core21"/>
+            <specialVertexOperator path="Core23"/>
+            <specialVertexOperator path="Core22"/>
+            <specialVertexOperator path="Core24"/>
+            <specialVertexOperator path="Core25"/>
+            <specialVertexOperator path="Core26"/>
+            <specialVertexOperator path="Core27"/>
+            <specialVertexOperator path="Core28"/>
+            <specialVertexOperator path="Core29"/>
+            <specialVertexOperator path="Core30"/>
+            <specialVertexOperator path="Core31"/>
+            <specialVertexOperator path="Core32"/>
+            <specialVertexOperator path="Core33"/>
+            <specialVertexOperator path="Core34"/>
+            <specialVertexOperator path="Core35"/>
+            <specialVertexOperator path="Core36"/>
+            <specialVertexOperator path="Core37"/>
+            <specialVertexOperator path="Core38"/>
+            <specialVertexOperator path="Core39"/>
+            <specialVertexOperator path="Core40"/>
+            <specialVertexOperator path="Core41"/>
+            <specialVertexOperator path="Core42"/>
+            <specialVertexOperator path="Core43"/>
+            <specialVertexOperator path="Core44"/>
+            <specialVertexOperator path="Core45"/>
+            <specialVertexOperator path="Core46"/>
+            <specialVertexOperator path="Core47"/>
+            <specialVertexOperator path="Core48"/>
+            <specialVertexOperator path="Core49"/>
+            <specialVertexOperator path="Core50"/>
+            <specialVertexOperator path="Core51"/>
+            <specialVertexOperator path="Core52"/>
+            <specialVertexOperator path="Core53"/>
+            <specialVertexOperator path="Core54"/>
+            <specialVertexOperator path="Core55"/>
+            <specialVertexOperator path="Core56"/>
+            <specialVertexOperator path="Core57"/>
+            <specialVertexOperator path="Core58"/>
+            <specialVertexOperator path="Core59"/>
+            <specialVertexOperator path="Core61"/>
+            <specialVertexOperator path="Core60"/>
+            <specialVertexOperator path="Core62"/>
+            <specialVertexOperator path="Core63"/>
+        </specialVertexOperators>
+    </simuParams>
+    <parameterValues/>
+    <papifyConfigs xmlUrl=""/>
+    <energyConfigs xmlUrl="">
+        <performanceObjective objectiveEPS="0.0"/>
+        <pePower opName="Base" pePower="10.0"/>
+        <pePower opName="x86" pePower="10.0"/>
+        <peActorsEnergy/>
+    </energyConfigs>
+</scenario>

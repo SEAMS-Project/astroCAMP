@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+    <graph edgedefault="directed">
+        <data key="name">fft1d_fpga</data>
+        <node defaultValue="64.0" id="N" kind="cfg_in_iface"/>
+        <node id="FFT" kind="actor">
+            <data key="graph_desc">Code/include/fft.hpp</data>
+            <loop name="myfftwrapper">
+                <param direction="IN" isCPPdefinition="true" isConfig="false" isPassedByReference="true" name="xn" type="hls::stream&lt;cmpxDataIn&gt;"/>
+                <param direction="OUT" isCPPdefinition="true" isConfig="false" isPassedByReference="true" name="xk" type="hls::stream&lt;cmpxDataOut&gt;"/>
+            </loop>
+            <port kind="cfg_input" name="N"/>
+            <port annotation="NONE" expr="N" kind="input" name="xn"/>
+            <port annotation="NONE" expr="N" kind="output" name="xk"/>
+        </node>
+        <node id="downscale" kind="actor">
+            <data key="graph_desc">Code/include/scale_fft.hpp</data>
+            <loop isCPPdefinition="true" name="downscale&lt;N&gt;">
+                <param direction="IN" isCPPdefinition="true" isConfig="false" isPassedByReference="true" name="inf_s" type="hls::stream&lt;std::complex&lt;float&gt;&gt;"/>
+                <param direction="OUT" isCPPdefinition="true" isConfig="false" isPassedByReference="true" name="out_s" type="hls::stream&lt;cmpxDataIn&gt;"/>
+                <param direction="IN" isCPPdefinition="true" isConfig="false" isPassedByReference="true" name="max_s" type="hls::stream&lt;float&gt;"/>
+            </loop>
+            <port kind="cfg_input" name="N"/>
+            <port annotation="NONE" expr="N" kind="input" name="inf_s"/>
+            <port annotation="NONE" expr="1.0" kind="input" name="max_s"/>
+            <port annotation="NONE" expr="N" kind="output" name="out_s"/>
+        </node>
+        <node id="upscale" kind="actor">
+            <data key="graph_desc">Code/include/scale_fft.hpp</data>
+            <loop isCPPdefinition="true" name="upscale&lt;N&gt;">
+                <param direction="IN" isCPPdefinition="true" isConfig="false" isPassedByReference="true" name="in_s" type="hls::stream&lt;cmpxDataIn&gt;"/>
+                <param direction="OUT" isCPPdefinition="true" isConfig="false" name="outf" type="std::complex&lt;float&gt;"/>
+                <param direction="IN" isConfig="false" name="max" type="float"/>
+            </loop>
+            <port kind="cfg_input" name="N"/>
+            <port annotation="NONE" expr="N" kind="input" name="in_s"/>
+            <port annotation="NONE" expr="1.0" kind="input" name="max"/>
+            <port annotation="NONE" expr="N" kind="output" name="outf"/>
+        </node>
+        <node id="Output" kind="snk">
+            <port annotation="NONE" expr="N*N" kind="input" name="Output"/>
+        </node>
+        <node id="Input" kind="src">
+            <port annotation="NONE" expr="N*N" kind="output" name="Input"/>
+        </node>
+        <node id="DupInput" kind="broadcast">
+            <port annotation="NONE" expr="1.0" kind="input" name="input"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="out1"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="out2"/>
+        </node>
+        <node id="maxStream" kind="actor">
+            <data key="graph_desc">Code/include/scale_fft.hpp</data>
+            <loop isCPPdefinition="true" name="maxStream&lt;N&gt;">
+                <param direction="IN" isCPPdefinition="true" isConfig="false" name="in" type="hls::stream&lt;std::complex&lt;float&gt;&gt;"/>
+                <param direction="OUT" isCPPdefinition="true" isConfig="false" isPassedByReference="true" name="max_s" type="hls::stream&lt;float&gt;"/>
+            </loop>
+            <port kind="cfg_input" name="N"/>
+            <port annotation="NONE" expr="N" kind="input" name="in"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="max_s"/>
+        </node>
+        <node id="dupMax" kind="broadcast">
+            <port annotation="NONE" expr="1.0" kind="input" name="in"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="out1"/>
+            <port annotation="NONE" expr="1.0" kind="output" name="out2"/>
+        </node>
+        <edge kind="fifo" source="downscale" sourceport="out_s" target="FFT" targetport="xn" type="cmpxDataIn"/>
+        <edge kind="fifo" source="FFT" sourceport="xk" target="upscale" targetport="in_s" type="cmpxDataOut"/>
+        <edge kind="fifo" source="upscale" sourceport="outf" target="Output" targetport="Output" type="std::complex&lt;float&gt;"/>
+        <edge kind="fifo" source="Input" sourceport="Input" target="DupInput" targetport="input" type="std::complex&lt;float&gt;"/>
+        <edge kind="fifo" source="DupInput" sourceport="out2" target="downscale" targetport="inf_s" type="std::complex&lt;float&gt;"/>
+        <edge kind="fifo" source="DupInput" sourceport="out1" target="maxStream" targetport="in" type="std::complex&lt;float&gt;"/>
+        <edge kind="fifo" source="maxStream" sourceport="max_s" target="dupMax" targetport="in" type="float"/>
+        <edge kind="fifo" source="dupMax" sourceport="out1" target="downscale" targetport="max_s" type="float"/>
+        <edge kind="fifo" source="dupMax" sourceport="out2" target="upscale" targetport="max" type="float"/>
+        <edge kind="dependency" source="N" target="Input"/>
+        <edge kind="dependency" source="N" target="maxStream" targetport="N"/>
+        <edge kind="dependency" source="N" target="downscale" targetport="N"/>
+        <edge kind="dependency" source="N" target="FFT" targetport="N"/>
+        <edge kind="dependency" source="N" target="upscale" targetport="N"/>
+        <edge kind="dependency" source="N" target="Output"/>
+    </graph>
+</graphml>

@@ -1,0 +1,25 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%post
+
+# basic setup with non interactive command to facilitate installation
+apt update && DEBIAN_FRONTEND=noninteractive apt -y install bison flex libgsl27 cmake build-essential cmake gfortran g++ libncurses5 libncurses5-dev libreadline-dev libblas-dev liblapacke-dev libcfitsio-dev wcslib-dev libfftw3-dev libhdf5-serial-dev libboost-python-dev libpython3-dev libpython2.7-dev pip git locales
+
+# python requirements for other modules (oskar, casacore)
+# Qt 5 or 6 ?
+pip install astropy sphinx PyQt5 pandas python-casacore
+
+# install numpy first, as requirement for casacore
+DEBIAN_FRONTEND=noninteractive apt -y install python3-numpy casacore-dev casacore-data casacore-tools python3-sphinx python3-tk
+
+# need to install oskar python package from source
+git clone https://github.com/OxfordSKA/OSKAR.git && cd OSKAR && mkdir build && cd build && cmake ../ && make -j8 && make install
+
+pip install --user 'git+https://github.com/OxfordSKA/OSKAR.git@master#egg=oskarpy&subdirectory=python'
+
+# For vitis
+echo "LC_ALL=en_US.UTF-8" >> /etc/environment
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+locale-gen en_US.UTF-8

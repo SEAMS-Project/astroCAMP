@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <flags>
+        <sizesAreInBit/>
+    </flags>
+    <files>
+        <algorithm url="/simulateur/Algo/top_sequential_degridder_het.pi"/>
+        <architecture url="/simulateur/Archi/arm_fpga.slam"/>
+        <codegenDirectory url="/simulateur/Code/gen_FFT2D_1core/"/>
+    </files>
+    <constraints excelUrl="">
+        <constraintGroup>
+            <operator name="KRIA260"/>
+            <task name="top_degridder/fft2d/TransposeLines"/>
+            <task name="top_degridder/fft2d/TransposeColumns"/>
+            <task name="top_degridder/fft2d/FFT1DLines/FFT"/>
+            <task name="top_degridder/fft2d/FFT1DLines/downscale"/>
+            <task name="top_degridder/fft2d/FFT1DLines/upscale"/>
+            <task name="top_degridder/fft2d/FFT1DLines/maxStream"/>
+            <task name="top_degridder/fft2d/FFT1DLines"/>
+            <task name="top_degridder/fft2d/FFT1DColumns/FFT"/>
+            <task name="top_degridder/fft2d/FFT1DColumns/downscale"/>
+            <task name="top_degridder/fft2d/FFT1DColumns/upscale"/>
+            <task name="top_degridder/fft2d/FFT1DColumns/maxStream"/>
+            <task name="top_degridder/fft2d/FFT1DColumns"/>
+            <task name="top_degridder/fft2d"/>
+        </constraintGroup>
+        <constraintGroup>
+            <operator name="core0"/>
+            <task name="top_degridder/config_struct_set_up"/>
+            <task name="top_degridder/visibility_host_set_up"/>
+            <task name="top_degridder/convert_vis_to_csv"/>
+            <task name="top_degridder/fft_shift_complex_to_complex_actor"/>
+            <task name="top_degridder/export_image_to_csv"/>
+            <task name="top_degridder/fft_shift_real_to_complex_actor"/>
+            <task name="top_degridder/gridding_cpu"/>
+            <task name="top_degridder/load_image_from_file"/>
+            <task name="top_degridder/CUFFT_EXECUTE_INVERSE_C2C_actor"/>
+            <task name="top_degridder/fft_complex_to_real_actor"/>
+            <task name="top_degridder/export_image_to_csv_input_grid"/>
+            <task name="top_degridder/export_image_to_csv_uv_grid"/>
+            <task name="top_degridder/export_image_to_csv_uv_grid_shift"/>
+            <task name="top_degridder/export_image_to_csv_gridding"/>
+            <task name="top_degridder/export_image_to_csv_reconstructed"/>
+            <task name="top_degridder/export_kernels_to_csv"/>
+            <task name="top_degridder/export_supports_to_csv"/>
+            <task name="top_degridder/generate_kernels"/>
+            <task name="top_degridder/degridder"/>
+            <task name="top_degridder"/>
+        </constraintGroup>
+    </constraints>
+    <timings excelUrl="">
+        <timing opname="FPGA" time="49546" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/TransposeColumns"/>
+        <timing opname="FPGA" time="49546" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/TransposeColumns"/>
+        <timing opname="FPGA" time="49546" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/TransposeLines"/>
+        <timing opname="FPGA" time="49546" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/TransposeLines"/>
+        <timing opname="FPGA" time="282" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/FFT1DColumns/FFT"/>
+        <timing opname="FPGA" time="282" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/FFT1DColumns/FFT"/>
+        <timing opname="FPGA" time="146" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/FFT1DColumns/downscale"/>
+        <timing opname="FPGA" time="146" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/FFT1DColumns/downscale"/>
+        <timing opname="FPGA" time="258" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/FFT1DColumns/maxStream"/>
+        <timing opname="FPGA" time="256" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/FFT1DColumns/maxStream"/>
+        <timing opname="FPGA" time="145" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/FFT1DColumns/upscale"/>
+        <timing opname="FPGA" time="145" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/FFT1DColumns/upscale"/>
+        <timing opname="FPGA" time="282" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/FFT1DLines/FFT"/>
+        <timing opname="FPGA" time="282" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/FFT1DLines/FFT"/>
+        <timing opname="FPGA" time="274" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/FFT1DLines/downscale"/>
+        <timing opname="FPGA" time="274" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/FFT1DLines/downscale"/>
+        <timing opname="FPGA" time="517" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/FFT1DLines/maxStream"/>
+        <timing opname="FPGA" time="517" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/FFT1DLines/maxStream"/>
+        <timing opname="FPGA" time="273" timingtype="EXECUTION_TIME" vertexname="top_degridder/fft2d/FFT1DLines/upscale"/>
+        <timing opname="FPGA" time="273" timingtype="INITIATION_INTERVAL" vertexname="top_degridder/fft2d/FFT1DLines/upscale"/>
+        <memcpyspeed opname="ARM" setuptime="1" timeperunit="0.001"/>
+        <memcpyspeed opname="FPGA" setuptime="1" timeperunit="0.001"/>
+    </timings>
+    <simuParams>
+        <mainCore>core0</mainCore>
+        <mainComNode>shared_mem</mainComNode>
+        <averageDataSize>1000</averageDataSize>
+        <dataTypes>
+            <dataType name="cmpxDataOut" size="64"/>
+            <dataType name="float" size="32"/>
+            <dataType name="std::complex&lt;float&gt;" size="64"/>
+            <dataType name="cmpxDataIn" size="64"/>
+            <dataType name="PRECISION2" size="128"/>
+            <dataType name="PRECISION" size="64"/>
+            <dataType name="int2" size="64"/>
+            <dataType name="PRECISION3" size="192"/>
+            <dataType name="Config" size="2432"/>
+            <dataType name="double" size="64"/>
+            <dataType name="int" size="32"/>
+            <dataType name="float2" size="64"/>
+            <dataType name="float3" size="96"/>
+        </dataTypes>
+        <specialVertexOperators>
+            <specialVertexOperator path="core0"/>
+            <specialVertexOperator path="KRIA260"/>
+        </specialVertexOperators>
+    </simuParams>
+    <parameterValues/>
+    <papifyConfigs xmlUrl=""/>
+    <energyConfigs xmlUrl="">
+        <performanceObjective objectiveEPS="0.0"/>
+        <pePower opName="Base" pePower="10.0"/>
+        <pePower opName="x86" pePower="10.0"/>
+        <peActorsEnergy/>
+    </energyConfigs>
+</scenario>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+    <graph edgedefault="directed">
+        <data key="name">actor_fft2d_cpu_fpga</data>
+        <node defaultValue="64.0" id="N" kind="cfg_in_iface"/>
+        <node id="FFT1DLines" kind="actor">
+            <data key="graph_desc">Code/include/fft_run.h</data>
+            <loop name="fft1d_fc">
+                <param direction="IN" isConfig="true" name="N" type="int"/>
+                <param direction="IN" isConfig="false" name="Input" type="float2"/>
+                <param direction="OUT" isCPPdefinition="true" isConfig="false" name="Output" type="std::complex&lt;float&gt;"/>
+            </loop>
+            <port kind="cfg_input" name="N"/>
+            <port annotation="NONE" expr="N" kind="input" name="Input"/>
+            <port annotation="NONE" expr="N" kind="output" name="Output"/>
+        </node>
+        <node id="FFT1DColumns" kind="actor">
+            <data key="graph_desc">Algo/acteur_fft1d_fpga.pi</data>
+            <port kind="cfg_input" name="N"/>
+            <port annotation="NONE" expr="N*N" kind="input" name="Input"/>
+            <port annotation="NONE" expr="N*N" kind="output" name="Output"/>
+        </node>
+        <node id="TransposeLines" kind="actor">
+            <data key="graph_desc">Code/include/fft_run.h</data>
+            <loop name="transpose_cc">
+                <param direction="IN" isConfig="true" name="N" type="int"/>
+                <param direction="IN" isCPPdefinition="true" isConfig="false" name="in" type="std::complex&lt;float&gt;"/>
+                <param direction="OUT" isCPPdefinition="true" isConfig="false" name="out" type="std::complex&lt;float&gt;"/>
+            </loop>
+            <port kind="cfg_input" name="N"/>
+            <port annotation="NONE" expr="N*N" kind="input" name="in"/>
+            <port annotation="NONE" expr="N*N" kind="output" name="out"/>
+        </node>
+        <node id="in" kind="src">
+            <port annotation="NONE" expr="N*N" kind="output" name="in"/>
+        </node>
+        <node id="out" kind="snk">
+            <port annotation="NONE" expr="N*N" kind="input" name="out"/>
+        </node>
+        <node id="TransposeColumns" kind="actor">
+            <data key="graph_desc">Code/include/fft_run.h</data>
+            <loop name="transpose_cf">
+                <param direction="IN" isConfig="true" name="N" type="int"/>
+                <param direction="IN" isCPPdefinition="true" isConfig="false" name="in" type="std::complex&lt;float&gt;"/>
+                <param direction="OUT" isConfig="false" name="out" type="float2"/>
+            </loop>
+            <port kind="cfg_input" name="N"/>
+            <port annotation="NONE" expr="N*N" kind="input" name="in"/>
+            <port annotation="NONE" expr="N*N" kind="output" name="out"/>
+        </node>
+        <edge kind="fifo" source="in" sourceport="in" target="FFT1DLines" targetport="Input" type="float2"/>
+        <edge kind="fifo" source="FFT1DLines" sourceport="Output" target="TransposeLines" targetport="in" type="std::complex&lt;float&gt;"/>
+        <edge kind="fifo" source="TransposeLines" sourceport="out" target="FFT1DColumns" targetport="Input" type="std::complex&lt;float&gt;"/>
+        <edge kind="fifo" source="FFT1DColumns" sourceport="Output" target="TransposeColumns" targetport="in" type="std::complex&lt;float&gt;"/>
+        <edge kind="fifo" source="TransposeColumns" sourceport="out" target="out" targetport="out" type="float2"/>
+        <edge kind="dependency" source="N" target="FFT1DColumns" targetport="N"/>
+        <edge kind="dependency" source="N" target="FFT1DLines" targetport="N"/>
+        <edge kind="dependency" source="N" target="TransposeLines" targetport="N"/>
+        <edge kind="dependency" source="N" target="in"/>
+        <edge kind="dependency" source="N" target="out"/>
+        <edge kind="dependency" source="N" target="TransposeColumns" targetport="N"/>
+    </graph>
+</graphml>
