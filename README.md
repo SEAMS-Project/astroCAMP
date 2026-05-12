@@ -7,15 +7,6 @@
 
 This repository is the companion code release for the paper published at **PASC 2026**. It contains all analysis and plotting scripts needed to reproduce the figures in the paper.
 
----
-
-## Datasets & Traces (Zenodo)
-
-> The benchmark datasets and raw measurement traces used to produce all figures in this paper are published separately on Zenodo:
->
-> **DOI: [10.5281/zenodo.20093790](https://doi.org/10.5281/zenodo.20093790)**
->
-> Download the archive and place the CSV files under `data/` before running any plot scripts (see Quick Start below).
 
 ---
 
@@ -178,6 +169,17 @@ The simulator used to generate heterogeneous configurations is available on gitl
 
 We follow the [NumFOCUS Code of Conduct](https://numfocus.org/code-of-conduct).
 
+---
+
+## Datasets & Traces (Zenodo)
+
+> The benchmark datasets and raw measurement traces used to produce all figures in this paper are published separately on Zenodo:
+>
+> **DOI: [10.5281/zenodo.20093790](https://doi.org/10.5281/zenodo.20093790)**
+>
+> Download the archive and place the CSV files under `data/` before running any plot scripts (see Quick Start below).
+
+
 ## astroCAMP Dataset Contributors
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20093790.svg)](https://doi.org/10.5281/zenodo.20093790)
 
@@ -190,12 +192,11 @@ We follow the [NumFOCUS Code of Conduct](https://numfocus.org/code-of-conduct).
 | Dardaillon, Mickael            | Institut National des Sciences Appliquées de Rennes      | Project member |
 | Wang, Sunrise                  | Observatoire de la Côte d'Azur                           | Researcher     |
 | Miomandre, Hugo                | —                                                        | Project member |
-| Javier Russo, Antonio          | Swiss Federal Institute of Technology in Lausanne         | Other          |
 | Mbuyi, Junior                  | Swiss Federal Institute of Technology in Lausanne         | Other          |
 | Lopes, Yves                    | Swiss Federal Institute of Technology in Lausanne         | Other          |
-| Nezan, Jean-François          | —                                                        | Project member |
 | Ouvrard, Xavier                | Swiss Federal Institute of Technology in Lausanne         | Data collector |
 | Peón-Quirós, Miguel          | École Polytechnique Fédérale de Lausanne               | Project leader |
+| Nezan, Jean-François          | —                                                        | Project member |
 | Atienza Alonso, David          | École Polytechnique Fédérale de Lausanne (EPFL)        | Project member |
 
 ---
