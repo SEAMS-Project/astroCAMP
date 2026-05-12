@@ -209,7 +209,7 @@ If you use astroCAMP or the companion dataset in your research, please cite:
 @inproceedings{astroCAMPpasc26,
   authors   = {Denisa-Andreea Constantinescu, Rubén Rodríguez Álvarez, Jacques Morin, Etienne Orliac, Mickaël Dardaillon, Sunrise Wang, Hugo Miomandre, Miguel Peón-Quirós, Jean-François Nezan, David Atienza},
   title     = {astroCAMP: A Co-design Analysis and Metrics Platform for SKA-scale Radio Interferometric Imaging},
-  booktitle = {Proceedings of the Platform for Advanced Scientific Computing (PASC) Conference},
+  booktitle = {Platform for Advanced Scientific Computing Conference (PASC '26), June 29-July 01, 2026, Bern, Switzerland},
   year      = {2026},
   doi       = {https://doi.org/10.48550/arXiv.2512.13591},
 }
